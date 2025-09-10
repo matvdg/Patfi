@@ -8,30 +8,39 @@ struct AccountsDashboardView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading) {
-                totalHeader
-                if accounts.isEmpty {
-                    ContentUnavailableView("No accounts", systemImage: "creditcard")
-                } else {
-                    List(accounts) { account in
-                        NavigationLink {
-                            AccountDetailView(account: account)
-                        } label: {
-                            AccountRowView(account: account)
+            ZStack(alignment: .bottomTrailing) {
+                VStack(alignment: .leading) {
+                    totalHeader
+                    if accounts.isEmpty {
+                        ContentUnavailableView("No accounts", systemImage: "creditcard")
+                    } else {
+                        List(accounts) { account in
+                            NavigationLink {
+                                AccountDetailView(account: account)
+                            } label: {
+                                AccountRowView(account: account)
+                            }
                         }
+                        .listStyle(.plain)
                     }
-                    .listStyle(.plain)
                 }
+                .padding()
+
+                Button(action: { showingAddAccount = true }) {
+                    Image(systemName: "plus")
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundStyle(.white)
+                        .padding(18)
+                        .background(
+                            Circle()
+                                .fill(Color.accentColor)
+                                .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                        )
+                }
+                .padding(.trailing, 20)
+                .padding(.bottom, 20)
             }
-            .padding()
             .navigationTitle("Accounts")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { showingAddAccount = true }) {
-                        Image(systemName: "plus")
-                    }
-                }
-            }
             .sheet(isPresented: $showingAddAccount) {
                 AddAccountView()
             }
@@ -59,12 +68,7 @@ struct AccountsDashboardView: View {
     
 }
 
-
-
-
-
 #Preview {
     AccountsDashboardView()
         .modelContainer(for: [Account.self, BalanceSnapshot.self], inMemory: true)
 }
-

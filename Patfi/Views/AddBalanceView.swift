@@ -19,6 +19,12 @@ struct AddBalanceView: View {
                 TextField("Amount", text: $amountText)
                     .keyboardType(.decimalPad)
                     .focused($focused)
+                    .onChange(of: amountText) { _, newValue in
+                        let cleaned = newValue.filter { !$0.isWhitespace }
+                        if cleaned != newValue {
+                            amountText = cleaned
+                        }
+                    }
             }
             .navigationTitle(String(localized: "New snapshot"))
             .toolbar {

@@ -31,6 +31,12 @@ struct AddAccountView: View {
                     TextField("0.00", text: $initialBalanceText)
                         .keyboardType(.decimalPad)
                         .focused($focused)
+                        .onChange(of: initialBalanceText) { _, newValue in
+                            let cleaned = newValue.filter { !$0.isWhitespace }
+                            if cleaned != newValue {
+                                initialBalanceText = cleaned
+                            }
+                        }
                 }
             }
             .navigationTitle("New Account")
