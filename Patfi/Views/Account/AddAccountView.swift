@@ -4,10 +4,12 @@ import SwiftData
 struct AddAccountView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
+    @Query(sort: [SortDescriptor(\Bank.name, order: .forward)]) private var banks: [Bank]
 
     @State private var name: String = ""
     @State private var category: Category = .other
     @State private var initialBalanceText: String = ""
+    @State private var selectedBank: Bank? = nil
     @FocusState private var focused: Bool
 
     var body: some View {
@@ -27,6 +29,23 @@ struct AddAccountView: View {
                         }
                     }
                 }
+                
+                Section("Bank") {
+                    // Picker with custom rows matching the bank design
+                    if banks.isEmpty {
+                        NavigationLink("Manage banks") { BanksView() }
+                    } else {
+                        Picker(selectedBank == nil ? "Select bank" : "", selection: $selectedBank) {
+                            ForEach(banks) { bank in
+                                BankRow(bank: bank)
+                                    .tag(bank as Bank?)
+                            }
+                        }
+                        .pickerStyle(.navigationLink)
+                        NavigationLink("Manage banks") { BanksView() }
+                    }
+                }
+                
                 Section("Initial balance") {
                     TextField("0.00", text: $initialBalanceText)
                         .keyboardType(.decimalPad)
@@ -46,7 +65,7 @@ struct AddAccountView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Create") { create() }
-                        .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedBank == nil)
                 }
             }
             .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }
@@ -54,7 +73,7 @@ struct AddAccountView: View {
     }
 
     private func create() {
-        let account = Account(name: name, category: category)
+        let account = Account(name: name, category: category, bank: selectedBank)
         context.insert(account)
 
         if let amount = Double(initialBalanceText.replacingOccurrences(of: ",", with: ".")) {
@@ -65,6 +84,7 @@ struct AddAccountView: View {
         do { try context.save() } catch { print("Save error:", error) }
         dismiss()
     }
+
 }
 
 #Preview {
