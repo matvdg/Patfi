@@ -28,6 +28,7 @@ final class Bank {
         case red
         case brown
         case gray
+        case black
 
         var id: String { rawValue }
 
@@ -45,6 +46,7 @@ final class Bank {
             case .red:    return .red
             case .brown:  return .brown
             case .gray:   return .gray
+            case .black:  return .black
             }
         }
     }
