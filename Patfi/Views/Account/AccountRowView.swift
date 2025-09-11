@@ -9,14 +9,20 @@ struct AccountRowView: View {
                 .fill(Color(account.category.color))
                 .frame(width: 20, height: 20)
             VStack(alignment: .leading) {
-                Text(account.name)
-                    .font(.headline)
+                if let bank = account.bank?.name {
+                    Text("\(bank) • \(account.name)")
+                        .font(.headline)
+                } else {
+                    Text(account.name)
+                        .font(.headline)
+                }
+                
                 Text(account.category.localizedName)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
             Spacer()
-            Text((account.latestBalance?.balance ?? 0).formattedAmount)
+            Text((account.latestBalance?.balance ?? 0).toString)
                 .font(.body)
                 .bold()
         }
@@ -26,8 +32,9 @@ struct AccountRowView: View {
 
 #Preview {
     VStack {
-        AccountRowView(account: Account(name: "BoursoBank", category: .current))
-        AccountRowView(account: Account(name: "GreenGot", category: .savings))
-        AccountRowView(account: Account(name: "Crypto", category: .crypto))
+        AccountRowView(account: Account(name: "CAV", category: .current, bank: Bank(name: "Revolut", color: .blue)))
+        AccountRowView(account: Account(name: "GGPlanet", category: .lifeInsurance, bank: Bank(name: "GreenGot", color: .green)))
+        AccountRowView(account: Account(name: "Crypto", category: .crypto, bank: Bank(name: "TradeRepublic", color: .gray)))
+        AccountRowView(account: Account(name: "LA", category: .savings, bank: Bank(name: "BoursoBank", color: .purple)))
     }.padding(20)
 }

@@ -51,9 +51,9 @@ struct AccountDetailView: View {
                         List {
                             ForEach(snaps.sorted(by: { $0.date > $1.date })) { snap in
                                 HStack {
-                                    Text(dateString(snap.date))
+                                    Text(snap.date.toString)
                                     Spacer()
-                                    Text(formatCurrency(snap.balance))
+                                    Text(snap.balance.toString)
                                         .monospacedDigit()
                                 }
                                 .swipeActions(edge: .trailing) {
@@ -63,7 +63,7 @@ struct AccountDetailView: View {
                                 }
                             }
                         }
-                        .frame(minHeight: 100)
+                        .frame(height: 30, alignment: .center)
                     } else {
                         ContentUnavailableView("No snapshots", systemImage: "clock.arrow.circlepath", description: Text("AddBalance"))
                     }
@@ -71,7 +71,7 @@ struct AccountDetailView: View {
                     Text("Balances")
                 } footer: {
                     if let last = account.balances?.max(by: { $0.date < $1.date }) {
-                        Text("Latest: \(dateString(last.date)) – \(formatCurrency(last.balance))")
+                        Text("Latest: \(last.date.toString) – \(last.balance.toString)")
                     }
                 }
                 
@@ -113,21 +113,7 @@ struct AccountDetailView: View {
         try? context.save()
     }
     
-    // MARK: - Formatters
-    private func dateString(_ date: Date) -> String {
-        let df = DateFormatter()
-        df.dateStyle = .medium
-        return df.string(from: date)
-    }
-    
-    private func formatCurrency(_ amount: Double) -> String {
-        let nf = NumberFormatter()
-        nf.numberStyle = .currency
-        nf.currencyCode = Locale.current.currency?.identifier ?? "EUR"
-        nf.maximumFractionDigits = 2
-        nf.minimumFractionDigits = 2
-        return nf.string(from: NSNumber(value: amount)) ?? String(format: "%.2f", amount)
-    }
+
 }
 
 #Preview {

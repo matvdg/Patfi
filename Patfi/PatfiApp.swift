@@ -12,14 +12,14 @@ import SwiftData
 struct PatfiApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AccountsDashboardView()
         }
         .modelContainer(sharedContainer)
     }
 }
 
 let sharedContainer: ModelContainer = {
-    let schema = Schema([Account.self, BalanceSnapshot.self])
+    let schema = Schema([Account.self, BalanceSnapshot.self, Bank.self])
 #if targetEnvironment(simulator)
     let config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
 #else

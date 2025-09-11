@@ -11,7 +11,7 @@ enum Category: String, Codable, CaseIterable, Identifiable {
         case .savings: return .yellow
         case .crypto: return .purple
         case .stocks: return .orange
-        case .lifeInsurance: return .pink
+        case .lifeInsurance: return .green
         case .loan: return .red
         case .commodities: return .brown
         case .other: return .gray

@@ -1,8 +1,9 @@
-//
-//  Date+String.swift
-//  Patfi
-//
-//  Created by Mathieu Vandeginste on 10/09/2025.
-//
-
 import Foundation
+
+extension Date {
+    var toString: String {
+        let df = DateFormatter()
+        df.dateStyle = .medium
+        return df.string(from: self)
+    }
+}
