@@ -15,7 +15,7 @@ struct DashboardPieChartView: View {
                 ContentUnavailableView(
                     "No data",
                     systemImage: "chart.pie.fill",
-                    description: Text("Add balances to see category distribution")
+                    description: Text("Add balances to see distribution")
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {

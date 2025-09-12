@@ -25,7 +25,7 @@ struct PieChartView: View {
 
         VStack(alignment: .leading, spacing: 12) {
             // Segmented control
-            Picker("Grouping", selection: $grouping) {
+            Picker("", selection: $grouping) {
                 ForEach(Grouping.allCases) { g in
                     Text(g.title).tag(g)
                 }
@@ -36,7 +36,7 @@ struct PieChartView: View {
                 ContentUnavailableView(
                     "No data",
                     systemImage: "chart.pie.fill",
-                    description: Text("Add balances to see distribution.")
+                    description: Text("Add balances to see distribution")
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
@@ -58,7 +58,7 @@ struct PieChartView: View {
                             angle: .value("Total", slice.total)
                         )
                         // Group by a concrete String label (Plottable)
-                        .foregroundStyle(by: .value("Group", slice.label))
+                        .foregroundStyle(by: .value("", slice.label))
                     }
                     // Map legend colors to the dynamic labels for the current grouping
                     .chartForegroundStyleScale(

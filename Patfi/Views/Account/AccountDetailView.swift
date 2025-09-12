@@ -41,7 +41,21 @@ struct AccountDetailView: View {
                         }
                         Button("Cancel", role: .cancel) {}
                     } message: {
-                        Text("This will also delete all its balance snapshots.")
+                        Text("This will also delete all its balances")
+                    }
+                }
+                
+                // MARK: - Bank
+                Section("Account") {
+                    NavigationLink {
+                        BanksView(selectedBank: $account.bank)
+                    } label: {
+                        if let bank = account.bank {
+                            BankRow(bank: bank)
+                        } else {
+                            Text("Select/create/modify a bank")
+                                .foregroundColor(.primary)
+                        }
                     }
                 }
                 

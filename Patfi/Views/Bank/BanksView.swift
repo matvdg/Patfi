@@ -3,9 +3,12 @@ import SwiftData
 
 struct BanksView: View {
     
+    @Binding var selectedBank: Bank?
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @Query(sort: [SortDescriptor(\Bank.name, order: .forward)]) private var banks: [Bank]
+    @State private var showingAddBank = false
+
         
     var body: some View {
         NavigationStack {
@@ -19,10 +22,23 @@ struct BanksView: View {
             } else {
                 List {
                     ForEach(banks) { bank in
-                        NavigationLink {
-                            AddBankView(bank: bank)
-                        } label: {
+                        Button(action: {
+                            selectedBank = bank
+                            dismiss()
+                        }) {
                             BankRow(bank: bank)
+                                .contentShape(Rectangle())
+                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                deleteBank(bank)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                            NavigationLink(destination: AddBankView(bank: bank)) {
+                                Label("Edit", systemImage: "pencil")
+                            }
+                            .tint(.blue)
                         }
                     }
                 }
@@ -33,9 +49,31 @@ struct BanksView: View {
             }
         }
         .navigationTitle("Banks")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showingAddBank = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+        .sheet(isPresented: $showingAddBank) {
+            AddBankView()
+        }
+    }
+    
+    private func deleteBank(_ bank: Bank) {
+        context.delete(bank)
+        do {
+            try context.save()
+        } catch {
+            // Handle the error appropriately in a real app
+            print("Failed to delete banks: \(error.localizedDescription)")
+        }
     }
 }
 
 #Preview {
-    BanksView()
+    BanksView(selectedBank: .constant(nil))
 }

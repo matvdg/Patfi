@@ -25,7 +25,7 @@ struct AccountsView: View {
             VStack {
                 
                 // Segmented control for list grouping
-                Picker("Grouping", selection: $grouping) {
+                Picker("", selection: $grouping) {
                     ForEach(Grouping.allCases) { g in
                         Text(g.title).tag(g)
                     }

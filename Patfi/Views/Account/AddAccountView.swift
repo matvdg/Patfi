@@ -31,18 +31,15 @@ struct AddAccountView: View {
                 }
                 
                 Section("Bank") {
-                    // Picker with custom rows matching the bank design
-                    if banks.isEmpty {
-                        NavigationLink("Manage banks") { BanksView() }
-                    } else {
-                        Picker(selectedBank == nil ? "Select bank" : "", selection: $selectedBank) {
-                            ForEach(banks) { bank in
-                                BankRow(bank: bank)
-                                    .tag(bank as Bank?)
-                            }
+                    NavigationLink {
+                        BanksView(selectedBank: $selectedBank)
+                    } label: {
+                        if let bank = selectedBank {
+                            BankRow(bank: bank)
+                        } else {
+                            Text("Select/create/modify a bank")
+                                .foregroundColor(.primary)
                         }
-                        .pickerStyle(.navigationLink)
-                        NavigationLink("Manage banks") { BanksView() }
                     }
                 }
                 
@@ -86,6 +83,9 @@ struct AddAccountView: View {
     }
 
 }
+
+
+
 
 #Preview {
     AddAccountView()
