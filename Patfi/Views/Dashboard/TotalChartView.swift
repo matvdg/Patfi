@@ -3,6 +3,7 @@ import SwiftData
 import Charts
 
 struct TotalChartView: View {
+    
     @Query(sort: [SortDescriptor(\BalanceSnapshot.date, order: .forward)])
     private var snapshots: [BalanceSnapshot]
 

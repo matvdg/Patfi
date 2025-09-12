@@ -52,4 +52,9 @@ final class Bank {
     }
 
     var swiftUIColor: Color { color.swiftUIColor }
+    
+    var initialLetter: String {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.first.map { String($0).uppercased() } ?? " "
+    }
 }

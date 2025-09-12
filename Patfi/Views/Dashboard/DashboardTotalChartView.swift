@@ -2,33 +2,48 @@ import SwiftUI
 import SwiftData
 import Charts
 
-/// Super basic chart for dashboard: last 6 months total, no segmented control, no axis/grid.
 struct DashboardTotalChartView: View {
+    
     @Query(sort: [SortDescriptor(\BalanceSnapshot.date, order: .forward)])
     private var snapshots: [BalanceSnapshot]
 
     var body: some View {
-        let base = computeTotalSeries(snapshots: snapshots)
-        let series = filterLastSixMonths(base)
+        let series = computeTotalSeries(snapshots: snapshots)
 
-        Chart(series) { point in
-            AreaMark(
-                x: .value("Date", point.date),
-                y: .value("Total", point.total)
-            )
-            LineMark(
-                x: .value("Date", point.date),
-                y: .value("Total", point.total)
-            )
+        VStack(alignment: .leading, spacing: 12) {
+
+            if series.isEmpty {
+                ContentUnavailableView(
+                    "No data",
+                    systemImage: "chart.line.uptrend.xyaxis",
+                    description: Text("Add balances to see the graph")
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                Chart(series) { point in
+                    AreaMark(
+                        x: .value("Date", point.date),
+                        y: .value("Total", point.total)
+                    )
+                }
+                .chartYAxis {
+                    AxisMarks(position: .leading) { value in
+                        AxisGridLine()
+                        AxisTick()
+                        if let v = value.as(Double.self) {
+                            AxisValueLabel(v.toString)
+                        }
+                    }
+                }
+                .frame(height: 260)
+            }
         }
-        .chartXAxis(.hidden)
-        .chartYAxis(.hidden)
-        .frame(height: 180)
-        .padding(.horizontal)
+        .padding()
     }
 
     // MARK: - Series computation
     private func computeTotalSeries(snapshots: [BalanceSnapshot]) -> [TotalPoint] {
+        // Filter out snapshots without an account (cannot attribute last-known logic)
         let valid = snapshots.compactMap { snap -> (date: Date, accountID: PersistentIdentifier, value: Double)? in
             guard let acc = snap.account else { return nil }
             let day = Calendar.current.startOfDay(for: snap.date)
@@ -36,34 +51,53 @@ struct DashboardTotalChartView: View {
         }
         if valid.isEmpty { return [] }
 
-        let dates = Array(Set(valid.map { $0.date })).sorted()
-        var lastByAccount: [PersistentIdentifier: Double] = [:]
-        var result: [TotalPoint] = []
+        // Determine maxDate and oneMonthAgo
+        guard let maxDate = valid.map({ $0.date }).max() else { return [] }
+        guard let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: maxDate) else { return [] }
 
+        // Split valid into historical (< oneMonthAgo) and recent (>= oneMonthAgo)
+        let historical = valid.filter { $0.date < oneMonthAgo }
+        let recent = valid.filter { $0.date >= oneMonthAgo }
+
+        if recent.isEmpty { return [] }
+
+        // Collect all account IDs from recent snapshots
+        let allAccountIDs = Set(recent.map { $0.accountID })
+
+        // Initialize lastByAccount with last known value from historical or 0 if none
+        var lastByAccount: [PersistentIdentifier: Double] = [:]
+        for accID in allAccountIDs {
+            let historicalForAccount = historical.filter { $0.accountID == accID }
+            if let lastHistorical = historicalForAccount.max(by: { $0.date < $1.date }) {
+                lastByAccount[accID] = lastHistorical.value
+            } else {
+                lastByAccount[accID] = 0
+            }
+        }
+
+        // Group recent snapshots by date (ascending)
+        let dates = Array(Set(recent.map { $0.date })).sorted()
+
+        // Pre-group recent snapshots by date for efficient updates
         var snapsByDate: [Date: [(PersistentIdentifier, Double)]] = [:]
-        for item in valid { snapsByDate[item.date, default: []].append((item.accountID, item.value)) }
+        for item in recent { snapsByDate[item.date, default: []].append((item.accountID, item.value)) }
+
+        var result: [TotalPoint] = []
 
         for d in dates {
             if let updates = snapsByDate[d] {
                 for (accID, value) in updates { lastByAccount[accID] = value }
             }
+            // Ensure every account has a value for this date, assign 0 if not previously seen
+            for accID in allAccountIDs {
+                if lastByAccount[accID] == nil {
+                    lastByAccount[accID] = 0
+                }
+            }
             let total = lastByAccount.values.reduce(0, +)
             result.append(TotalPoint(date: d, total: total))
         }
         return result
-    }
-
-    private func filterLastSixMonths(_ series: [TotalPoint]) -> [TotalPoint] {
-        guard let lastDate = series.last?.date else { return series }
-        let cal = Calendar.current
-        let start = cal.date(byAdding: .month, value: -5, to: startOfMonth(lastDate)) ?? lastDate
-        return series.filter { $0.date >= start }
-    }
-
-    private func startOfMonth(_ date: Date) -> Date {
-        let cal = Calendar.current
-        let comps = cal.dateComponents([.year, .month], from: date)
-        return cal.date(from: comps) ?? cal.startOfDay(for: date)
     }
 
     struct TotalPoint: Identifiable {

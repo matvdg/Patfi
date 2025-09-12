@@ -9,7 +9,7 @@ struct BankRow: View {
                 Circle()
                     .fill(bank.swiftUIColor)
                     .frame(width: 24, height: 24)
-                Text(initialLetter)
+                Text(bank.initialLetter)
                     .font(.caption.bold())
                     .foregroundStyle(.white)
             }
@@ -18,11 +18,6 @@ struct BankRow: View {
             Spacer()
         }
         .contentShape(Rectangle())
-    }
-
-    private var initialLetter: String {
-        let trimmed = bank.name.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.first.map { String($0).uppercased() } ?? " "
     }
 }
 
