@@ -12,9 +12,11 @@ struct AccountRowView: View {
                 if let bank = account.bank?.name {
                     Text("\(bank) • \(account.name)")
                         .font(.headline)
+                        .foregroundColor(.primary)
                 } else {
                     Text(account.name)
                         .font(.headline)
+                        .foregroundColor(.primary)
                 }
                 
                 Text(account.category.localizedName)

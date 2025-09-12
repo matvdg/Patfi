@@ -17,7 +17,9 @@ struct AddBalanceView: View {
             Form {
                 DatePicker("Date", selection: $date, displayedComponents: [.date])
                 TextField("Amount", text: $amountText)
+#if os(iOS) || os(tvOS) || os(visionOS)
                     .keyboardType(.decimalPad)
+#endif
                     .focused($focused)
                     .onChange(of: amountText) { _, newValue in
                         let cleaned = newValue.filter { !$0.isWhitespace }
@@ -26,6 +28,9 @@ struct AddBalanceView: View {
                         }
                     }
             }
+#if os(macOS)
+            .padding()
+#endif
             .navigationTitle(String(localized: "New snapshot"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }

@@ -8,6 +8,7 @@ struct BanksView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: [SortDescriptor(\Bank.name, order: .forward)]) private var banks: [Bank]
     @State private var showingAddBank = false
+    @State private var bankToModify: Bank?
 
         
     var body: some View {
@@ -35,14 +36,31 @@ struct BanksView: View {
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
-                            NavigationLink(destination: AddBankView(bank: bank)) {
+                            Button(role: .confirm) {
+                                bankToModify = bank
+                                showingAddBank = true
+                            } label: {
                                 Label("Edit", systemImage: "pencil")
                             }
-                            .tint(.blue)
+                        }
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                deleteBank(bank)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                            Button(role: .confirm) {
+                                bankToModify = bank
+                                showingAddBank = true
+                            } label: {
+                                Label("Edit", systemImage: "pencil")
+                            }
                         }
                     }
                 }
+#if os(iOS) || os(tvOS) || os(visionOS)
                 .listStyle(.insetGrouped)
+#endif
                 .safeAreaInset(edge: .bottom) {
                     Color.clear.frame(height: 0)
                 }
@@ -52,6 +70,7 @@ struct BanksView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
+                    bankToModify = nil
                     showingAddBank = true
                 } label: {
                     Image(systemName: "plus")
@@ -59,7 +78,7 @@ struct BanksView: View {
             }
         }
         .sheet(isPresented: $showingAddBank) {
-            AddBankView()
+            AddBankView(bank: bankToModify)
         }
     }
     

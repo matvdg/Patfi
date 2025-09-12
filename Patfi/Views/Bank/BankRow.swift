@@ -15,6 +15,7 @@ struct BankRow: View {
             }
             Text(bank.name.isEmpty ? " " : bank.name)
                 .font(.body)
+                .foregroundColor(.primary)
             Spacer()
         }
         .contentShape(Rectangle())

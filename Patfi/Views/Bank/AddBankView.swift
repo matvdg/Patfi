@@ -25,7 +25,9 @@ struct AddBankView: View {
                                 .foregroundStyle(.white)
                         }
                         TextField("Bank's name", text: $name)
+#if os(iOS) || os(tvOS) || os(visionOS)
                             .textInputAutocapitalization(.words)
+#endif
                             .autocorrectionDisabled()
                             .focused($focused)
                     }
@@ -61,8 +63,12 @@ struct AddBankView: View {
                     }
                 }
             }
+#if os(macOS)
+            .padding()
+#endif
             .navigationTitle(bank == nil ? "New bank" : "Edit bank")
             .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(bank == nil ? "Create" : "Save") { save() }
                         .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)

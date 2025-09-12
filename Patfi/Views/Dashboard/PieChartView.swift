@@ -20,8 +20,9 @@ struct PieChartView: View {
     @State private var grouping: Grouping = .categories
 
     var body: some View {
-        let slices = computeSlices(accounts: accounts, grouping: grouping)
-        let total = slices.reduce(0.0) { $0 + $1.total }
+        let allSlices = computeSlices(accounts: accounts, grouping: grouping)
+        let slices = allSlices.filter { grouping != .categories || $0.label != localizedCategory(.loan) }
+        let total = allSlices.reduce(0.0) { $0 + $1.total }
 
         VStack(alignment: .leading, spacing: 12) {
             // Segmented control
@@ -42,7 +43,7 @@ struct PieChartView: View {
             } else {
                 // Summary list above the chart
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(slices) { s in
+                    ForEach(allSlices) { s in
                         HStack(spacing: 12) {
                             Circle().fill(s.color).frame(width: 10, height: 10)
                             Text(s.label)
@@ -98,16 +99,16 @@ struct PieChartView: View {
         case .categories:
             var byCategory: [Category: Double] = [:]
             for (acc, value) in latestByAccount {
-                let v = max(0, value)
+                let v = value
                 byCategory[acc.category, default: 0] += v
             }
-            return byCategory
-                .filter { $0.value > 0 }
+            let allSlices = byCategory
+                .filter { $0.value != 0 }
                 .sorted { $0.key.rawValue < $1.key.rawValue }
                 .map { cat, total in
                     Slice(label: localizedCategory(cat), color: cat.color, total: total)
                 }
-
+            return allSlices
         case .banks:
             // Aggregate by Bank (optional). Use persistentModelID as key; group "No bank" separately.
             struct BankAgg { var name: String; var color: Color; var total: Double }

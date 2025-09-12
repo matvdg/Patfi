@@ -20,7 +20,7 @@ struct DashboardPieChartView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ZStack {
-                    Chart(slices) { slice in
+                    Chart(slices.filter { $0.category != .loan }) { slice in
                         SectorMark(
                             angle: .value("Total", slice.total)
                         )
@@ -58,15 +58,14 @@ struct DashboardPieChartView: View {
         }
         if latestByAccount.isEmpty { return [] }
 
-        // Aggregate by category; clamp negatives to 0 to avoid invalid pie sectors
+        // Aggregate by category; keep negatives, including loan category
         var byCategory: [Category: Double] = [:]
         for (acc, value) in latestByAccount {
-            let v = max(0, value)
-            byCategory[acc.category, default: 0] += v
+            byCategory[acc.category, default: 0] += value
         }
 
         return byCategory
-            .filter { $0.value > 0 }
+            .filter { $0.value != 0 }
             .sorted { $0.key.rawValue < $1.key.rawValue }
             .map { Slice(category: $0.key, total: $0.value) }
     }
