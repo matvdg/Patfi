@@ -82,7 +82,7 @@ struct AccountsDashboardView: View {
                                 .foregroundStyle(.primary)
                             Image(systemName: "chevron.right")
                                 .font(.system(size: 16, weight: .semibold))
-                                .foregroundStyle(.black)
+                                .foregroundStyle(.primary)
                         }
                     }
                 }
@@ -135,7 +135,7 @@ struct AccountsDashboardView: View {
                                 .foregroundStyle(.primary)
                             Image(systemName: "chevron.right")
                                 .font(.system(size: 16, weight: .semibold))
-                                .foregroundStyle(.black)
+                                .foregroundStyle(.primary)
                         }
                     }
                 }
