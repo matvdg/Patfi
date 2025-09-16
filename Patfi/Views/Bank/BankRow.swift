@@ -1,28 +1,40 @@
 import SwiftUI
 
 struct BankRow: View {
-    let bank: Bank
+    
+    var bank: Bank?
+    @State private var logoImage: Image? = nil
 
     var body: some View {
-        HStack(spacing: 12) {
-            ZStack {
-                Circle()
-                    .fill(bank.swiftUIColor)
-                    .frame(width: 24, height: 24)
-                Text(bank.initialLetter)
-                    .font(.caption.bold())
-                    .foregroundStyle(.white)
+        HStack(alignment: .center, spacing: 8) {
+            if let logoImage = logoImage {
+                logoImage
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 30, height: 30)
+            } else {
+                ZStack {
+                    Circle()
+                        .fill((bank?.swiftUIColor ?? Color.gray).opacity( bank == nil ? 0.3 : 1.0))
+                        .frame(width: 14, height: 14)
+                    Text(bank?.initialLetter ?? "")
+                        .font(.caption2.bold())
+                        .foregroundStyle(.white)
+                        .opacity(bank == nil ? 0 : 1)
+                }
             }
-            Text(bank.name.isEmpty ? " " : bank.name)
-                .font(.body)
+            Text(bank?.name.isEmpty == false ? (bank?.name ?? "") : (bank == nil ? String(localized: "No bank") : "—"))
                 .foregroundColor(.primary)
-            Spacer()
         }
-        .contentShape(Rectangle())
+        .task(priority: .high) {
+            if bank?.logoAvailability != .optedOut {
+                logoImage = await bank?.getLogo()
+            }
+        }
     }
 }
 
-
 #Preview {
-    BankRow(bank: Bank(name: "BoursoBank", color: .purple)).padding()
+    BankRow()
+    BankRow(bank: Bank(name: "BoursoBank", color: .purple))
 }

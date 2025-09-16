@@ -46,7 +46,7 @@ struct AddAccountView: View {
                         }
                         
                         Section("Initial balance") {
-                            TextField("0.00", text: $initialBalanceText)
+                            TextField("Amount", text: $initialBalanceText)
                                 .focused($focused)
                                 .onChange(of: initialBalanceText) { _, newValue in
                                     let cleaned = newValue.filter { !$0.isWhitespace }
@@ -104,7 +104,7 @@ struct AddAccountView: View {
                 }
                 
                 Section("Initial balance") {
-                    TextField("0.00", text: $initialBalanceText)
+                    TextField("Amount", text: $initialBalanceText)
                         .keyboardType(.decimalPad)
                         .focused($focused)
                         .onChange(of: initialBalanceText) { _, newValue in

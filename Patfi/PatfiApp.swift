@@ -3,16 +3,20 @@
 //  Patfi
 //
 //  Created by Mathieu Vandeginste on 04/09/2025.
-//
-
+import TipKit
 import SwiftUI
 import SwiftData
 
 @main
 struct PatfiApp: App {
+    
     var body: some Scene {
+        
         WindowGroup {
             AccountsDashboardView()
+                .onAppear {
+                    try? Tips.configure()
+                }
         }
         .modelContainer(sharedContainer)
     }

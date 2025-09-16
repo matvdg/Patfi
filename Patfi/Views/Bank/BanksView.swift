@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import TipKit
 
 struct BanksView: View {
     
@@ -9,6 +10,7 @@ struct BanksView: View {
     @Query(sort: [SortDescriptor(\Bank.name, order: .forward)]) private var banks: [Bank]
     @State private var showingAddBank = false
     @State private var bankToModify: Bank?
+    @State private var refreshID = UUID()
 
         
     var body: some View {
@@ -21,6 +23,7 @@ struct BanksView: View {
                 )
                 .padding()
             } else {
+                let bankTip = BankTip()
                 List {
                     ForEach(banks) { bank in
                         Button(action: {
@@ -33,12 +36,13 @@ struct BanksView: View {
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button(role: .destructive) {
                                 deleteBank(bank)
+                                bankTip.invalidate(reason: .actionPerformed)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
                             Button(role: .confirm) {
                                 bankToModify = bank
-                                showingAddBank = true
+                                bankTip.invalidate(reason: .actionPerformed)
                             } label: {
                                 Label("Edit", systemImage: "pencil")
                             }
@@ -46,18 +50,21 @@ struct BanksView: View {
                         .contextMenu {
                             Button(role: .destructive) {
                                 deleteBank(bank)
+                                bankTip.invalidate(reason: .actionPerformed)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
                             Button(role: .confirm) {
                                 bankToModify = bank
-                                showingAddBank = true
+                                bankTip.invalidate(reason: .actionPerformed)
                             } label: {
                                 Label("Edit", systemImage: "pencil")
                             }
                         }
                     }
                 }
+                .id(refreshID)
+                .popoverTip(bankTip, arrowEdge: .trailing)
 #if os(iOS) || os(tvOS) || os(visionOS)
                 .listStyle(.insetGrouped)
 #endif
@@ -77,9 +84,13 @@ struct BanksView: View {
                 }
             }
         }
-        .sheet(isPresented: $showingAddBank) {
-            AddBankView(bank: bankToModify)
+        .sheet(item: $bankToModify, onDismiss: { refreshID = UUID() }) { bank in
+            BankView(bank: bank)
         }
+        .sheet(isPresented: $showingAddBank, onDismiss: { refreshID = UUID() }) {
+            BankView()
+        }
+
     }
     
     private func deleteBank(_ bank: Bank) {
@@ -95,4 +106,23 @@ struct BanksView: View {
 
 #Preview {
     BanksView(selectedBank: .constant(nil))
+}
+
+struct BankTip: Tip {
+    
+    var title: Text {
+        Text("tipBankTitle")
+    }
+    
+    var message: Text? {
+        Text("tipBankDescription")
+    }
+    
+    var image: Image? {
+        Image(systemName: "trash")
+    }
+    
+    var options: [Option] {
+        MaxDisplayCount(3)
+    }
 }

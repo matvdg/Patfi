@@ -11,7 +11,7 @@ struct AccountsDashboardView: View {
     
     var body: some View {
         NavigationStack {
-#if os(iOS) || os(tvOS) || os(visionOS)
+#if os(iOS) || os(tvOS)
             ZStack(alignment: .bottomTrailing) {
                 VStack(alignment: .leading) {
                     if !totalBalance.isZero {

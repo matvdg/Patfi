@@ -3,8 +3,10 @@ import SwiftData
 import Playgrounds
 
 struct AccountsView: View {
+    
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
+    @State private var showingAddAccount = false
     
     private enum Grouping: String, CaseIterable, Identifiable {
         case bank, category, name
@@ -24,18 +26,19 @@ struct AccountsView: View {
         NavigationStack {
             VStack {
                 
-                // Segmented control for list grouping
-                Picker("", selection: $grouping) {
-                    ForEach(Grouping.allCases) { g in
-                        Text(g.title).tag(g)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding(.vertical, 8)
-                
                 if accounts.isEmpty {
                     ContentUnavailableView("No accounts", systemImage: "creditcard")
                 } else {
+                    
+                    // Segmented control for list grouping
+                    Picker("", selection: $grouping) {
+                        ForEach(Grouping.allCases) { g in
+                            Text(g.title).tag(g)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.vertical, 8)
+                    
                     List {
                         switch grouping {
                         case .name:
@@ -78,7 +81,7 @@ struct AccountsView: View {
                                         ForEach(items) { account in
                                             NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
                                         }
-                                    } header: { BankHeader(bank: bank) }
+                                    } header: { BankRow(bank: bank) }
                                 }
                             }
                             if !noBank.isEmpty {
@@ -86,7 +89,7 @@ struct AccountsView: View {
                                     ForEach(noBank.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }) { account in
                                         NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
                                     }
-                                } header: { BankHeader() }
+                                } header: { BankRow() }
                             }
                         }
                     }
@@ -96,6 +99,16 @@ struct AccountsView: View {
             .padding()
         }
         .navigationTitle("Accounts")
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                Button(action: { showingAddAccount = true }) {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+        .navigationDestination(isPresented: $showingAddAccount) {
+            AddAccountView()
+        }
     }
 }
 
