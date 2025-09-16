@@ -22,15 +22,15 @@ class BalanceRepository {
         print("ℹ️ Updated balances in AppGroup, total = \(total.toString)")
         
         let perAccount = balancesPerAccount(accounts: accounts)
-//        let perCategory = balancesPerCategory(accounts: accounts)
-//        let perBank = balancesPerBank(accounts: accounts)
+        let perCategory = balancesPerCategory(accounts: accounts)
+        let perBank = balancesPerBank(accounts: accounts)
         
         // Save to App Group UserDefaults
         let defaults = AppGroup.defaults
         defaults.set(total, forKey: Keys.totalBalance)
         defaults.set(perAccount, forKey: Keys.balancesPerAccount)
-//        defaults.set(perCategory, forKey: Keys.balancesPerCategory)
-//        defaults.set(perBank, forKey: Keys.balancesPerBank)
+        defaults.set(perCategory, forKey: Keys.balancesPerCategory)
+        defaults.set(perBank, forKey: Keys.balancesPerBank)
         
         // Reload widget timelines
         WidgetCenter.shared.reloadAllTimelines()
@@ -47,25 +47,26 @@ class BalanceRepository {
         return result
     }
     
-//    private func balancesPerCategory(accounts: [Account]) -> [String: Double] {
-//        var result: [String: Double] = [:]
-//        for account in accounts {
-//            if let category = account.category?.rawValue, let balance = account.latestBalance?.balance {
-//                result[category, default: 0] += balance
-//            }
-//        }
-//        return result
-//    }
-//
-//    private func balancesPerBank(accounts: [Account]) -> [String: Double] {
-//        var result: [String: Double] = [:]
-//        for account in accounts {
-//            if let bankName = account.bank?.name, let balance = account.latestBalance?.balance {
-//                result[bankName, default: 0] += balance
-//            }
-//        }
-//        return result
-//    }
+    private func balancesPerCategory(accounts: [Account]) -> [String: Double] {
+        var result: [String: Double] = [:]
+        for account in accounts {
+            let category = account.category.localizedCategory
+            if let balance = account.latestBalance?.balance {
+                result[category, default: 0] += balance
+            }
+        }
+        return result
+    }
+
+    private func balancesPerBank(accounts: [Account]) -> [String: Double] {
+        var result: [String: Double] = [:]
+        for account in accounts {
+            if let bankName = account.bank?.name, let balance = account.latestBalance?.balance {
+                result[bankName, default: 0] += balance
+            }
+        }
+        return result
+    }
     
     
     

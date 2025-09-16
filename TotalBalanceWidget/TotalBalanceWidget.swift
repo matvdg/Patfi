@@ -1,22 +1,31 @@
 import WidgetKit
 import SwiftUI
 
+
 struct Provider: TimelineProvider {
     
+    static let mockTotal = 1234567.89.toString
+    static let mockBalancesByBank = ["N26": 1000.0, "Revolut": 2000.0, "Trade Republic": 3000.0]
+    static let mockbalancesByCategory: [String: Double] = ["Current": 2378, "Savings": 500.0, "Crypto": 300.0, "Stocks": 200.0, "Loan": -1000]
+    
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), balance: 1234.toString)
+        SimpleEntry(date: Date(), balance: Provider.mockTotal, balancesByBank: Provider.mockBalancesByBank, balancesByCategory: Provider.mockbalancesByCategory)
     }
-
+    
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
         let balanceValue = BalanceReader.totalBalance()
-        let entry = SimpleEntry(date: Date(), balance: balanceValue.toString)
+        let balancesByBank = BalanceReader.balancesByBank()
+        let balancesByCategory = BalanceReader.balancesByCategory()
+        let entry = SimpleEntry(date: Date(), balance: balanceValue.toString, balancesByBank: balancesByBank, balancesByCategory: balancesByCategory)
         completion(entry)
     }
-
+    
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let currentDate = Date()
         let balanceValue = BalanceReader.totalBalance()
-        let entry = SimpleEntry(date: currentDate, balance: balanceValue.toString)
+        let balancesByBank = BalanceReader.balancesByBank()
+        let balancesByCategory = BalanceReader.balancesByCategory()
+        let entry = SimpleEntry(date: currentDate, balance: balanceValue.toString, balancesByBank: balancesByBank, balancesByCategory: balancesByCategory)
         let timeline = Timeline(entries: [entry], policy: .never)
         completion(timeline)
     }
@@ -25,34 +34,138 @@ struct Provider: TimelineProvider {
 struct SimpleEntry: TimelineEntry {
     let date: Date
     let balance: String
+    let balancesByBank: [String: Double]
+    let balancesByCategory: [String: Double]
 }
 
 struct TotalBalanceWidgetEntryView : View {
     var entry: Provider.Entry
-
+    @Environment(\.widgetFamily) private var family
+    
+    
     var body: some View {
-        VStack {
-            Text("Total Balance")
+        switch family {
+        case .systemSmall:
+            VStack {
+                Text("Balance")
+                    .font(.headline)
+                Text(entry.balance)
+                    .font(.largeTitle)
+                    .bold()
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(2)
+            }
+            .padding()
+        case .systemMedium:
+            VStack(alignment: .leading) {
+                Spacer()
+                ForEach(entry.balancesByBank.sorted(by: { $0.key < $1.key }), id: \.key) { bank, total in
+                    HStack {
+                        Text(bank)
+                            .minimumScaleFactor(0.5)
+                        Spacer()
+                        Text(total.toString)
+                            .minimumScaleFactor(0.5)
+                    }
+                }
+                Spacer()
+                HStack {
+                    Text("Balance")
+                        .font(.headline)
+                    Spacer()
+                    Text(entry.balance)
+                        .font(.headline)
+                }
+                Spacer()
+            }
+            .padding()
+        case .systemLarge:
+            VStack(alignment: .leading) {
+                Spacer()
+                ForEach(entry.balancesByCategory.sorted(by: { $0.key < $1.key }), id: \.key) { category, total in
+                    HStack {
+                        Text(category)
+                            .minimumScaleFactor(0.5)
+                        Spacer()
+                        Text(total.toString)
+                            .minimumScaleFactor(0.5)
+                    }
+                }
+                Spacer()
+                HStack {
+                    Text("Balance")
+                        .font(.headline)
+                    Spacer()
+                    Text(entry.balance)
+                        .font(.headline)
+                }
+                Spacer()
+            }
+            .padding()
+        case .systemExtraLarge:
+            HStack {
+                VStack(alignment: .leading) {
+                    Spacer()
+                    Text("Patfi")
+                        .font(.largeTitle)
+                        .bold()
+                    Spacer()
+                    ForEach(entry.balancesByBank.sorted(by: { $0.key < $1.key }), id: \.key) { bank, total in
+                        HStack {
+                            Text(bank)
+                                .minimumScaleFactor(0.5)
+                            Spacer()
+                            Text(total.toString)
+                                .minimumScaleFactor(0.5)
+                        }
+                    }
+                    Spacer()
+                }
+                Divider()
+                VStack(alignment: .leading) {
+                    Spacer()
+                    ForEach(entry.balancesByCategory.sorted(by: { $0.key < $1.key }), id: \.key) { category, total in
+                        HStack {
+                            Text(category)
+                                .minimumScaleFactor(0.5)
+                            Spacer()
+                            Text(total.toString)
+                                .minimumScaleFactor(0.5)
+                        }
+                    }
+                    Spacer()
+                    HStack {
+                        Text("Balance")
+                            .font(.headline)
+                        Spacer()
+                        Text(entry.balance)
+                            .font(.headline)
+                    }
+                    Spacer()
+                }
+                .padding()
+            }
+        default:
             Text(entry.balance)
-                .font(.largeTitle)
+                .font(.title)
                 .bold()
+                .padding()
         }
     }
 }
 
 struct TotalBalanceWidget: Widget {
     let kind: String = "TotalBalanceWidget"
-
+    
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            if #available(macOS 14.0, iOS 17.0, *) {
-                TotalBalanceWidgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
-            } else {
-                TotalBalanceWidgetEntryView(entry: entry)
-                    .padding()
-                    .background()
-            }
+            TotalBalanceWidgetEntryView(entry: entry)
+                .containerBackground(
+                    LinearGradient(colors: [.blue.opacity(0.3), .blue.opacity(0.7)],
+                                   startPoint: .topLeading,
+                                   endPoint: .bottomTrailing),
+                    for: .widget
+                )
         }
         .configurationDisplayName("Total Balance")
         .description("Total balance of my accounts")
@@ -62,5 +175,5 @@ struct TotalBalanceWidget: Widget {
 #Preview(as: .systemSmall) {
     TotalBalanceWidget()
 } timeline: {
-    SimpleEntry(date: .now, balance: 12345.toString)
+    SimpleEntry(date: .now, balance: Provider.mockTotal, balancesByBank: Provider.mockBalancesByBank, balancesByCategory: Provider.mockbalancesByCategory)
 }

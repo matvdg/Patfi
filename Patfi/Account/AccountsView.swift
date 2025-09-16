@@ -49,7 +49,9 @@ struct AccountsView: View {
                             }
                             
                         case .category:
-                            let groups = repo.groupByCategory(accounts)
+                            let groups = repo.groupByCategory(accounts).sorted {
+                                $0.key.localizedCategory < $1.key.localizedCategory
+                            }
                             ForEach(Array(groups), id: \.key) { (category, items) in
                                 Section {
                                     ForEach(items) { account in
@@ -66,7 +68,9 @@ struct AccountsView: View {
                             }
                             
                         case .bank:
-                            let groups = repo.groupByBank(accounts)
+                            let groups = repo.groupByBank(accounts).sorted {
+                                $0.key?.name ?? "_" < $1.key?.name ?? "_"
+                            }
                             ForEach(Array(groups), id: \.key) { (bank, items) in
                                 let sortedItems = items.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
                                 Section {
