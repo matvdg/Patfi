@@ -25,18 +25,18 @@ struct PieChartView: View {
         switch grouping {
         case .categories:
             return repo.groupByCategory(accounts).map { cat, accounts in
-                Slice(label: cat.localizedCategory, color: cat.color, total: repo.totalBalance(accounts: accounts))
+                Slice(label: cat.localizedCategory, color: cat.color, total: repo.balance(for: accounts))
             }
         case .banks:
             return repo.groupByBank(accounts).map { bank, accounts in
-                Slice(label: bank?.name ?? "_", color: bank?.swiftUIColor ?? .black, total: repo.totalBalance(accounts: accounts))
+                Slice(label: bank?.name ?? "_", color: bank?.swiftUIColor ?? .black, total: repo.balance(for: accounts))
             }
         }
     }
 
     var body: some View {
         let slices = allSlices.filter { grouping != .categories || $0.label != Category.loan.localizedCategory }
-        let total = repo.totalBalance(accounts: accounts)
+        let total = repo.balance(for: accounts)
 
         VStack(alignment: .leading, spacing: 12) {
             // Segmented control

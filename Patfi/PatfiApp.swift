@@ -9,7 +9,7 @@ import SwiftData
 
 @main
 struct PatfiApp: App {
-    
+        
     var body: some Scene {
         
         WindowGroup {

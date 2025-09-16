@@ -3,14 +3,23 @@ import WidgetKit
 
 class BalanceRepository {
     
-    func totalBalance(accounts: [Account]) -> Double {
+    func groupByCategory(_ accounts: [Account]) -> [Category: [Account]] {
+        Dictionary(grouping: accounts, by: { $0.category })
+    }
+
+    func groupByBank(_ accounts: [Account]) -> [Bank?: [Account]] {
+        Dictionary(grouping: accounts, by: { $0.bank })
+    }
+    
+    func balance(for accounts: [Account]) -> Double {
         let total = accounts.reduce(0) { $0 + ($1.latestBalance?.balance ?? 0) }
-        update(accounts: accounts, total: total)
         return total
     }
 
     /// Persists balance information (total, per-account, per-category, per-bank) to AppGroup.defaults and reloads widget timelines.
-    func update(accounts: [Account], total: Double) {
+    func update(accounts: [Account]) {
+        let total = balance(for: accounts)
+//        print("ℹ️ Updated balances in AppGroup, total = \(total.toString)")
         
         let perAccount = balancesPerAccount(accounts: accounts)
 //        let perCategory = balancesPerCategory(accounts: accounts)
@@ -58,12 +67,6 @@ class BalanceRepository {
 //        return result
 //    }
     
-    public func groupByCategory(_ accounts: [Account]) -> [Category: [Account]] {
-        Dictionary(grouping: accounts, by: { $0.category })
-    }
-
-    public func groupByBank(_ accounts: [Account]) -> [Bank?: [Account]] {
-        Dictionary(grouping: accounts, by: { $0.bank })
-    }
+    
     
 }

@@ -50,51 +50,34 @@ struct AccountsView: View {
                             
                         case .category:
                             let groups = repo.groupByCategory(accounts)
-                            ForEach(Array(groups.enumerated()), id: \.0) { index, element in
-                                let cat = element.key
-                                let items = element.value
+                            ForEach(Array(groups), id: \.key) { (category, items) in
                                 Section {
                                     ForEach(items) { account in
                                         NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
                                     }
                                 } header: {
                                     HStack(spacing: 8) {
-                                        Circle().fill(cat.color).frame(width: 10, height: 10)
-                                        Text(cat.localizedName)
+                                        Circle().fill(category.color).frame(width: 10, height: 10)
+                                        Text(category.localizedName)
                                         Spacer()
-                                        Text(repo.totalBalance(accounts: items).toString)
+                                        Text(repo.balance(for: items).toString)
                                     }
                                 }
                             }
                             
                         case .bank:
                             let groups = repo.groupByBank(accounts)
-                            ForEach(Array(groups.enumerated()), id: \.0) { index, element in
-                                let items = element.value.sorted(by: { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending })
-                                if let bank = items.first?.bank {
-                                    Section {
-                                        ForEach(items) { account in
-                                            NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
-                                        }
-                                    } header: {
-                                        HStack {
-                                            BankRow(bank: bank)
-                                            Spacer()
-                                            Text(repo.totalBalance(accounts: items).toString)
-                                        }
-                                    }
-                                }
-                            }
-                            if let noBank = groups[nil], !noBank.isEmpty {
+                            ForEach(Array(groups), id: \.key) { (bank, items) in
+                                let sortedItems = items.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
                                 Section {
-                                    ForEach(noBank.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }) { account in
+                                    ForEach(sortedItems) { account in
                                         NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
                                     }
                                 } header: {
                                     HStack {
-                                        BankRow()
+                                        BankRow(bank: bank)
                                         Spacer()
-                                        Text(repo.totalBalance(accounts: noBank).toString)
+                                        Text(repo.balance(for: sortedItems).toString)
                                     }
                                 }
                             }

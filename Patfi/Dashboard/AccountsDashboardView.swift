@@ -6,6 +6,8 @@ import WidgetKit
 struct AccountsDashboardView: View {
     
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
+
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     @State private var showingAddAccount = false
     @State private var selectedChart = 0
@@ -17,7 +19,7 @@ struct AccountsDashboardView: View {
 #if os(iOS) || os(tvOS)
             ZStack(alignment: .bottomTrailing) {
                 VStack(alignment: .leading) {
-                    if !repo.totalBalance(accounts: accounts).isZero {
+                    if !repo.balance(for: accounts).isZero {
                         TabView {
                             Section {
                                 NavigationLink {
@@ -98,7 +100,7 @@ struct AccountsDashboardView: View {
 #else
             ZStack(alignment: .bottomTrailing) {
                 VStack(alignment: .leading) {
-                    if !repo.totalBalance(accounts: accounts).isZero {
+                    if !repo.balance(for: accounts).isZero {
                         Picker("Select Chart", selection: $selectedChart) {
                             Text("Distribution").tag(0)
                             Text("Monitoring").tag(1)
@@ -152,6 +154,10 @@ struct AccountsDashboardView: View {
                 AddAccountView()
             }
 #endif
+        }
+        .onChange(of: scenePhase) { old, newPhase in
+//            print("ℹ️ \(scenePhase)")
+            repo.update(accounts: accounts)
         }
     }
     

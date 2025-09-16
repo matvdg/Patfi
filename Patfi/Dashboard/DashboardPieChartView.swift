@@ -19,7 +19,7 @@ struct DashboardPieChartView: View {
             }
             .filter { $0.total != 0 }
             .sorted { $0.category.rawValue < $1.category.rawValue }
-        let total = repo.totalBalance(accounts: accounts)
+        let total = repo.balance(for: accounts)
 
         VStack(alignment: .leading, spacing: 8) {
             if slices.isEmpty || total <= 0 {
