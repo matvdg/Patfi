@@ -85,38 +85,36 @@ struct BankView: View {
                     }
                 }
                 
-                // Only show color palette section if not displaying logo
-                if !displayLogo {
-                    Section("Color") {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 12) {
-                                ForEach(Bank.Palette.allCases) { p in
-                                    Button {
-                                        palette = p
-                                    } label: {
-                                        Circle()
-                                            .fill(p.swiftUIColor)
-                                            .frame(width: 36, height: 36)
-                                            .overlay(
-                                                Circle()
-                                                    .strokeBorder(
-                                                        p == palette ? Color.primary.opacity(0.6) : Color.primary.opacity(0.15),
-                                                        lineWidth: p == palette ? 3 : 1
-                                                    )
-                                            )
-                                            .overlay(
-                                                Group {
-                                                    if p == palette { Image(systemName: "checkmark").font(.caption.bold()).foregroundStyle(.white) }
-                                                }
-                                            )
-                                    }
-                                    .buttonStyle(.plain)
+                Section("Color") {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(Bank.Palette.allCases) { p in
+                                Button {
+                                    palette = p
+                                } label: {
+                                    Circle()
+                                        .fill(p.swiftUIColor)
+                                        .frame(width: 36, height: 36)
+                                        .overlay(
+                                            Circle()
+                                                .strokeBorder(
+                                                    p == palette ? Color.primary.opacity(0.6) : Color.primary.opacity(0.15),
+                                                    lineWidth: p == palette ? 3 : 1
+                                                )
+                                        )
+                                        .overlay(
+                                            Group {
+                                                if p == palette { Image(systemName: "checkmark").font(.caption.bold()).foregroundStyle(.white) }
+                                            }
+                                        )
                                 }
+                                .buttonStyle(.plain)
                             }
-                            .padding(.vertical, 4)
                         }
+                        .padding(.vertical, 4)
                     }
                 }
+                
             }
 #if os(macOS)
             .padding()

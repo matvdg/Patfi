@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import Playgrounds
+import WidgetKit
 
 struct AccountsDashboardView: View {
     
@@ -9,12 +10,14 @@ struct AccountsDashboardView: View {
     @State private var showingAddAccount = false
     @State private var selectedChart = 0
     
+    let repo = BalanceRepository()
+    
     var body: some View {
         NavigationStack {
 #if os(iOS) || os(tvOS)
             ZStack(alignment: .bottomTrailing) {
                 VStack(alignment: .leading) {
-                    if !totalBalance.isZero {
+                    if !repo.totalBalance(accounts: accounts).isZero {
                         TabView {
                             Section {
                                 NavigationLink {
@@ -95,7 +98,7 @@ struct AccountsDashboardView: View {
 #else
             ZStack(alignment: .bottomTrailing) {
                 VStack(alignment: .leading) {
-                    if !totalBalance.isZero {
+                    if !repo.totalBalance(accounts: accounts).isZero {
                         Picker("Select Chart", selection: $selectedChart) {
                             Text("Distribution").tag(0)
                             Text("Monitoring").tag(1)
@@ -152,11 +155,7 @@ struct AccountsDashboardView: View {
         }
     }
     
-    private var totalBalance: Double {
-        accounts.reduce(0) { total, account in
-            total + (account.latestBalance?.balance ?? 0)
-        }
-    }
+    
     
 }
 

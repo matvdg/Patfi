@@ -8,6 +8,8 @@ struct AccountsView: View {
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     @State private var showingAddAccount = false
     
+    private let repo = BalanceRepository()
+    
     private enum Grouping: String, CaseIterable, Identifiable {
         case bank, category, name
         var id: String { rawValue }
@@ -47,49 +49,54 @@ struct AccountsView: View {
                             }
                             
                         case .category:
-                            // Group by Category
-                            let groupedByCategory = Dictionary(grouping: accounts) { $0.category }
-                            ForEach(groupedByCategory.keys.sorted(by: { $0.localizedCategory < $1.localizedCategory }), id: \Category.rawValue) { cat in
-                                if let items = groupedByCategory[cat]?.sorted(by: { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }) {
-                                    Section {
-                                        ForEach(items) { account in
-                                            NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
-                                        }
-                                    } header: {
-                                        HStack(spacing: 8) {
-                                            Circle().fill(cat.color).frame(width: 10, height: 10)
-                                            Text(cat.localizedName)
-                                        }
+                            let groups = repo.groupByCategory(accounts)
+                            ForEach(Array(groups.enumerated()), id: \.0) { index, element in
+                                let cat = element.key
+                                let items = element.value
+                                Section {
+                                    ForEach(items) { account in
+                                        NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
+                                    }
+                                } header: {
+                                    HStack(spacing: 8) {
+                                        Circle().fill(cat.color).frame(width: 10, height: 10)
+                                        Text(cat.localizedName)
+                                        Spacer()
+                                        Text(repo.totalBalance(accounts: items).toString)
                                     }
                                 }
                             }
                             
                         case .bank:
-                            // Group by Bank (optional). "No bank" section at the end if needed.
-                            let withBank = accounts.filter { $0.bank != nil }
-                            let noBank = accounts.filter { $0.bank == nil }
-                            let groupedByBank = Dictionary(grouping: withBank) { $0.bank!.persistentModelID }
-                            let sortedBankIDs = groupedByBank.keys.sorted { lhs, rhs in
-                                let lName = groupedByBank[lhs]?.first?.bank?.name ?? ""
-                                let rName = groupedByBank[rhs]?.first?.bank?.name ?? ""
-                                return lName.localizedCaseInsensitiveCompare(rName) == .orderedAscending
-                            }
-                            ForEach(sortedBankIDs, id: \.self) { bankID in
-                                if let items = groupedByBank[bankID]?.sorted(by: { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }),
-                                   let bank = items.first?.bank {
+                            let groups = repo.groupByBank(accounts)
+                            ForEach(Array(groups.enumerated()), id: \.0) { index, element in
+                                let items = element.value.sorted(by: { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending })
+                                if let bank = items.first?.bank {
                                     Section {
                                         ForEach(items) { account in
                                             NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
                                         }
-                                    } header: { BankRow(bank: bank) }
+                                    } header: {
+                                        HStack {
+                                            BankRow(bank: bank)
+                                            Spacer()
+                                            Text(repo.totalBalance(accounts: items).toString)
+                                        }
+                                    }
                                 }
                             }
-                            if !noBank.isEmpty {
+                            if let noBank = groups[nil], !noBank.isEmpty {
                                 Section {
                                     ForEach(noBank.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }) { account in
                                         NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
                                     }
-                                } header: { BankRow() }
+                                } header: {
+                                    HStack {
+                                        BankRow()
+                                        Spacer()
+                                        Text(repo.totalBalance(accounts: noBank).toString)
+                                    }
+                                }
                             }
                         }
                     }

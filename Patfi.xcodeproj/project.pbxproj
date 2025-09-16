@@ -7,15 +7,82 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F63DB58F2E7996AB00688CC7 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB56C2E7996AB00688CC7 /* Account.swift */; };
+		F63DB5902E7996AB00688CC7 /* BalanceSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB56D2E7996AB00688CC7 /* BalanceSnapshot.swift */; };
+		F63DB5912E7996AB00688CC7 /* Bank.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB56E2E7996AB00688CC7 /* Bank.swift */; };
+		F63DB5922E7996AB00688CC7 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB56F2E7996AB00688CC7 /* Category.swift */; };
+		F63DB5A82E799D1100688CC7 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6A810842E79815C00BD327E /* WidgetKit.framework */; };
+		F63DB5A92E799D1100688CC7 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6A810862E79815C00BD327E /* SwiftUI.framework */; };
+		F63DB5B42E799D1100688CC7 /* TotalBalanceWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F63DB5A72E799D1100688CC7 /* TotalBalanceWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F63DB5BC2E79A8ED00688CC7 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB5BB2E79A8DD00688CC7 /* AppGroup.swift */; };
+		F63DB5BD2E79A8ED00688CC7 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB5BB2E79A8DD00688CC7 /* AppGroup.swift */; };
+		F63DB5C32E79AD9F00688CC7 /* Bank+Logo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB5C22E79AD9F00688CC7 /* Bank+Logo.swift */; };
+		F63DB5C52E79AE0300688CC7 /* BalanceRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB5C42E79AE0300688CC7 /* BalanceRepository.swift */; };
+		F63DB5CB2E79AF6400688CC7 /* BalanceSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB56D2E7996AB00688CC7 /* BalanceSnapshot.swift */; };
+		F63DB5CC2E79AF6400688CC7 /* Bank.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB56E2E7996AB00688CC7 /* Bank.swift */; };
+		F63DB5CD2E79AF6400688CC7 /* BalanceRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB5C42E79AE0300688CC7 /* BalanceRepository.swift */; };
+		F63DB5CE2E79AF6400688CC7 /* Bank+Logo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB5C22E79AD9F00688CC7 /* Bank+Logo.swift */; };
+		F63DB5CF2E79AF6400688CC7 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB56C2E7996AB00688CC7 /* Account.swift */; };
+		F63DB5D02E79AF6400688CC7 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63DB56F2E7996AB00688CC7 /* Category.swift */; };
 		F6A8107D2E797CEF00BD327E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F6A8107C2E797CEF00BD327E /* README.md */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		F63DB5B22E799D1100688CC7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F60DBEB72E69FD3300ED214A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F63DB5A62E799D1100688CC7;
+			remoteInfo = TotalBalanceWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F6A810972E79815D00BD327E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F63DB5B42E799D1100688CC7 /* TotalBalanceWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		F60DBEBF2E69FD3300ED214A /* Patfi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Patfi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F63DB56C2E7996AB00688CC7 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		F63DB56D2E7996AB00688CC7 /* BalanceSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceSnapshot.swift; sourceTree = "<group>"; };
+		F63DB56E2E7996AB00688CC7 /* Bank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bank.swift; sourceTree = "<group>"; };
+		F63DB56F2E7996AB00688CC7 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		F63DB5A72E799D1100688CC7 /* TotalBalanceWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TotalBalanceWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F63DB5B92E79A76800688CC7 /* TotalBalanceWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TotalBalanceWidgetExtension.entitlements; sourceTree = "<group>"; };
+		F63DB5BB2E79A8DD00688CC7 /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
+		F63DB5C22E79AD9F00688CC7 /* Bank+Logo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bank+Logo.swift"; sourceTree = "<group>"; };
+		F63DB5C42E79AE0300688CC7 /* BalanceRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceRepository.swift; sourceTree = "<group>"; };
 		F6A8107C2E797CEF00BD327E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		F6A810842E79815C00BD327E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		F6A810862E79815C00BD327E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F63DB5B82E799D1100688CC7 /* Exceptions for "TotalBalanceWidget" folder in "TotalBalanceWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
+		};
+		F63DB5EA2E79B99E00688CC7 /* Exceptions for "Utils" folder in "TotalBalanceWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Date+String.swift",
+				"Double+String.swift",
+			);
+			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
+		};
 		F670967F2E6B38ED0059EF66 /* Exceptions for "Patfi" folder in "Patfi" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -34,6 +101,22 @@
 			path = Patfi;
 			sourceTree = "<group>";
 		};
+		F63DB5AA2E799D1100688CC7 /* TotalBalanceWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F63DB5B82E799D1100688CC7 /* Exceptions for "TotalBalanceWidget" folder in "TotalBalanceWidgetExtension" target */,
+			);
+			path = TotalBalanceWidget;
+			sourceTree = "<group>";
+		};
+		F63DB5E52E79B99E00688CC7 /* Utils */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F63DB5EA2E79B99E00688CC7 /* Exceptions for "Utils" folder in "TotalBalanceWidgetExtension" target */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,14 +127,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F63DB5A42E799D1100688CC7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F63DB5A92E799D1100688CC7 /* SwiftUI.framework in Frameworks */,
+				F63DB5A82E799D1100688CC7 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		F60DBEB62E69FD3300ED214A = {
 			isa = PBXGroup;
 			children = (
+				F63DB5BA2E79A8D900688CC7 /* Shared */,
+				F63DB5B92E79A76800688CC7 /* TotalBalanceWidgetExtension.entitlements */,
 				F6A8107C2E797CEF00BD327E /* README.md */,
 				F60DBEC12E69FD3300ED214A /* Patfi */,
+				F63DB5AA2E799D1100688CC7 /* TotalBalanceWidget */,
+				F6A810832E79815C00BD327E /* Frameworks */,
 				F60DBEC02E69FD3300ED214A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -60,8 +156,33 @@
 			isa = PBXGroup;
 			children = (
 				F60DBEBF2E69FD3300ED214A /* Patfi.app */,
+				F63DB5A72E799D1100688CC7 /* TotalBalanceWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F63DB5BA2E79A8D900688CC7 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				F63DB5E52E79B99E00688CC7 /* Utils */,
+				F63DB56D2E7996AB00688CC7 /* BalanceSnapshot.swift */,
+				F63DB5C42E79AE0300688CC7 /* BalanceRepository.swift */,
+				F63DB5BB2E79A8DD00688CC7 /* AppGroup.swift */,
+				F63DB56C2E7996AB00688CC7 /* Account.swift */,
+				F63DB56E2E7996AB00688CC7 /* Bank.swift */,
+				F63DB5C22E79AD9F00688CC7 /* Bank+Logo.swift */,
+				F63DB56F2E7996AB00688CC7 /* Category.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		F6A810832E79815C00BD327E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F6A810842E79815C00BD327E /* WidgetKit.framework */,
+				F6A810862E79815C00BD327E /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,13 +195,16 @@
 				F60DBEBB2E69FD3300ED214A /* Sources */,
 				F60DBEBC2E69FD3300ED214A /* Frameworks */,
 				F60DBEBD2E69FD3300ED214A /* Resources */,
+				F6A810972E79815D00BD327E /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F63DB5B32E799D1100688CC7 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				F60DBEC12E69FD3300ED214A /* Patfi */,
+				F63DB5E52E79B99E00688CC7 /* Utils */,
 			);
 			name = Patfi;
 			packageProductDependencies = (
@@ -88,6 +212,28 @@
 			productName = Patfi;
 			productReference = F60DBEBF2E69FD3300ED214A /* Patfi.app */;
 			productType = "com.apple.product-type.application";
+		};
+		F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F63DB5B72E799D1100688CC7 /* Build configuration list for PBXNativeTarget "TotalBalanceWidgetExtension" */;
+			buildPhases = (
+				F63DB5A32E799D1100688CC7 /* Sources */,
+				F63DB5A42E799D1100688CC7 /* Frameworks */,
+				F63DB5A52E799D1100688CC7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F63DB5AA2E799D1100688CC7 /* TotalBalanceWidget */,
+			);
+			name = TotalBalanceWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = TotalBalanceWidgetExtension;
+			productReference = F63DB5A72E799D1100688CC7 /* TotalBalanceWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -100,6 +246,9 @@
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					F60DBEBE2E69FD3300ED214A = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					F63DB5A62E799D1100688CC7 = {
 						CreatedOnToolsVersion = 26.0;
 					};
 				};
@@ -120,6 +269,7 @@
 			projectRoot = "";
 			targets = (
 				F60DBEBE2E69FD3300ED214A /* Patfi */,
+				F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -133,6 +283,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F63DB5A52E799D1100688CC7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -140,10 +297,39 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F63DB58F2E7996AB00688CC7 /* Account.swift in Sources */,
+				F63DB5902E7996AB00688CC7 /* BalanceSnapshot.swift in Sources */,
+				F63DB5912E7996AB00688CC7 /* Bank.swift in Sources */,
+				F63DB5922E7996AB00688CC7 /* Category.swift in Sources */,
+				F63DB5C32E79AD9F00688CC7 /* Bank+Logo.swift in Sources */,
+				F63DB5C52E79AE0300688CC7 /* BalanceRepository.swift in Sources */,
+				F63DB5BC2E79A8ED00688CC7 /* AppGroup.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F63DB5A32E799D1100688CC7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F63DB5CB2E79AF6400688CC7 /* BalanceSnapshot.swift in Sources */,
+				F63DB5CC2E79AF6400688CC7 /* Bank.swift in Sources */,
+				F63DB5CD2E79AF6400688CC7 /* BalanceRepository.swift in Sources */,
+				F63DB5CE2E79AF6400688CC7 /* Bank+Logo.swift in Sources */,
+				F63DB5CF2E79AF6400688CC7 /* Account.swift in Sources */,
+				F63DB5D02E79AF6400688CC7 /* Category.swift in Sources */,
+				F63DB5BD2E79A8ED00688CC7 /* AppGroup.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F63DB5B32E799D1100688CC7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
+			targetProxy = F63DB5B22E799D1100688CC7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		F60DBEC82E69FD3400ED214A /* Debug */ = {
@@ -267,8 +453,9 @@
 		F60DBECB2E69FD3400ED214A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Icon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Patfi/Patfi.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -306,7 +493,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
@@ -315,8 +502,9 @@
 		F60DBECC2E69FD3400ED214A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Icon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Patfi/Patfi.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -352,6 +540,94 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
+		F63DB5B52E799D1100688CC7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = TotalBalanceWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3WAQF3AS82;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TotalBalanceWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TotalBalanceWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.matvdg.patfi.TotalBalanceWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		F63DB5B62E799D1100688CC7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = TotalBalanceWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3WAQF3AS82;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TotalBalanceWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TotalBalanceWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.matvdg.patfi.TotalBalanceWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -377,6 +653,15 @@
 			buildConfigurations = (
 				F60DBECB2E69FD3400ED214A /* Debug */,
 				F60DBECC2E69FD3400ED214A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F63DB5B72E799D1100688CC7 /* Build configuration list for PBXNativeTarget "TotalBalanceWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F63DB5B52E799D1100688CC7 /* Debug */,
+				F63DB5B62E799D1100688CC7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

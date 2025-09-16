@@ -5,10 +5,21 @@ import Charts
 struct DashboardPieChartView: View {
     @Query(sort: [SortDescriptor(\Account.name, order: .forward)])
     private var accounts: [Account]
+    private let repo = BalanceRepository()
 
     var body: some View {
-        let slices = computeSlices(accounts: accounts)
-        let total = slices.reduce(0.0) { $0 + $1.total }
+        // Group accounts by category and sum latest balances for each category
+        let grouped = repo.groupByCategory(accounts)
+        let slices: [Slice] = grouped
+            .map { (category, accs) in
+                let total = accs.compactMap { acc in
+                    acc.balances?.max(by: { $0.date < $1.date })?.balance
+                }.reduce(0.0, +)
+                return Slice(category: category, total: total)
+            }
+            .filter { $0.total != 0 }
+            .sorted { $0.category.rawValue < $1.category.rawValue }
+        let total = repo.totalBalance(accounts: accounts)
 
         VStack(alignment: .leading, spacing: 8) {
             if slices.isEmpty || total <= 0 {
@@ -25,10 +36,10 @@ struct DashboardPieChartView: View {
                             angle: .value("Total", slice.total)
                         )
                         // Use a String (Plottable) for grouping
-                        .foregroundStyle(by: .value("Category", localizedCategory(slice.category)))
+                        .foregroundStyle(by: .value("Category", slice.category.localizedCategory))
                     }
                     .chartForegroundStyleScale(
-                        domain: Category.allCases.map { localizedCategory($0) },
+                        domain: Category.allCases.map { $0.localizedCategory },
                         range: Category.allCases.map { $0.color }
                     )
                     .chartLegend(position: .automatic)
@@ -45,34 +56,6 @@ struct DashboardPieChartView: View {
             }
         }
         .padding()
-    }
-
-    // MARK: - Computation
-    private func computeSlices(accounts: [Account]) -> [Slice] {
-        // Latest balance per account
-        var latestByAccount: [Account: Double] = [:]
-        for acc in accounts {
-            if let snap = acc.balances?.max(by: { $0.date < $1.date }) {
-                latestByAccount[acc] = snap.balance
-            }
-        }
-        if latestByAccount.isEmpty { return [] }
-
-        // Aggregate by category; keep negatives, including loan category
-        var byCategory: [Category: Double] = [:]
-        for (acc, value) in latestByAccount {
-            byCategory[acc.category, default: 0] += value
-        }
-
-        return byCategory
-            .filter { $0.value != 0 }
-            .sorted { $0.key.rawValue < $1.key.rawValue }
-            .map { Slice(category: $0.key, total: $0.value) }
-    }
-
-    private func localizedCategory(_ c: Category) -> String {
-        // Convert LocalizedStringResource to a concrete String for use in Charts (Plottable)
-        String(localized: c.localizedName)
     }
 
     private struct Slice: Identifiable {

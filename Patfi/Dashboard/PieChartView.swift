@@ -6,6 +6,8 @@ struct PieChartView: View {
     @Query(sort: [SortDescriptor(\Account.name, order: .forward)])
     private var accounts: [Account]
 
+    private let repo = BalanceRepository()
+
     private enum Grouping: String, CaseIterable, Identifiable {
         case categories, banks
         var id: String { rawValue }
@@ -19,10 +21,22 @@ struct PieChartView: View {
 
     @State private var grouping: Grouping = .categories
 
+    private var allSlices: [Slice] {
+        switch grouping {
+        case .categories:
+            return repo.groupByCategory(accounts).map { cat, accounts in
+                Slice(label: cat.localizedCategory, color: cat.color, total: repo.totalBalance(accounts: accounts))
+            }
+        case .banks:
+            return repo.groupByBank(accounts).map { bank, accounts in
+                Slice(label: bank?.name ?? "_", color: bank?.swiftUIColor ?? .black, total: repo.totalBalance(accounts: accounts))
+            }
+        }
+    }
+
     var body: some View {
-        let allSlices = computeSlices(accounts: accounts, grouping: grouping)
-        let slices = allSlices.filter { grouping != .categories || $0.label != localizedCategory(.loan) }
-        let total = allSlices.reduce(0.0) { $0 + $1.total }
+        let slices = allSlices.filter { grouping != .categories || $0.label != Category.loan.localizedCategory }
+        let total = repo.totalBalance(accounts: accounts)
 
         VStack(alignment: .leading, spacing: 12) {
             // Segmented control
@@ -82,69 +96,6 @@ struct PieChartView: View {
             }
         }
         .padding()
-    }
-
-    // MARK: - Computation
-    private func computeSlices(accounts: [Account], grouping: Grouping) -> [Slice] {
-        // Latest balance per account
-        var latestByAccount: [Account: Double] = [:]
-        for acc in accounts {
-            if let snap = acc.balances?.max(by: { $0.date < $1.date }) {
-                latestByAccount[acc] = snap.balance
-            }
-        }
-        if latestByAccount.isEmpty { return [] }
-
-        switch grouping {
-        case .categories:
-            var byCategory: [Category: Double] = [:]
-            for (acc, value) in latestByAccount {
-                let v = value
-                byCategory[acc.category, default: 0] += v
-            }
-            let allSlices = byCategory
-                .filter { $0.value != 0 }
-                .sorted { $0.key.rawValue < $1.key.rawValue }
-                .map { cat, total in
-                    Slice(label: localizedCategory(cat), color: cat.color, total: total)
-                }
-            return allSlices
-        case .banks:
-            // Aggregate by Bank (optional). Use persistentModelID as key; group "No bank" separately.
-            struct BankAgg { var name: String; var color: Color; var total: Double }
-            var byBank: [PersistentIdentifier: BankAgg] = [:]
-            var noBankTotal: Double = 0
-
-            for (acc, value) in latestByAccount {
-                let v = max(0, value)
-                if let bank = acc.bank {
-                    let id = bank.persistentModelID
-                    var agg = byBank[id] ?? BankAgg(name: bank.name, color: bank.swiftUIColor, total: 0)
-                    // Keep latest name/color in case of edits
-                    agg.name = bank.name
-                    agg.color = bank.swiftUIColor
-                    agg.total += v
-                    byBank[id] = agg
-                } else {
-                    noBankTotal += v
-                }
-            }
-
-            var slices: [Slice] = byBank.values
-                .filter { $0.total > 0 }
-                .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
-                .map { Slice(label: $0.name.isEmpty ? "—" : $0.name, color: $0.color, total: $0.total) }
-
-            if noBankTotal > 0 {
-                slices.append(Slice(label: String(localized: "No bank"), color: .gray, total: noBankTotal))
-            }
-            return slices
-        }
-    }
-
-    private func localizedCategory(_ c: Category) -> String {
-        // Convert LocalizedStringResource to a concrete String for use in Charts (Plottable)
-        String(localized: c.localizedName)
     }
 
     // MARK: - Types
