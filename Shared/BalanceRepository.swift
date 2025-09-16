@@ -19,7 +19,7 @@ class BalanceRepository {
     /// Persists balance information (total, per-account, per-category, per-bank) to AppGroup.defaults and reloads widget timelines.
     func update(accounts: [Account]) {
         let total = balance(for: accounts)
-//        print("ℹ️ Updated balances in AppGroup, total = \(total.toString)")
+        print("ℹ️ Updated balances in AppGroup, total = \(total.toString)")
         
         let perAccount = balancesPerAccount(accounts: accounts)
 //        let perCategory = balancesPerCategory(accounts: accounts)
