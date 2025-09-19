@@ -18,30 +18,30 @@ struct Provider: TimelineProvider {
     }
     
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let balanceValue = BalanceReader.totalBalance()
-        let balancesByBankDicts = BalanceReader.balancesByBank()
+        let balanceValue = BalanceReader.totalBalance
+        let balancesByBankDicts = BalanceReader.balancesByBank
         let balancesByBank: [(bankName: String, total: Double, colorPalette: String)] = balancesByBankDicts.compactMap { dict in
             let bankName = dict["bankName"] as? String ?? "Unknown"
             let total = dict["total"] as? Double ?? 0
             let colorPalette = dict["colorPalette"] as? String ?? "gray"
             return (bankName: bankName, total: total, colorPalette: colorPalette)
         }
-        let balancesByCategory = BalanceReader.balancesByCategory()
+        let balancesByCategory = BalanceReader.balancesByCategory
         let entry = SimpleEntry(date: Date(), balance: balanceValue.toString, balancesByBank: balancesByBank, balancesByCategory: balancesByCategory)
         completion(entry)
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let currentDate = Date()
-        let balanceValue = BalanceReader.totalBalance()
-        let balancesByBankDicts = BalanceReader.balancesByBank()
+        let balanceValue = BalanceReader.totalBalance
+        let balancesByBankDicts = BalanceReader.balancesByBank
         let balancesByBank: [(bankName: String, total: Double, colorPalette: String)] = balancesByBankDicts.compactMap { dict in
             let bankName = dict["bankName"] as? String ?? "Unknown"
             let total = dict["total"] as? Double ?? 0
             let colorPalette = dict["colorPalette"] as? String ?? "gray"
             return (bankName: bankName, total: total, colorPalette: colorPalette)
         }
-        let balancesByCategory = BalanceReader.balancesByCategory()
+        let balancesByCategory = BalanceReader.balancesByCategory
         let entry = SimpleEntry(date: currentDate, balance: balanceValue.toString, balancesByBank: balancesByBank, balancesByCategory: balancesByCategory)
         let timeline = Timeline(entries: [entry], policy: .never)
         completion(timeline)

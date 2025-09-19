@@ -11,6 +11,7 @@
 		F63DB5A92E799D1100688CC7 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6A810862E79815C00BD327E /* SwiftUI.framework */; };
 		F63DB5B42E799D1100688CC7 /* TotalBalanceWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F63DB5A72E799D1100688CC7 /* TotalBalanceWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F6A8107D2E797CEF00BD327E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F6A8107C2E797CEF00BD327E /* README.md */; };
+		F6FEFAE32E7D7BE200E5FBB0 /* PatfiWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F6FEFAD92E7D7BE200E5FBB0 /* PatfiWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -20,6 +21,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = F63DB5A62E799D1100688CC7;
 			remoteInfo = TotalBalanceWidgetExtension;
+		};
+		F6FEFAE12E7D7BE200E5FBB0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F60DBEB72E69FD3300ED214A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F6FEFAD82E7D7BE200E5FBB0;
+			remoteInfo = "PatfiWatch Watch App";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -35,6 +43,17 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F6FEFAE42E7D7BE200E5FBB0 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				F6FEFAE32E7D7BE200E5FBB0 /* PatfiWatch Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +63,7 @@
 		F6A8107C2E797CEF00BD327E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F6A810842E79815C00BD327E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		F6A810862E79815C00BD327E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		F6FEFAD92E7D7BE200E5FBB0 /* PatfiWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PatfiWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -85,6 +105,11 @@
 			path = Shared;
 			sourceTree = "<group>";
 		};
+		F6FEFADA2E7D7BE200E5FBB0 /* PatfiWatch Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "PatfiWatch Watch App";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +129,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F6FEFAD62E7D7BE200E5FBB0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -115,6 +147,7 @@
 				F6A8107C2E797CEF00BD327E /* README.md */,
 				F60DBEC12E69FD3300ED214A /* Patfi */,
 				F63DB5AA2E799D1100688CC7 /* TotalBalanceWidget */,
+				F6FEFADA2E7D7BE200E5FBB0 /* PatfiWatch Watch App */,
 				F6A810832E79815C00BD327E /* Frameworks */,
 				F60DBEC02E69FD3300ED214A /* Products */,
 			);
@@ -125,6 +158,7 @@
 			children = (
 				F60DBEBF2E69FD3300ED214A /* Patfi.app */,
 				F63DB5A72E799D1100688CC7 /* TotalBalanceWidgetExtension.appex */,
+				F6FEFAD92E7D7BE200E5FBB0 /* PatfiWatch Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -149,11 +183,13 @@
 				F60DBEBC2E69FD3300ED214A /* Frameworks */,
 				F60DBEBD2E69FD3300ED214A /* Resources */,
 				F6A810972E79815D00BD327E /* Embed Foundation Extensions */,
+				F6FEFAE42E7D7BE200E5FBB0 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				F63DB5B32E799D1100688CC7 /* PBXTargetDependency */,
+				F6FEFAE22E7D7BE200E5FBB0 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				F60DBEC12E69FD3300ED214A /* Patfi */,
@@ -189,6 +225,29 @@
 			productReference = F63DB5A72E799D1100688CC7 /* TotalBalanceWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		F6FEFAD82E7D7BE200E5FBB0 /* PatfiWatch Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F6FEFAE72E7D7BE200E5FBB0 /* Build configuration list for PBXNativeTarget "PatfiWatch Watch App" */;
+			buildPhases = (
+				F6FEFAD52E7D7BE200E5FBB0 /* Sources */,
+				F6FEFAD62E7D7BE200E5FBB0 /* Frameworks */,
+				F6FEFAD72E7D7BE200E5FBB0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F69AC0792E7D5449009846BB /* Shared */,
+				F6FEFADA2E7D7BE200E5FBB0 /* PatfiWatch Watch App */,
+			);
+			name = "PatfiWatch Watch App";
+			packageProductDependencies = (
+			);
+			productName = "PatfiWatch Watch App";
+			productReference = F6FEFAD92E7D7BE200E5FBB0 /* PatfiWatch Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -203,6 +262,9 @@
 						CreatedOnToolsVersion = 26.0;
 					};
 					F63DB5A62E799D1100688CC7 = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					F6FEFAD82E7D7BE200E5FBB0 = {
 						CreatedOnToolsVersion = 26.0;
 					};
 				};
@@ -224,6 +286,7 @@
 			targets = (
 				F60DBEBE2E69FD3300ED214A /* Patfi */,
 				F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */,
+				F6FEFAD82E7D7BE200E5FBB0 /* PatfiWatch Watch App */,
 			);
 		};
 /* End PBXProject section */
@@ -238,6 +301,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F63DB5A52E799D1100688CC7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F6FEFAD72E7D7BE200E5FBB0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -261,6 +331,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F6FEFAD52E7D7BE200E5FBB0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -268,6 +345,11 @@
 			isa = PBXTargetDependency;
 			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
 			targetProxy = F63DB5B22E799D1100688CC7 /* PBXContainerItemProxy */;
+		};
+		F6FEFAE22E7D7BE200E5FBB0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F6FEFAD82E7D7BE200E5FBB0 /* PatfiWatch Watch App */;
+			targetProxy = F6FEFAE12E7D7BE200E5FBB0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -576,6 +658,75 @@
 			};
 			name = Release;
 		};
+		F6FEFAE52E7D7BE200E5FBB0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = Icon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "PatfiWatch Watch App/PatfiWatch Watch App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3WAQF3AS82;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Patfi;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = fr.matvdg.patfi;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.matvdg.patfi.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		F6FEFAE62E7D7BE200E5FBB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = Icon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "PatfiWatch Watch App/PatfiWatch Watch App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3WAQF3AS82;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Patfi;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = fr.matvdg.patfi;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.matvdg.patfi.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -602,6 +753,15 @@
 			buildConfigurations = (
 				F63DB5B52E799D1100688CC7 /* Debug */,
 				F63DB5B62E799D1100688CC7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F6FEFAE72E7D7BE200E5FBB0 /* Build configuration list for PBXNativeTarget "PatfiWatch Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F6FEFAE52E7D7BE200E5FBB0 /* Debug */,
+				F6FEFAE62E7D7BE200E5FBB0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
