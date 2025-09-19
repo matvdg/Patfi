@@ -58,15 +58,24 @@ class BalanceRepository {
         return result
     }
 
-    private func balancesPerBank(accounts: [Account]) -> [String: Double] {
-        var result: [String: Double] = [:]
-        for account in accounts {
-            if let bankName = account.bank?.name, let balance = account.latestBalance?.balance {
-                result[bankName, default: 0] += balance
-            }
+private func balancesPerBank(accounts: [Account]) -> [[String: Any]] {
+    // Aggregate balances by Bank
+    var bankBalances: [Bank: Double] = [:]
+    for account in accounts {
+        if let bank = account.bank, let balance = account.latestBalance?.balance {
+            bankBalances[bank, default: 0] += balance
         }
-        return result
     }
+    // Transform into array of dictionaries
+    let result: [[String: Any]] = bankBalances.map { (bank, total) in
+        [
+            "bankName": bank.name,
+            "total": total,
+            "colorPalette": bank.color.rawValue
+        ]
+    }
+    return result
+}
     
     
     

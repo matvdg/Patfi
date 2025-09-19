@@ -70,7 +70,9 @@ struct PieChartView: View {
                 ZStack {
                     Chart(slices) { slice in
                         SectorMark(
-                            angle: .value("Total", slice.total)
+                            angle: .value("Total", total),
+                            innerRadius: .ratio(0.6),
+                            angularInset: 1.0
                         )
                         // Group by a concrete String label (Plottable)
                         .foregroundStyle(by: .value("", slice.label))
@@ -84,13 +86,15 @@ struct PieChartView: View {
                     .frame(height: 240)
 
                     // Center label (total)
-                    VStack(spacing: 2) {
+                    VStack {
+                        Text("Total")
+                            .font(.caption)
                         Text(total.toString)
                             .font(.headline)
-                            .monospacedDigit()
-                        Text(String(localized: "Total"))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .bold()
+                            .minimumScaleFactor(0.5)
+                            .frame(maxWidth: 100)
+                            .multilineTextAlignment(.center)
                     }
                 }
             }

@@ -27,7 +27,7 @@ struct BalanceReader {
         return AppGroup.defaults.dictionary(forKey: Keys.balancesPerCategory) as? [String: Double] ?? [:]
     }
     
-    static func balancesByBank() -> [String: Double] {
-        return AppGroup.defaults.dictionary(forKey: Keys.balancesPerBank) as? [String: Double] ?? [:]
+    static func balancesByBank() -> [[String: Any]] {
+        return AppGroup.defaults.array(forKey: Keys.balancesPerBank) as? [[String: Any]] ?? []
     }
 }

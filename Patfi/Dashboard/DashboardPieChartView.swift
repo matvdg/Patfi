@@ -30,14 +30,12 @@ struct DashboardPieChartView: View {
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                VStack(alignment: .center, spacing: 8)  {
-                    Text("Total : \(total.toString)")
-                        .font(.headline)
-                        .monospacedDigit()
-                        .foregroundStyle(.black)
+                ZStack(alignment: .center)  {
                     Chart(slices.filter { $0.category != .loan }) { slice in
                         SectorMark(
-                            angle: .value("Total", slice.total)
+                            angle: .value("Total", total),
+                            innerRadius: .ratio(0.6),
+                            angularInset: 1.0
                         )
                         // Use a String (Plottable) for grouping
                         .foregroundStyle(by: .value("Category", slice.category.localizedCategory))
@@ -46,8 +44,23 @@ struct DashboardPieChartView: View {
                         domain: Category.allCases.map { $0.localizedCategory },
                         range: Category.allCases.map { $0.color }
                     )
-                    .chartLegend(position: .leading)
+                    .frame(height: 300)
+                    .chartLegend(position: .bottom, spacing: 30)
+                    // Center label (total)
+                    VStack(alignment: .center, spacing: 10) {
+                        Text("Total")
+                            .font(.caption)
+                        Text(total.toString)
+                            .font(.headline)
+                            .bold()
+                            .minimumScaleFactor(0.5)
+                            .frame(maxWidth: 100)
+                            .multilineTextAlignment(.center)
+                    }
+                    .foregroundStyle(Color.patfiText)
+                    .padding(.top, -50)
                 }
+                .padding(.top, -100)
             }
         }
         .padding()

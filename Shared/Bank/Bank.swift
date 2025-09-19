@@ -4,7 +4,20 @@ import SwiftUI
 
 @Model
 final class Bank {
+    
     var name: String = ""
+    var normalizedName: String { Bank.getNormalizedName(name) }
+    
+    static func getNormalizedName(_ name: String) -> String {
+        name
+            .folding(options: .diacriticInsensitive, locale: .current)
+            .lowercased()
+            .replacingOccurrences(of: "'", with: "")
+            .replacingOccurrences(of: "’", with: "")
+            .components(separatedBy: .whitespaces)
+            .joined()
+    }
+    
     var color: Palette = Palette.blue
     
     enum LogoAvailability: String, Codable, CaseIterable, Identifiable {
@@ -79,5 +92,14 @@ final class Bank {
     var initialLetter: String {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.first.map { String($0).uppercased() } ?? " "
+    }
+    
+    static var sfSymbol: Image {
+        let locale = Locale.current.currency?.identifier ?? "USD"
+        switch locale {
+        case "EUR" : return Image(systemName: "eurosign.bank.building")
+        case "GPB" : return Image(systemName: "sterlingsign.bank.building")
+        default : return Image(systemName: "dollarsign.bank.building")
+        }
     }
 }

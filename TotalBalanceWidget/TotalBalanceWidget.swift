@@ -1,11 +1,16 @@
 import WidgetKit
 import SwiftUI
+import Charts
 
 
 struct Provider: TimelineProvider {
     
     static let mockTotal = 1234567.89.toString
-    static let mockBalancesByBank = ["N26": 1000.0, "Revolut": 2000.0, "Trade Republic": 3000.0]
+    static let mockBalancesByBank: [(bankName: String, total: Double, colorPalette: String)] = [
+        (bankName: "N26", total: 1000.0, colorPalette: "blue"),
+        (bankName: "Revolut", total: 2000.0, colorPalette: "green"),
+        (bankName: "Trade Republic", total: 3000.0, colorPalette: "yellow")
+    ]
     static let mockbalancesByCategory: [String: Double] = ["Current": 2378, "Savings": 500.0, "Crypto": 300.0, "Stocks": 200.0, "Loan": -1000]
     
     func placeholder(in context: Context) -> SimpleEntry {
@@ -14,7 +19,13 @@ struct Provider: TimelineProvider {
     
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
         let balanceValue = BalanceReader.totalBalance()
-        let balancesByBank = BalanceReader.balancesByBank()
+        let balancesByBankDicts = BalanceReader.balancesByBank()
+        let balancesByBank: [(bankName: String, total: Double, colorPalette: String)] = balancesByBankDicts.compactMap { dict in
+            let bankName = dict["bankName"] as? String ?? "Unknown"
+            let total = dict["total"] as? Double ?? 0
+            let colorPalette = dict["colorPalette"] as? String ?? "gray"
+            return (bankName: bankName, total: total, colorPalette: colorPalette)
+        }
         let balancesByCategory = BalanceReader.balancesByCategory()
         let entry = SimpleEntry(date: Date(), balance: balanceValue.toString, balancesByBank: balancesByBank, balancesByCategory: balancesByCategory)
         completion(entry)
@@ -23,7 +34,13 @@ struct Provider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let currentDate = Date()
         let balanceValue = BalanceReader.totalBalance()
-        let balancesByBank = BalanceReader.balancesByBank()
+        let balancesByBankDicts = BalanceReader.balancesByBank()
+        let balancesByBank: [(bankName: String, total: Double, colorPalette: String)] = balancesByBankDicts.compactMap { dict in
+            let bankName = dict["bankName"] as? String ?? "Unknown"
+            let total = dict["total"] as? Double ?? 0
+            let colorPalette = dict["colorPalette"] as? String ?? "gray"
+            return (bankName: bankName, total: total, colorPalette: colorPalette)
+        }
         let balancesByCategory = BalanceReader.balancesByCategory()
         let entry = SimpleEntry(date: currentDate, balance: balanceValue.toString, balancesByBank: balancesByBank, balancesByCategory: balancesByCategory)
         let timeline = Timeline(entries: [entry], policy: .never)
@@ -34,7 +51,7 @@ struct Provider: TimelineProvider {
 struct SimpleEntry: TimelineEntry {
     let date: Date
     let balance: String
-    let balancesByBank: [String: Double]
+    let balancesByBank: [(bankName: String, total: Double, colorPalette: String)]
     let balancesByCategory: [String: Double]
 }
 
@@ -42,14 +59,12 @@ struct TotalBalanceWidgetEntryView : View {
     var entry: Provider.Entry
     @Environment(\.widgetFamily) private var family
     
-    
     var body: some View {
         switch family {
         case .systemSmall:
             VStack(alignment: .center, spacing: 10) {
                 HStack(alignment: .center, spacing: 8) {
-                    
-                    Image(systemName: "\(Locale.current.currency?.identifier ?? "dollar")sign.bank.building")
+                    Bank.sfSymbol
                     Text("Patfi")
                         .font(.headline)
                 }
@@ -62,15 +77,35 @@ struct TotalBalanceWidgetEntryView : View {
             }
             .padding()
         case .systemMedium:
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 4) {
                 Spacer()
-                ForEach(entry.balancesByBank.sorted(by: { $0.key < $1.key }), id: \.key) { bank, total in
+                let rows = entry.balancesByBank.sorted { $0.bankName < $1.bankName }
+                ForEach(Array(rows.enumerated()), id: \.offset) { _, item in
+                    let bank = Bank(name: item.bankName, color: Bank.Palette(rawValue: item.colorPalette) ?? .gray)
+                    let logo = Bank.getLogoFromCache(normalizedName: Bank.getNormalizedName(bank.name))
+                    let total = item.total
                     HStack {
-                        Text(bank)
-                            .minimumScaleFactor(0.5)
+                        if let logoImage = logo {
+                            logoImage
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 14, height: 14)
+                        } else {
+                            ZStack {
+                                Circle()
+                                    .fill(bank.swiftUIColor)
+                                    .frame(width: 14, height: 14)
+                                Text(bank.initialLetter)
+                                    .font(.caption2.bold())
+                                    .foregroundStyle(.white)
+                            }
+                        }
+                        Text(bank.name.isEmpty ? "No bank" : bank.name)
+                            .foregroundColor(.primary)
+                            .minimumScaleFactor(0.1)
                         Spacer()
                         Text(total.toString)
-                            .minimumScaleFactor(0.5)
+                            .minimumScaleFactor(0.3)
                     }
                 }
                 Spacer()
@@ -85,7 +120,34 @@ struct TotalBalanceWidgetEntryView : View {
             }
             .padding()
         case .systemLarge:
-            VStack(alignment: .leading) {
+            VStack(alignment: .center, spacing: 4) {
+                ZStack {
+                    Chart {
+                        ForEach(entry.balancesByCategory.sorted(by: { $0.key < $1.key }), id: \.key) { categoryKey, total in
+                            let category = Category(rawValue: categoryKey) ?? .other
+                            SectorMark(
+                                angle: .value("Total", total),
+                                innerRadius: .ratio(0.6),
+                                angularInset: 1.0
+                            )
+                            .foregroundStyle(category.color)
+                        }
+                    }
+                    .frame(height: 200)
+                    .chartLegend(.hidden)
+                    .frame(maxWidth: .infinity)
+                    
+                    VStack {
+                        Text("Total")
+                            .font(.caption)
+                        Text(entry.balance)
+                            .font(.headline)
+                            .bold()
+                            .minimumScaleFactor(0.5)
+                            .frame(maxWidth: 100)
+                            .multilineTextAlignment(.center)
+                    }
+                }
                 Spacer()
                 ForEach(entry.balancesByCategory.sorted(by: { $0.key < $1.key }), id: \.key) { category, total in
                     HStack {
@@ -99,36 +161,52 @@ struct TotalBalanceWidgetEntryView : View {
                             .minimumScaleFactor(0.5)
                     }
                 }
-                Spacer()
-                HStack {
-                    Text("Balance")
-                        .font(.headline)
-                    Spacer()
-                    Text(entry.balance)
-                        .font(.headline)
-                }
-                Spacer()
             }
             .padding()
         case .systemExtraLarge:
             HStack {
                 VStack(alignment: .leading) {
                     Spacer()
-                    Text("Patfi")
-                        .font(.largeTitle)
-                        .bold()
-                    Spacer()
-                    ForEach(entry.balancesByBank.sorted(by: { $0.key < $1.key }), id: \.key) { bank, total in
+                    let rows = entry.balancesByBank.sorted { $0.bankName < $1.bankName }
+                    ForEach(Array(rows.enumerated()), id: \.offset) { _, item in
+                        let bank = Bank(name: item.bankName, color: Bank.Palette(rawValue: item.colorPalette) ?? .gray)
+                        let logo = Bank.getLogoFromCache(normalizedName: Bank.getNormalizedName(bank.name))
+                        let total = item.total
                         HStack {
-                            Text(bank)
-                                .minimumScaleFactor(0.5)
+                            if let logoImage = logo {
+                                logoImage
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 14, height: 14)
+                            } else {
+                                ZStack {
+                                    Circle()
+                                        .fill(bank.swiftUIColor)
+                                        .frame(width: 14, height: 14)
+                                    Text(bank.initialLetter)
+                                        .font(.caption2.bold())
+                                        .foregroundStyle(.white)
+                                }
+                            }
+                            Text(bank.name.isEmpty ? "No bank" : bank.name)
+                                .foregroundColor(.primary)
+                                .minimumScaleFactor(0.1)
                             Spacer()
                             Text(total.toString)
-                                .minimumScaleFactor(0.5)
+                                .minimumScaleFactor(0.3)
                         }
                     }
                     Spacer()
+                    HStack {
+                        Text("Balance")
+                            .font(.headline)
+                        Spacer()
+                        Text(entry.balance)
+                            .font(.headline)
+                    }
+                    Spacer()
                 }
+                .padding()
                 Divider()
                 VStack(alignment: .leading) {
                     Spacer()
@@ -181,10 +259,4 @@ struct TotalBalanceWidget: Widget {
         .configurationDisplayName("Total Balance")
         .description("Total balance of my accounts")
     }
-}
-
-#Preview(as: .systemSmall) {
-    TotalBalanceWidget()
-} timeline: {
-    SimpleEntry(date: .now, balance: Provider.mockTotal, balancesByBank: Provider.mockBalancesByBank, balancesByCategory: Provider.mockbalancesByCategory)
 }
