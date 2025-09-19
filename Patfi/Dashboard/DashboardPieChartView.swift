@@ -30,7 +30,11 @@ struct DashboardPieChartView: View {
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                ZStack {
+                VStack(alignment: .center, spacing: 8)  {
+                    Text("Total : \(total.toString)")
+                        .font(.headline)
+                        .monospacedDigit()
+                        .foregroundStyle(.black)
                     Chart(slices.filter { $0.category != .loan }) { slice in
                         SectorMark(
                             angle: .value("Total", slice.total)
@@ -42,16 +46,7 @@ struct DashboardPieChartView: View {
                         domain: Category.allCases.map { $0.localizedCategory },
                         range: Category.allCases.map { $0.color }
                     )
-                    .chartLegend(position: .automatic)
-                    .frame(height: 240)
-
-                    // Center label (total)
-                    VStack(spacing: 2) {
-                        Text(total.toString)
-                            .font(.headline)
-                            .monospacedDigit()
-                            .foregroundStyle(.black)
-                    }
+                    .chartLegend(position: .leading)
                 }
             }
         }

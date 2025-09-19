@@ -34,16 +34,17 @@ extension Bank {
             .components(separatedBy: .whitespaces)
             .joined()
         
-        // Local file path in cache directory
-        let fileManager = FileManager.default
-        let urls = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)
-        guard let cacheURL = urls.first else { return nil }
-        let logoFileURL = cacheURL.appendingPathComponent("\(normalizedName).png")
-        
         // 0. Check if the logo exists in the app's asset catalog
         if let uiImage = UIImage(named: normalizedName) {
             return Image(uiImage: uiImage)
         }
+        
+        // Local file path in cache directory
+        let fileManager = FileManager.default
+        let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: "group.fr.matvdg.patfi")!
+        let cacheURL = groupURL.appendingPathComponent("Caches", isDirectory: true)
+        try? fileManager.createDirectory(at: cacheURL, withIntermediateDirectories: true)
+        let logoFileURL = cacheURL.appendingPathComponent("\(normalizedName).png")
 
         // 1. Check if the logo already exists locally
         if fileManager.fileExists(atPath: logoFileURL.path),

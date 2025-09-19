@@ -46,14 +46,19 @@ struct TotalBalanceWidgetEntryView : View {
     var body: some View {
         switch family {
         case .systemSmall:
-            VStack {
-                Text("Balance")
-                    .font(.headline)
+            VStack(alignment: .center, spacing: 10) {
+                HStack(alignment: .center, spacing: 8) {
+                    
+                    Image(systemName: "\(Locale.current.currency?.identifier ?? "dollar")sign.bank.building")
+                    Text("Patfi")
+                        .font(.headline)
+                }
                 Text(entry.balance)
                     .font(.largeTitle)
                     .bold()
-                    .minimumScaleFactor(0.5)
+                    .minimumScaleFactor(0.2)
                     .lineLimit(2)
+                    .multilineTextAlignment(.center)
             }
             .padding()
         case .systemMedium:
@@ -84,8 +89,11 @@ struct TotalBalanceWidgetEntryView : View {
                 Spacer()
                 ForEach(entry.balancesByCategory.sorted(by: { $0.key < $1.key }), id: \.key) { category, total in
                     HStack {
-                        Text(category)
-                            .minimumScaleFactor(0.5)
+                        let category = Category(rawValue: category) ?? .other
+                        HStack(spacing: 8) {
+                            Circle().fill(category.color).frame(width: 10, height: 10)
+                            Text(category.localizedName).minimumScaleFactor(0.5)
+                        }
                         Spacer()
                         Text(total.toString)
                             .minimumScaleFactor(0.5)
@@ -126,8 +134,11 @@ struct TotalBalanceWidgetEntryView : View {
                     Spacer()
                     ForEach(entry.balancesByCategory.sorted(by: { $0.key < $1.key }), id: \.key) { category, total in
                         HStack {
-                            Text(category)
-                                .minimumScaleFactor(0.5)
+                            let category = Category(rawValue: category) ?? .other
+                            HStack(spacing: 8) {
+                                Circle().fill(category.color).frame(width: 10, height: 10)
+                                Text(category.localizedName).minimumScaleFactor(0.5)
+                            }
                             Spacer()
                             Text(total.toString)
                                 .minimumScaleFactor(0.5)

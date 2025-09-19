@@ -50,7 +50,7 @@ class BalanceRepository {
     private func balancesPerCategory(accounts: [Account]) -> [String: Double] {
         var result: [String: Double] = [:]
         for account in accounts {
-            let category = account.category.localizedCategory
+            let category = account.category.rawValue
             if let balance = account.latestBalance?.balance {
                 result[category, default: 0] += balance
             }
