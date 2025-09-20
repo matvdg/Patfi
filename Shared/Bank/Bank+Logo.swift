@@ -7,14 +7,18 @@ extension Bank {
     /// Attempts to retrieve the bank's logo from local cache or remote API
     /// - Returns: A SwiftUI Image if found, otherwise nil
     func getLogo() async -> Image? {
-        if logoAvailability == .unavailable { return nil }
+        if logoAvailability == .unavailable {
+            return nil
+        }
         if let logo = await Bank.getLogo(name: name) {
             if logoAvailability != .optedOut {
                 logoAvailability = .available
             }
             return logo
         } else {
+#if os(iOS) || os(tvOS) || os(visionOS) || os(watchOS)
             logoAvailability = .unavailable
+#endif
             return nil
         }
     }
@@ -23,7 +27,7 @@ extension Bank {
     /// - Returns: A SwiftUI Image if found, otherwise nil
     static func getLogoFromCache(normalizedName: String) -> Image? {
         
-#if os(iOS) || os(tvOS) || os(visionOS)
+#if os(iOS) || os(tvOS) || os(visionOS) || os(watchOS)
         
         // 1. Check if the logo exists in the app's asset catalog
         if let uiImage = UIImage(named: normalizedName) {
@@ -54,7 +58,7 @@ extension Bank {
     /// - Returns: A SwiftUI Image if found, otherwise nil
     static func getLogo(name: String) async -> Image? {
         
-#if os(iOS) || os(tvOS) || os(visionOS)
+#if os(iOS) || os(tvOS) || os(visionOS) || os(watchOS)
         
         let normalizedName = Bank.getNormalizedName(name)
         let fileManager = FileManager.default
@@ -86,6 +90,5 @@ extension Bank {
         return nil
         #endif
     }
-    
    
 }

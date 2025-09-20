@@ -69,7 +69,7 @@ struct AccountsView: View {
                             
                         case .bank:
                             let groups = repo.groupByBank(accounts).sorted {
-                                $0.key?.name ?? "_" < $1.key?.name ?? "_"
+                                $0.key.name < $1.key.name
                             }
                             ForEach(Array(groups), id: \.key) { (bank, items) in
                                 let sortedItems = items.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }

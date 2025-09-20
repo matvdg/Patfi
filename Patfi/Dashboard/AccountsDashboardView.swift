@@ -169,3 +169,4 @@ struct AccountsDashboardView: View {
     AccountsDashboardView()
         .modelContainer(for: [Account.self, BalanceSnapshot.self], inMemory: true)
 }
+

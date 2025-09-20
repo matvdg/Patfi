@@ -1,9 +1,14 @@
 import SwiftUI
+import SwiftData
 
 struct TotalWidgetView: View {
+    
+    @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
+    let repo = BalanceRepository()
+    
     var body: some View {
         VStack(alignment: .center, spacing: 10) {
-            let balance = BalanceReader.totalBalance
+            let balance = repo.balance(for: accounts)
             HStack(alignment: .center, spacing: 8) {
                 Bank.sfSymbol
                 Text("Patfi")

@@ -1,7 +1,6 @@
 import Foundation
 import WidgetKit
 
-
 enum AppGroup {
     static let id = "group.fr.matvdg.patfi"
     static let defaults = UserDefaults(suiteName: id)!

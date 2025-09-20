@@ -107,7 +107,6 @@ struct BanksView: View {
 #Preview {
     BanksView(selectedBank: .constant(nil))
 }
-
 struct BankTip: Tip {
     
     var title: Text {

@@ -145,9 +145,6 @@ struct AddAccountView: View {
 
 }
 
-
-
-
 #Preview {
     AddAccountView()
 }

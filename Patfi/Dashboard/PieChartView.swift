@@ -29,7 +29,7 @@ struct PieChartView: View {
             }
         case .banks:
             return repo.groupByBank(accounts).map { bank, accounts in
-                Slice(label: bank?.name ?? "_", color: bank?.swiftUIColor ?? .black, total: repo.balance(for: accounts))
+                Slice(label: bank.name, color: bank.swiftUIColor, total: repo.balance(for: accounts))
             }
         }
     }

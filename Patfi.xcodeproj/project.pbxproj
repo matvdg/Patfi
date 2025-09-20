@@ -11,7 +11,6 @@
 		F63DB5A92E799D1100688CC7 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6A810862E79815C00BD327E /* SwiftUI.framework */; };
 		F63DB5B42E799D1100688CC7 /* TotalBalanceWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F63DB5A72E799D1100688CC7 /* TotalBalanceWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F6A8107D2E797CEF00BD327E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F6A8107C2E797CEF00BD327E /* README.md */; };
-		F6FEFAE32E7D7BE200E5FBB0 /* PatfiWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F6FEFAD92E7D7BE200E5FBB0 /* PatfiWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -21,13 +20,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = F63DB5A62E799D1100688CC7;
 			remoteInfo = TotalBalanceWidgetExtension;
-		};
-		F6FEFAE12E7D7BE200E5FBB0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F60DBEB72E69FD3300ED214A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F6FEFAD82E7D7BE200E5FBB0;
-			remoteInfo = "PatfiWatch Watch App";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -41,17 +33,6 @@
 				F63DB5B42E799D1100688CC7 /* TotalBalanceWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F6FEFAE42E7D7BE200E5FBB0 /* Embed Watch Content */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
-			dstSubfolderSpec = 16;
-			files = (
-				F6FEFAE32E7D7BE200E5FBB0 /* PatfiWatch Watch App.app in Embed Watch Content */,
-			);
-			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -81,6 +62,13 @@
 			);
 			target = F60DBEBE2E69FD3300ED214A /* Patfi */;
 		};
+		F69CAE972E7F053F00627394 /* Exceptions for "Shared" folder in "TotalBalanceWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Bank/BankRow.swift,
+			);
+			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -102,6 +90,9 @@
 		};
 		F69AC0792E7D5449009846BB /* Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F69CAE972E7F053F00627394 /* Exceptions for "Shared" folder in "TotalBalanceWidgetExtension" target */,
+			);
 			path = Shared;
 			sourceTree = "<group>";
 		};
@@ -183,13 +174,11 @@
 				F60DBEBC2E69FD3300ED214A /* Frameworks */,
 				F60DBEBD2E69FD3300ED214A /* Resources */,
 				F6A810972E79815D00BD327E /* Embed Foundation Extensions */,
-				F6FEFAE42E7D7BE200E5FBB0 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				F63DB5B32E799D1100688CC7 /* PBXTargetDependency */,
-				F6FEFAE22E7D7BE200E5FBB0 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				F60DBEC12E69FD3300ED214A /* Patfi */,
@@ -345,11 +334,6 @@
 			isa = PBXTargetDependency;
 			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
 			targetProxy = F63DB5B22E799D1100688CC7 /* PBXContainerItemProxy */;
-		};
-		F6FEFAE22E7D7BE200E5FBB0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F6FEFAD82E7D7BE200E5FBB0 /* PatfiWatch Watch App */;
-			targetProxy = F6FEFAE12E7D7BE200E5FBB0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -669,9 +653,11 @@
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "PatfiWatch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Patfi;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = fr.matvdg.patfi;
+				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -703,9 +689,11 @@
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "PatfiWatch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Patfi;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = fr.matvdg.patfi;
+				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

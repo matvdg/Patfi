@@ -180,3 +180,4 @@ struct BankView: View {
     BankView()
         .modelContainer(for: [Bank.self], inMemory: true)
 }
+

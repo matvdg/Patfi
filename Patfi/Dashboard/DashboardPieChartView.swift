@@ -44,7 +44,7 @@ struct DashboardPieChartView: View {
                         domain: Category.allCases.map { $0.localizedCategory },
                         range: Category.allCases.map { $0.color }
                     )
-                    .frame(height: 300)
+                    .frame(height: 260)
                     .chartLegend(position: .bottom, spacing: 30)
                     // Center label (total)
                     VStack(alignment: .center, spacing: 10) {
@@ -58,7 +58,7 @@ struct DashboardPieChartView: View {
                             .multilineTextAlignment(.center)
                     }
                     .foregroundStyle(Color.patfiText)
-                    .padding(.top, -50)
+                    .padding(.top, -60)
                 }
                 .padding(.top, -100)
             }

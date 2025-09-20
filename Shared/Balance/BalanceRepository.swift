@@ -7,8 +7,8 @@ class BalanceRepository {
         Dictionary(grouping: accounts, by: { $0.category })
     }
 
-    func groupByBank(_ accounts: [Account]) -> [Bank?: [Account]] {
-        Dictionary(grouping: accounts, by: { $0.bank })
+    func groupByBank(_ accounts: [Account]) -> [Bank: [Account]] {
+        Dictionary(grouping: accounts, by: { $0.bank ?? Bank(name: "No bank", color: .gray) })
     }
     
     func balance(for accounts: [Account]) -> Double {
@@ -58,25 +58,38 @@ class BalanceRepository {
         return result
     }
 
-private func balancesPerBank(accounts: [Account]) -> [[String: Any]] {
-    // Aggregate balances by Bank
-    var bankBalances: [Bank: Double] = [:]
-    for account in accounts {
-        if let bank = account.bank, let balance = account.latestBalance?.balance {
-            bankBalances[bank, default: 0] += balance
+    private func balancesPerBank(accounts: [Account]) -> [[String: Any]] {
+        // Aggregate balances by bank name to avoid requiring Bank to be Hashable
+        var totalsByBankName: [String: Double] = [:]
+        var representativeBankByName: [String: Bank] = [:]
+
+        for account in accounts {
+            let bankName = account.bank?.name ?? "Unknown Bank"
+            if let balance = account.latestBalance?.balance {
+                totalsByBankName[bankName, default: 0] += balance
+            }
+            // Keep a representative Bank instance per name (for color, etc.)
+            if let bank = account.bank, representativeBankByName[bankName] == nil {
+                representativeBankByName[bankName] = bank
+            }
         }
+
+        // Transform into array of dictionaries (bankName, total, colorPalette)
+        let result: [[String: Any]] = totalsByBankName.map { (bankName, total) in
+            let colorPalette: Any
+            if let bank = representativeBankByName[bankName] {
+                colorPalette = bank.color.rawValue
+            } else {
+                colorPalette = ""
+            }
+            return [
+                "bankName": bankName,
+                "total": total,
+                "colorPalette": colorPalette
+            ]
+        }
+
+        return result
     }
-    // Transform into array of dictionaries
-    let result: [[String: Any]] = bankBalances.map { (bank, total) in
-        [
-            "bankName": bank.name,
-            "total": total,
-            "colorPalette": bank.color.rawValue
-        ]
-    }
-    return result
-}
-    
-    
     
 }

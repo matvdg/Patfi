@@ -1,21 +1,30 @@
 import SwiftUI
 import Charts
+import SwiftData
 
 struct PieChartWidgetView: View {
+    
+    @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
+    let repo = BalanceRepository()
+    
     var body: some View {
-        ZStack {
-            Chart {
-                ForEach(Array(BalanceReader.balancesByCategory.sorted { $0.key < $1.key }), id: \.key) { key, total in
-                    let category = Category(rawValue: key) ?? .other
-                    SectorMark(
-                        angle: .value("Total", total),
-                        innerRadius: .ratio(0.6),
-                        angularInset: 1.0
-                    )
-                    .foregroundStyle(category.color)
+        if repo.balance(for: accounts).isZero {
+            EmptyView()
+        } else {
+            ZStack {
+                Chart {
+                    let sorted = repo.groupByCategory(accounts)
+                        .sorted { $0.key.localizedCategory < $1.key.localizedCategory }
+                    ForEach(sorted, id: \.key) { category, catAccounts in
+                        SectorMark(
+                            angle: .value("Total", repo.balance(for: catAccounts)),
+                            innerRadius: .ratio(0.6),
+                            angularInset: 1.0
+                        )
+                        .foregroundStyle(category.color)
+                    }
                 }
             }
-            .chartLegend(.automatic)
         }
     }
 }

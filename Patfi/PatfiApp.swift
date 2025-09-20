@@ -1,15 +1,10 @@
-//
-//  PatfiApp.swift
-//  Patfi
-//
-//  Created by Mathieu Vandeginste on 04/09/2025.
 import TipKit
 import SwiftUI
 import SwiftData
 
 @main
 struct PatfiApp: App {
-        
+            
     var body: some Scene {
         
         WindowGroup {
@@ -27,7 +22,7 @@ let sharedContainer: ModelContainer = {
 #if targetEnvironment(simulator)
     let config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
 #else
-    let config = ModelConfiguration(schema: schema, cloudKitDatabase: .private("iCloud.fr.matvdg.patfi"))
+    let config = ModelConfiguration(schema: schema, cloudKitDatabase: .private(AppGroup.id))
 #endif
     do {
         return try ModelContainer(for: schema, configurations: [config])
