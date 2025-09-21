@@ -19,21 +19,15 @@ struct BanksWidgetView: View {
                     let total = repo.balance(for: bankAccounts)
                     HStack {
                         BankRow(bank: bank)
+                            .minimumScaleFactor(0.3)
                         Spacer()
                         Text(total.toString)
                             .minimumScaleFactor(0.3)
                     }
                 }
                 Spacer()
-                HStack {
-                    Text("Balance")
-                        .font(.headline)
-                    Spacer()
-                    Text(totalBalance.toString)
-                        .font(.headline)
-                }
-                Spacer()
             }
+            .padding()
             .padding()
         }
     }
