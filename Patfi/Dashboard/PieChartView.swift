@@ -38,7 +38,7 @@ struct PieChartView: View {
         let slices = allSlices.filter { grouping != .categories || $0.label != Category.loan.localizedCategory }
         let total = repo.balance(for: accounts)
 
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 20) {
             // Segmented control
             Picker("", selection: $grouping) {
                 ForEach(Grouping.allCases) { g in
@@ -55,22 +55,10 @@ struct PieChartView: View {
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                // Summary list above the chart
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(allSlices) { s in
-                        HStack(spacing: 12) {
-                            Circle().fill(s.color).frame(width: 10, height: 10)
-                            Text(s.label)
-                            Spacer()
-                            Text(s.total.toString).monospacedDigit()
-                        }
-                    }
-                }
-
                 ZStack {
                     Chart(slices) { slice in
                         SectorMark(
-                            angle: .value("Total", total),
+                            angle: .value("Total", slice.total),
                             innerRadius: .ratio(0.6),
                             angularInset: 1.0
                         )
@@ -82,7 +70,7 @@ struct PieChartView: View {
                         domain: slices.map { $0.label },
                         range: slices.map { $0.color }
                     )
-                    .chartLegend(position: .automatic)
+                    .chartLegend(.hidden)
                     .frame(height: 240)
 
                     // Center label (total)
@@ -97,6 +85,18 @@ struct PieChartView: View {
                             .multilineTextAlignment(.center)
                     }
                 }
+                // Summary list below the chart
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(allSlices) { s in
+                        HStack(spacing: 12) {
+                            Circle().fill(s.color).frame(width: 10, height: 10)
+                            Text(s.label)
+                            Spacer()
+                            Text(s.total.toString).monospacedDigit()
+                        }
+                    }
+                }
+
             }
         }
         .padding()

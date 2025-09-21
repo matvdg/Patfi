@@ -26,7 +26,7 @@ class BalanceRepository {
         let perBank = balancesPerBank(accounts: accounts)
         
         // Save to App Group UserDefaults
-        let defaults = AppGroup.defaults
+        let defaults = AppIDs.defaults
         defaults.set(total, forKey: Keys.totalBalance)
         defaults.set(perAccount, forKey: Keys.balancesPerAccount)
         defaults.set(perCategory, forKey: Keys.balancesPerCategory)
@@ -49,46 +49,22 @@ class BalanceRepository {
     
     private func balancesPerCategory(accounts: [Account]) -> [String: Double] {
         var result: [String: Double] = [:]
-        for account in accounts {
-            let category = account.category.rawValue
-            if let balance = account.latestBalance?.balance {
-                result[category, default: 0] += balance
-            }
+        let grouped = groupByCategory(accounts)
+        for (category, catAccounts) in grouped {
+            result[category.rawValue] = balance(for: catAccounts)
         }
         return result
     }
 
     private func balancesPerBank(accounts: [Account]) -> [[String: Any]] {
-        // Aggregate balances by bank name to avoid requiring Bank to be Hashable
-        var totalsByBankName: [String: Double] = [:]
-        var representativeBankByName: [String: Bank] = [:]
-
-        for account in accounts {
-            let bankName = account.bank?.name ?? "Unknown Bank"
-            if let balance = account.latestBalance?.balance {
-                totalsByBankName[bankName, default: 0] += balance
-            }
-            // Keep a representative Bank instance per name (for color, etc.)
-            if let bank = account.bank, representativeBankByName[bankName] == nil {
-                representativeBankByName[bankName] = bank
-            }
-        }
-
-        // Transform into array of dictionaries (bankName, total, colorPalette)
-        let result: [[String: Any]] = totalsByBankName.map { (bankName, total) in
-            let colorPalette: Any
-            if let bank = representativeBankByName[bankName] {
-                colorPalette = bank.color.rawValue
-            } else {
-                colorPalette = ""
-            }
+        let grouped = groupByBank(accounts)
+        let result: [[String: Any]] = grouped.map { (bank, bankAccounts) in
             return [
-                "bankName": bankName,
-                "total": total,
-                "colorPalette": colorPalette
+                "bankName": bank.name,
+                "total": balance(for: bankAccounts),
+                "colorPalette": bank.color.rawValue
             ]
         }
-
         return result
     }
     

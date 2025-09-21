@@ -1,11 +1,10 @@
 import Foundation
 import WidgetKit
 
-let iCloudID = "iCloud.fr.matvdg.patfi"
-
-enum AppGroup {
-    static let id = "group.fr.matvdg.patfi"
-    static let defaults = UserDefaults(suiteName: id)!
+enum AppIDs {
+    static let appGroupID = "group.fr.matvdg.patfi"
+    static let defaults = UserDefaults(suiteName: appGroupID)!
+    static let iCloudID = "iCloud.fr.matvdg.patfi"
 }
 
 enum Keys {
@@ -18,18 +17,18 @@ enum Keys {
 struct BalanceReader {
     
     static var totalBalance: Double {
-        AppGroup.defaults.double(forKey: Keys.totalBalance)
+        AppIDs.defaults.double(forKey: Keys.totalBalance)
     }
     
     static var balancesByAccount: [String: Double] {
-        AppGroup.defaults.dictionary(forKey: Keys.balancesPerAccount) as? [String: Double] ?? [:]
+        AppIDs.defaults.dictionary(forKey: Keys.balancesPerAccount) as? [String: Double] ?? [:]
     }
     
     static var balancesByCategory: [String: Double] {
-        AppGroup.defaults.dictionary(forKey: Keys.balancesPerCategory) as? [String: Double] ?? [:]
+        AppIDs.defaults.dictionary(forKey: Keys.balancesPerCategory) as? [String: Double] ?? [:]
     }
     
     static var balancesByBank: [[String: Any]] {
-        AppGroup.defaults.array(forKey: Keys.balancesPerBank) as? [[String: Any]] ?? []
+        AppIDs.defaults.array(forKey: Keys.balancesPerBank) as? [[String: Any]] ?? []
     }
 }

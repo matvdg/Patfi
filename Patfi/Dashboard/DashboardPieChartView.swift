@@ -11,11 +11,8 @@ struct DashboardPieChartView: View {
         // Group accounts by category and sum latest balances for each category
         let grouped = repo.groupByCategory(accounts)
         let slices: [Slice] = grouped
-            .map { (category, accs) in
-                let total = accs.compactMap { acc in
-                    acc.balances?.max(by: { $0.date < $1.date })?.balance
-                }.reduce(0.0, +)
-                return Slice(category: category, total: total)
+            .map { (cat, catAccounts) in
+                return Slice(category: cat, total: repo.balance(for: catAccounts))
             }
             .filter { $0.total != 0 }
             .sorted { $0.category.rawValue < $1.category.rawValue }
@@ -33,7 +30,7 @@ struct DashboardPieChartView: View {
                 ZStack(alignment: .center)  {
                     Chart(slices.filter { $0.category != .loan }) { slice in
                         SectorMark(
-                            angle: .value("Total", total),
+                            angle: .value("Total", slice.total),
                             innerRadius: .ratio(0.6),
                             angularInset: 1.0
                         )
