@@ -1,6 +1,8 @@
 import Foundation
 import WidgetKit
 
+let iCloudID = "iCloud.fr.matvdg.patfi"
+
 enum AppGroup {
     static let id = "group.fr.matvdg.patfi"
     static let defaults = UserDefaults(suiteName: id)!

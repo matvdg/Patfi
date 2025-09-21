@@ -159,6 +159,11 @@ struct AccountsDashboardView: View {
 //            print("ℹ️ \(scenePhase)")
             repo.update(accounts: accounts)
         }
+        .onAppear {
+            for config in modelContext.container.configurations {
+                print("📂 Store config: \(config), Store URL = \(config.url)")
+            }
+        }
     }
     
     

@@ -22,7 +22,7 @@ let sharedContainer: ModelContainer = {
 #if targetEnvironment(simulator)
     let config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
 #else
-    let config = ModelConfiguration(schema: schema, cloudKitDatabase: .private(AppGroup.id))
+    let config = ModelConfiguration(schema: schema, cloudKitDatabase: .private(iCloudID))
 #endif
     do {
         return try ModelContainer(for: schema, configurations: [config])

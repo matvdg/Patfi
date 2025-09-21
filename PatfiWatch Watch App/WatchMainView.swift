@@ -3,7 +3,6 @@ import SwiftData
 
 struct WatchMainView: View {
     
-    @Environment(\.modelContext) private var context
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     let repo = BalanceRepository()
     
@@ -19,15 +18,6 @@ struct WatchMainView: View {
             }
         }
         .tabViewStyle(.verticalPage)
-        .task {
-            do {
-                _ = try context.fetch(FetchDescriptor<Account>())
-                _ = try context.fetch(FetchDescriptor<BalanceSnapshot>())
-                _ = try context.fetch(FetchDescriptor<Bank>())
-            } catch {
-                print("Erreur de refresh CloudKit: \(error)")
-            }
-        }
     }
 }
 
