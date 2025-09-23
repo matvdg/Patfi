@@ -14,7 +14,6 @@ struct BanksWidgetView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Spacer()
                 let sorted = repo.groupByBank(accounts).sorted { $0.key.name < $1.key.name }
-                let totalBalance = repo.balance(for: accounts)
                 ForEach(sorted, id: \.key) { bank, bankAccounts in
                     let total = repo.balance(for: bankAccounts)
                     HStack {

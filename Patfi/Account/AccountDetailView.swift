@@ -9,6 +9,9 @@ struct AccountDetailView: View {
     
     @State private var showingAddSnapshot = false
     @State private var showDeleteAccountConfirm = false
+    @State private var snapshots: [BalanceSnapshot] = []
+    
+    let repo = BalanceRepository()
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -62,6 +65,14 @@ struct AccountDetailView: View {
                     // MARK: - Balances timeline
                     Section {
                         if let snaps = account.balances, !snaps.isEmpty {
+                            NavigationLink {
+                                VStack {
+                                    TotalChartView(snapshots: $snapshots)
+                                    Spacer()
+                                }
+                            } label: {
+                                DashboardTotalChartView(snapshots: $snapshots)
+                            }
                             List {
                                 ForEach(snaps.sorted(by: { $0.date > $1.date })) { snap in
                                     HStack {
@@ -119,6 +130,12 @@ struct AccountDetailView: View {
             .padding(20)
             .sheet(isPresented: $showingAddSnapshot) {
                 AddBalanceView(account: account)
+            }
+            .onChange(of: account) {
+                snapshots = account.balances ?? []
+            }
+            .onAppear {
+                snapshots = account.balances ?? []
             }
         }
     }

@@ -11,6 +11,7 @@ struct AccountsDashboardView: View {
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     @State private var showingAddAccount = false
     @State private var selectedChart = 0
+    @State private var snapshots: [BalanceSnapshot] = []
     
     let repo = BalanceRepository()
     
@@ -34,11 +35,11 @@ struct AccountsDashboardView: View {
                             Section {
                                 NavigationLink {
                                     VStack {
-                                        TotalChartView()
+                                        TotalChartView(snapshots: $snapshots)
                                         Spacer()
                                     }
                                 } label: {
-                                    DashboardTotalChartView()
+                                    DashboardTotalChartView(snapshots: $snapshots)
                                 }
                             }
                         }
@@ -111,7 +112,7 @@ struct AccountsDashboardView: View {
                         if selectedChart == 0 {
                             PieChartView()
                         } else {
-                            TotalChartView()
+                            TotalChartView(snapshots: $snapshots)
                         }
                     }
                     
@@ -156,8 +157,14 @@ struct AccountsDashboardView: View {
 #endif
         }
         .onChange(of: scenePhase) { old, newPhase in
-//            print("ℹ️ \(scenePhase)")
+            print("ℹ️ \(scenePhase)")
             repo.update(accounts: accounts)
+        }
+        .onChange(of: accounts) {
+            snapshots = repo.snapshots(for: accounts)
+        }
+        .onAppear {
+            snapshots = repo.snapshots(for: accounts)
         }
     }
     

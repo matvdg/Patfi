@@ -47,6 +47,8 @@ struct PieChartView: View {
             }
             .pickerStyle(.segmented)
 
+            Spacer()
+            
             if slices.isEmpty || total <= 0 {
                 ContentUnavailableView(
                     "No data",
@@ -85,6 +87,9 @@ struct PieChartView: View {
                             .multilineTextAlignment(.center)
                     }
                 }
+                
+                Spacer()
+                
                 // Summary list below the chart
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(allSlices) { s in
@@ -97,6 +102,8 @@ struct PieChartView: View {
                     }
                 }
 
+                Spacer()
+                
             }
         }
         .padding()
