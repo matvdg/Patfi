@@ -53,7 +53,7 @@ struct DashboardTotalChartView: View {
                         AxisGridLine()
                         AxisTick()
                         if let v = value.as(Double.self) {
-                            AxisValueLabel(v.toString)
+                            AxisValueLabel(v.toShortString)
                         }
                     }
                 })

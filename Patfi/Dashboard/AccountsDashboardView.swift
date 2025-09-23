@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 import Playgrounds
 import WidgetKit
+import TipKit
 
 struct AccountsDashboardView: View {
     
@@ -16,11 +17,14 @@ struct AccountsDashboardView: View {
     let repo = BalanceRepository()
     
     var body: some View {
+        
+        
         NavigationStack {
 #if os(iOS) || os(tvOS)
             ZStack(alignment: .bottomTrailing) {
                 VStack(alignment: .leading) {
                     if !repo.balance(for: accounts).isZero {
+                        let dashboardTip = DashboardTip()
                         TabView {
                             Section {
                                 NavigationLink {
@@ -46,6 +50,7 @@ struct AccountsDashboardView: View {
                         
                         .tabViewStyle(.page)
                         .indexViewStyle(.page(backgroundDisplayMode: .always))
+                        .popoverTip(dashboardTip, arrowEdge: .top)
                     }
                     
                     if accounts.isEmpty {
@@ -100,11 +105,11 @@ struct AccountsDashboardView: View {
             }
 #else
             ZStack(alignment: .bottomTrailing) {
-                VStack(alignment: .leading) {
+                VStack(alignment: .center) {
                     if !repo.balance(for: accounts).isZero {
-                        Picker("Select Chart", selection: $selectedChart) {
-                            Text("Distribution").tag(0)
-                            Text("Monitoring").tag(1)
+                        Picker("", selection: $selectedChart) {
+                            Text(selectedChart == 0 ? "􀜋 \(String(localized: "Distribution"))" : "􀑀 \(String(localized: "Distribution"))").tag(0)
+                            Text(selectedChart == 1 ? "􀐿 \(String(localized: "Monitoring"))" : "􀐾 \(String(localized: "Monitoring"))").tag(1)
                         }
                         .pickerStyle(.segmented)
                         .padding(.bottom, 8)
@@ -177,3 +182,21 @@ struct AccountsDashboardView: View {
         .modelContainer(for: [Account.self, BalanceSnapshot.self], inMemory: true)
 }
 
+struct DashboardTip: Tip {
+    
+    var title: Text {
+        Text("tipDashboardTitle")
+    }
+    
+    var message: Text? {
+        Text("tipDashboardDescription")
+    }
+    
+    var image: Image? {
+        Image(systemName: "chart.bar.fill")
+    }
+    
+    var options: [Option] {
+        MaxDisplayCount(2)
+    }
+}

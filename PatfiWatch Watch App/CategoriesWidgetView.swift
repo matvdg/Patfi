@@ -7,25 +7,21 @@ struct CategoriesWidgetView: View {
     let repo = BalanceRepository()
     
     var body: some View {
-        if repo.balance(for: accounts).isZero {
-            EmptyView()
-        } else {
-            VStack {
-                let sorted = repo.groupByCategory(accounts).sorted { $0.key.localizedCategory < $1.key.localizedCategory }
-                ForEach(sorted, id: \.key) { cat, catAccounts in
-                    HStack {
-                        HStack(spacing: 8) {
-                            Circle().fill(cat.color).frame(width: 10, height: 10)
-                            Text(cat.localizedName).minimumScaleFactor(0.5)
-                        }
-                        Spacer()
-                        Text(repo.balance(for: catAccounts).toString)
-                            .minimumScaleFactor(0.5)
+        VStack {
+            let sorted = repo.groupByCategory(accounts).sorted { $0.key.localizedCategory < $1.key.localizedCategory }
+            ForEach(sorted, id: \.key) { cat, catAccounts in
+                HStack {
+                    HStack(spacing: 8) {
+                        Circle().fill(cat.color).frame(width: 10, height: 10)
+                        Text(cat.localizedName).minimumScaleFactor(0.5)
                     }
+                    Spacer()
+                    Text(repo.balance(for: catAccounts).toString)
+                        .minimumScaleFactor(0.5)
                 }
             }
-            .padding()
         }
+        .padding()
     }
 }
 

@@ -15,6 +15,7 @@ struct WatchMainView: View {
                 BanksWidgetView()
                 CategoriesWidgetView()
                 PieChartWidgetView()
+                TotalChartWidgetView()
             }
         }
         .tabViewStyle(.verticalPage)
