@@ -67,11 +67,11 @@ struct AccountDetailView: View {
                         if let snaps = account.balances, !snaps.isEmpty {
                             NavigationLink {
                                 VStack {
-                                    TotalChartView(snapshots: $snapshots)
+                                    TotalChartView(snapshots: snapshots)
                                     Spacer()
                                 }
                             } label: {
-                                DashboardTotalChartView(snapshots: $snapshots)
+                                DashboardTotalChartView(snapshots: snapshots)
                             }
                             List {
                                 ForEach(snaps.sorted(by: { $0.date > $1.date })) { snap in
@@ -131,7 +131,7 @@ struct AccountDetailView: View {
             .sheet(isPresented: $showingAddSnapshot) {
                 AddBalanceView(account: account)
             }
-            .onChange(of: account) {
+            .onChange(of: account.balances) {
                 snapshots = account.balances ?? []
             }
             .onAppear {

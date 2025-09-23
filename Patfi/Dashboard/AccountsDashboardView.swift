@@ -10,9 +10,9 @@ struct AccountsDashboardView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
+    @Query(sort: \BalanceSnapshot.date, order: .forward) private var snapshots: [BalanceSnapshot]
     @State private var showingAddAccount = false
     @State private var selectedChart = 0
-    @State private var snapshots: [BalanceSnapshot] = []
     
     let repo = BalanceRepository()
     
@@ -39,11 +39,11 @@ struct AccountsDashboardView: View {
                             Section {
                                 NavigationLink {
                                     VStack {
-                                        TotalChartView(snapshots: $snapshots)
+                                        TotalChartView(snapshots: snapshots)
                                         Spacer()
                                     }
                                 } label: {
-                                    DashboardTotalChartView(snapshots: $snapshots)
+                                    DashboardTotalChartView(snapshots: snapshots)
                                 }
                             }
                         }
@@ -164,12 +164,6 @@ struct AccountsDashboardView: View {
         .onChange(of: scenePhase) { old, newPhase in
             print("ℹ️ \(scenePhase)")
             repo.update(accounts: accounts)
-        }
-        .onChange(of: accounts) {
-            snapshots = repo.snapshots(for: accounts)
-        }
-        .onAppear {
-            snapshots = repo.snapshots(for: accounts)
         }
     }
     

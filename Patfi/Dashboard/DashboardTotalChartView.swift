@@ -4,7 +4,7 @@ import Charts
 
 struct DashboardTotalChartView: View {
     
-    @Binding var snapshots: [BalanceSnapshot]
+    let snapshots: [BalanceSnapshot]
 
     let repo = BalanceRepository()
 
@@ -68,6 +68,6 @@ struct DashboardTotalChartView: View {
 }
 
 #Preview {
-    DashboardTotalChartView(snapshots: .constant([]))
+    DashboardTotalChartView(snapshots: [])
         .modelContainer(for: [Account.self, BalanceSnapshot.self], inMemory: true)
 }
