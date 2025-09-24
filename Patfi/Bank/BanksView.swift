@@ -30,8 +30,16 @@ struct BanksView: View {
                             selectedBank = bank
                             dismiss()
                         }) {
-                            BankRow(bank: bank)
-                                .contentShape(Rectangle())
+                            HStack {
+                                BankRow(bank: bank)
+                                Spacer()
+                                if selectedBank == bank {
+                                    Image(systemName: "checkmark")
+                                        .bold()
+                                        .foregroundColor(.primary)
+                                }
+                            }
+                            .contentShape(Rectangle())
                         }
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button(role: .destructive) {
@@ -62,6 +70,8 @@ struct BanksView: View {
                             }
                         }
                     }
+                    .listRowSeparator(.hidden)
+                    Text("tipBankDescription").foregroundStyle(.tertiary).italic()
                 }
                 .id(refreshID)
                 .popoverTip(bankTip, arrowEdge: .trailing)

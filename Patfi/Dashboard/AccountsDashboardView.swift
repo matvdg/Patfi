@@ -66,7 +66,7 @@ struct AccountsDashboardView: View {
                             ForEach(Array(groups), id: \.key) { (category, items) in
                                 Section {
                                     ForEach(items) { account in
-                                        NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
+                                        NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
                                     }
                                 } header: {
                                     HStack(spacing: 8) {
@@ -150,7 +150,7 @@ struct AccountsDashboardView: View {
                             ForEach(Array(groups), id: \.key) { (category, items) in
                                 Section {
                                     ForEach(items) { account in
-                                        NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
+                                        NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
                                     }
                                 } header: {
                                     VStack(alignment: .center, spacing: 8) {

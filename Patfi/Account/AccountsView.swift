@@ -45,7 +45,7 @@ struct AccountsView: View {
                         switch grouping {
                         case .name:
                             ForEach(accounts.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }) { account in
-                                NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
+                                NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
                             }
                         case .category:
                             let groups = repo.groupByCategory(accounts).sorted {
@@ -54,7 +54,7 @@ struct AccountsView: View {
                             ForEach(Array(groups), id: \.key) { (category, items) in
                                 Section {
                                     ForEach(items) { account in
-                                        NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
+                                        NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
                                     }
                                 } header: {
                                     VStack(alignment: .center, spacing: 8) {
@@ -82,7 +82,7 @@ struct AccountsView: View {
                                 let sortedItems = items.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
                                 Section {
                                     ForEach(sortedItems) { account in
-                                        NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account, displayBankLogo: false) }
+                                        NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account, displayBankLogo: false) }
                                     }
                                 } header: {
                                     VStack(alignment: .center, spacing: 8) {

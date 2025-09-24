@@ -9,6 +9,7 @@ struct BankRow: View {
         HStack(alignment: .center, spacing: 8) {
             if let logoImage = logoImage {
                 logoImage
+                    .renderingMode(.original)
                     .resizable()
                     .scaledToFill()
                     .frame(width: 30, height: 30)

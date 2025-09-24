@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AccountRowView: View {
+struct AccountRow: View {
     
     var account: Account
     var displayBankLogo: Bool = true
@@ -14,6 +14,7 @@ struct AccountRowView: View {
             HStack(alignment: .center, spacing: 8) {
                 if let logoImage = logoImage {
                     logoImage
+                        .renderingMode(.original)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 30, height: 30)
@@ -61,14 +62,14 @@ struct AccountRowView: View {
 
 #Preview {
     VStack {
-        AccountRowView(account: Account(name: "CAV", category: .current, bank: Bank(name: "Revolut", color: .blue)))
-        AccountRowView(account: Account(name: "GGPlanet", category: .lifeInsurance, bank: Bank(name: "GreenGot", color: .green)))
-        AccountRowView(account: Account(name: "Crypto", category: .crypto, bank: Bank(name: "TradeRepublic", color: .gray)))
-        AccountRowView(account: Account(name: "LA", category: .savings, bank: Bank(name: "BoursoBank", color: .purple)))
+        AccountRow(account: Account(name: "CAV", category: .current, bank: Bank(name: "Revolut", color: .blue)))
+        AccountRow(account: Account(name: "GGPlanet", category: .lifeInsurance, bank: Bank(name: "GreenGot", color: .green)))
+        AccountRow(account: Account(name: "Crypto", category: .crypto, bank: Bank(name: "TradeRepublic", color: .gray)))
+        AccountRow(account: Account(name: "LA", category: .savings, bank: Bank(name: "BoursoBank", color: .purple)))
         Divider()
-        AccountRowView(account: Account(name: "CAV", category: .current, bank: Bank(name: "Revolut", color: .blue)), displayBankLogo: false)
-        AccountRowView(account: Account(name: "GGPlanet", category: .lifeInsurance, bank: Bank(name: "GreenGot", color: .green)), displayBankLogo: false)
-        AccountRowView(account: Account(name: "Crypto", category: .crypto, bank: Bank(name: "TradeRepublic", color: .gray)), displayBankLogo: false)
-        AccountRowView(account: Account(name: "LA", category: .savings, bank: Bank(name: "BoursoBank", color: .purple)), displayBankLogo: false)
+        AccountRow(account: Account(name: "CAV", category: .current, bank: Bank(name: "Revolut", color: .blue)), displayBankLogo: false)
+        AccountRow(account: Account(name: "GGPlanet", category: .lifeInsurance, bank: Bank(name: "GreenGot", color: .green)), displayBankLogo: false)
+        AccountRow(account: Account(name: "Crypto", category: .crypto, bank: Bank(name: "TradeRepublic", color: .gray)), displayBankLogo: false)
+        AccountRow(account: Account(name: "LA", category: .savings, bank: Bank(name: "BoursoBank", color: .purple)), displayBankLogo: false)
     }.padding(20)
 }
