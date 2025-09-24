@@ -12,6 +12,7 @@ struct BankRow: View {
                     .resizable()
                     .scaledToFill()
                     .frame(width: 30, height: 30)
+                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
             } else {
                 ZStack {
                     Circle()
@@ -37,4 +38,17 @@ struct BankRow: View {
 #Preview {
     BankRow()
     BankRow(bank: Bank(name: "BoursoBank", color: .purple))
+    BankRow(bank: Bank(name: "GreenGot", color: .green))
+    BankRow(bank: Bank(name: "BNP Paribas", color: .green))
+    BankRow(bank: Bank(name: "Crypto", color: .blue))
+    BankRow(bank: Bank(name: "Trade Republic", color: .gray))
+    BankRow(bank: Bank(name: "Revolut", color: .yellow))
+    BankRow(bank: Bank(name: "La Banque Postale", color: .yellow))
+    BankRow(bank: Bank(name: "Société Générale", color: .red))
+    BankRow(bank: Bank(name: "Caisse d'Epargne", color: .red))
+    BankRow(bank: Bank(name: "Banque populaire", color: .blue))
+    BankRow(bank: Bank(name: "CIC", color: .green))
+    BankRow(bank: Bank(name: "Crédit mutuel", color: .red))
+    BankRow(bank: Bank(name: "N26", color: .green))
 }
+

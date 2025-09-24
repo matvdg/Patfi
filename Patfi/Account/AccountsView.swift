@@ -57,12 +57,21 @@ struct AccountsView: View {
                                         NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
                                     }
                                 } header: {
-                                    HStack(spacing: 8) {
-                                        Circle().fill(category.color).frame(width: 10, height: 10)
-                                        Text(category.localizedName)
+                                    VStack(alignment: .center, spacing: 8) {
                                         Spacer()
-                                        Text(repo.balance(for: items).toString)
+                                        HStack(spacing: 8) {
+                                            Circle().fill(category.color).frame(width: 10, height: 10)
+                                            Text(category.localizedName)
+                                            Spacer()
+                                            Text(repo.balance(for: items).toString)
+                                        }
+                                        #if os(macOS)
+                                        .padding(.vertical, 8)
+                                        #endif
                                     }
+                                    #if os(macOS)
+                                    .frame(height: 50)
+                                    #endif
                                 }
                             }
                         case .bank:
@@ -76,11 +85,20 @@ struct AccountsView: View {
                                         NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account, displayBankLogo: false) }
                                     }
                                 } header: {
-                                    HStack {
-                                        BankRow(bank: bank)
+                                    VStack(alignment: .center, spacing: 8) {
                                         Spacer()
-                                        Text(repo.balance(for: sortedItems).toString)
+                                        HStack {
+                                            BankRow(bank: bank)
+                                            Spacer()
+                                            Text(repo.balance(for: sortedItems).toString)
+                                        }
+                                        #if os(macOS)
+                                        .padding(.vertical, 8)
+                                        #endif
                                     }
+                                    #if os(macOS)
+                                    .frame(height: 50)
+                                    #endif
                                 }
                             }
                         }

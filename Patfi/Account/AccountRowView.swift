@@ -17,6 +17,7 @@ struct AccountRowView: View {
                         .resizable()
                         .scaledToFill()
                         .frame(width: 30, height: 30)
+                        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                 } else {
                     ZStack {
                         Circle()
@@ -45,7 +46,7 @@ struct AccountRowView: View {
             HStack {
                 Circle()
                     .fill(Color(account.category.color))
-                    .frame(width: 20, height: 20)
+                    .frame(width: 10, height: 10)
                 Text(account.name)
                     .font(.headline)
                     .foregroundColor(.primary)

@@ -18,7 +18,6 @@ struct AccountsDashboardView: View {
     
     var body: some View {
         
-        
         NavigationStack {
 #if os(iOS) || os(tvOS)
             ZStack(alignment: .bottomTrailing) {
@@ -43,7 +42,11 @@ struct AccountsDashboardView: View {
                                         Spacer()
                                     }
                                 } label: {
-                                    DashboardTotalChartView(snapshots: snapshots)
+                                    VStack(alignment: .center, spacing: 20) {
+                                        DashboardTotalChartView(snapshots: snapshots)
+                                            .frame(height: 300)
+                                        Spacer()
+                                    }
                                 }
                             }
                         }
@@ -74,11 +77,13 @@ struct AccountsDashboardView: View {
                                     }
                                 }
                             }
+                            Color.clear
+                                .frame(height: 100)
+                                .listRowBackground(Color.clear)
                         }
-                        .listStyle(.plain)
+                        .listStyle(.sidebar)
                     }
                 }
-                .padding()
                 .ignoresSafeArea(edges: .bottom)
                 
                 Button(action: { showingAddAccount = true }) {
@@ -131,7 +136,7 @@ struct AccountsDashboardView: View {
                         if selectedChart == 0 {
                             PieChartView()
                         } else {
-                            TotalChartView(snapshots: $snapshots)
+                            TotalChartView(snapshots: snapshots)
                         }
                     }
                     
@@ -139,8 +144,31 @@ struct AccountsDashboardView: View {
                         ContentUnavailableView("No accounts", systemImage: "creditcard")
                     } else {
                         List {
-                            ForEach(accounts.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }) { account in
-                                NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
+                            let groups = repo.groupByCategory(accounts).sorted {
+                                $0.key.localizedCategory < $1.key.localizedCategory
+                            }
+                            ForEach(Array(groups), id: \.key) { (category, items) in
+                                Section {
+                                    ForEach(items) { account in
+                                        NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
+                                    }
+                                } header: {
+                                    VStack(alignment: .center, spacing: 8) {
+                                        Spacer()
+                                        HStack(spacing: 8) {
+                                            Circle().fill(category.color).frame(width: 10, height: 10)
+                                            Text(category.localizedName)
+                                            Spacer()
+                                            Text(repo.balance(for: items).toString)
+                                        }
+                                        #if os(macOS)
+                                        .padding(.vertical, 8)
+                                        #endif
+                                    }
+                                    #if os(macOS)
+                                    .frame(height: 50)
+                                    #endif
+                                }
                             }
                         }
                         .listStyle(.plain)

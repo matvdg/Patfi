@@ -38,7 +38,7 @@ struct PieChartView: View {
         let slices = allSlices.filter { grouping != .categories || $0.label != Category.loan.localizedCategory }
         let total = repo.balance(for: accounts)
 
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .center, spacing: 20) {
             // Segmented control
             Picker("", selection: $grouping) {
                 ForEach(Grouping.allCases) { g in

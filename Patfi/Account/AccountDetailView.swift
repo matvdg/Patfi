@@ -63,7 +63,7 @@ struct AccountDetailView: View {
                     }
                     
                     // MARK: - Balances timeline
-                    Section {
+                    Section("Balances") {
                         if let snaps = account.balances, !snaps.isEmpty {
                             NavigationLink {
                                 VStack {
@@ -72,40 +72,37 @@ struct AccountDetailView: View {
                                 }
                             } label: {
                                 DashboardTotalChartView(snapshots: snapshots)
+                                    .frame(height: 150)
                             }
-                            List {
-                                ForEach(snaps.sorted(by: { $0.date > $1.date })) { snap in
-                                    HStack {
-                                        Text(snap.date.toString)
-                                        Spacer()
-                                        Text(snap.balance.toString)
-                                            .monospacedDigit()
-                                    }
-                                    .swipeActions(edge: .trailing) {
-                                        Button(role: .destructive) {
-                                            deleteSnapshot(snap)
-                                        } label: { Label("Delete", systemImage: "trash") }
-                                    }
-                                    .contextMenu {
-                                        Button(role: .destructive) {
-                                            deleteSnapshot(snap)
-                                        } label: {
-                                            Label("Delete", systemImage: "trash")
-                                        }
+                            ForEach(snaps.sorted(by: { $0.date > $1.date })) { snap in
+                                HStack {
+                                    Text(snap.date.toString)
+                                    Spacer()
+                                    Text(snap.balance.toString)
+                                        .monospacedDigit()
+                                }
+                                .swipeActions(edge: .trailing) {
+                                    Button(role: .destructive) {
+                                        deleteSnapshot(snap)
+                                    } label: { Label("Delete", systemImage: "trash") }
+                                }
+                                .contextMenu {
+                                    Button(role: .destructive) {
+                                        deleteSnapshot(snap)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
                                     }
                                 }
                             }
+                            
                         } else {
                             ContentUnavailableView("No snapshots", systemImage: "clock.arrow.circlepath", description: Text("AddBalance"))
                         }
-                    } header: {
-                        Text("Balances")
-                    } footer: {
-                        if let last = account.balances?.max(by: { $0.date < $1.date }) {
-                            Text("Latest: \(last.date.toString) – \(last.balance.toString)")
-                        }
                     }
                     .padding(.all)
+                    Color.clear
+                        .frame(height: 100)
+                        .listRowBackground(Color.clear)
                 }
                 #if os(macOS)
                 .padding(.all)
