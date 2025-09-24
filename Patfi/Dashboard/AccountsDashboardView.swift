@@ -57,8 +57,22 @@ struct AccountsDashboardView: View {
                         ContentUnavailableView("No accounts", systemImage: "creditcard")
                     } else {
                         List {
-                            ForEach(accounts.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }) { account in
-                                NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
+                            let groups = repo.groupByCategory(accounts).sorted {
+                                $0.key.localizedCategory < $1.key.localizedCategory
+                            }
+                            ForEach(Array(groups), id: \.key) { (category, items) in
+                                Section {
+                                    ForEach(items) { account in
+                                        NavigationLink { AccountDetailView(account: account) } label: { AccountRowView(account: account) }
+                                    }
+                                } header: {
+                                    HStack(spacing: 8) {
+                                        Circle().fill(category.color).frame(width: 10, height: 10)
+                                        Text(category.localizedName)
+                                        Spacer()
+                                        Text(repo.balance(for: items).toString)
+                                    }
+                                }
                             }
                         }
                         .listStyle(.plain)
