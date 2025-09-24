@@ -90,6 +90,7 @@ struct TotalBalanceWidgetEntryView : View {
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 14, height: 14)
+                                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                         } else {
                             ZStack {
                                 Circle()
@@ -178,6 +179,7 @@ struct TotalBalanceWidgetEntryView : View {
                                     .resizable()
                                     .scaledToFill()
                                     .frame(width: 14, height: 14)
+                                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                             } else {
                                 ZStack {
                                     Circle()
