@@ -15,6 +15,7 @@ struct HomeView: View {
     @State private var selectedChart = 0
     @State var pieChartMode: PieChartView.Mode = .categories
     @State var totalChartPeriod: Period = .months
+    @State private var isGraphHidden = false
     
     let repo = BalanceRepository()
         
@@ -65,13 +66,18 @@ struct HomeView: View {
                         .controlSize(.extraLarge)
                         .frame(width: 100)
                     }
-                    if selectedChart == 0 {
-                        PieChartView(grouping: $pieChartMode)
-                    } else {
-                        TotalChartView(snapshots: snapshots, period: $totalChartPeriod)
-                            .frame(maxHeight: .infinity)
+                    Group {
+                        if selectedChart == 0 {
+                            PieChartView(grouping: $pieChartMode)
+                        } else {
+                            TotalChartView(snapshots: snapshots, period: $totalChartPeriod)
+                                .frame(maxHeight: .infinity)
+                        }
                     }
+                    .frame(height: isGraphHidden ? 0 : nil)
+                    .opacity(isGraphHidden ? 0 : 1)
                     if !isLandscape {
+                        ArrowButton(isUp: $isGraphHidden)
                         List {
                             if selectedChart == 0 {
                                 switch pieChartMode {
@@ -183,6 +189,7 @@ struct HomeView: View {
                 AddAccountView()
             }
             .navigationTitle("Patfi")
+            
             #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
