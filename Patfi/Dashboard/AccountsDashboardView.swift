@@ -13,8 +13,16 @@ struct AccountsDashboardView: View {
     @Query(sort: \BalanceSnapshot.date, order: .forward) private var snapshots: [BalanceSnapshot]
     @State private var showingAddAccount = false
     @State private var selectedChart = 0
-    
+
     let repo = BalanceRepository()
+    
+    private var totalBalance: Double {
+        repo.balance(for: accounts)
+    }
+
+    private var groupedAccounts: [Dictionary<Category, [Account]>.Element] {
+        Array(repo.groupByCategory(accounts).sorted { $0.key.localizedCategory < $1.key.localizedCategory })
+    }
     
     var body: some View {
         
@@ -22,7 +30,7 @@ struct AccountsDashboardView: View {
 #if os(iOS) || os(tvOS)
             ZStack(alignment: .bottomTrailing) {
                 VStack(alignment: .leading) {
-                    if !repo.balance(for: accounts).isZero {
+                    if !totalBalance.isZero {
                         let dashboardTip = DashboardTip()
                         TabView {
                             Section {
@@ -60,10 +68,7 @@ struct AccountsDashboardView: View {
                         ContentUnavailableView("No accounts", systemImage: "creditcard")
                     } else {
                         List {
-                            let groups = repo.groupByCategory(accounts).sorted {
-                                $0.key.localizedCategory < $1.key.localizedCategory
-                            }
-                            ForEach(Array(groups), id: \.key) { (category, items) in
+                            ForEach(groupedAccounts, id: \.key) { (category, items) in
                                 Section {
                                     ForEach(items) { account in
                                         NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
@@ -125,7 +130,7 @@ struct AccountsDashboardView: View {
 #else
             ZStack(alignment: .bottomTrailing) {
                 VStack(alignment: .center) {
-                    if !repo.balance(for: accounts).isZero {
+                    if !totalBalance.isZero {
                         Picker("", selection: $selectedChart) {
                             Text(selectedChart == 0 ? "􀜋 \(String(localized: "Distribution"))" : "􀑀 \(String(localized: "Distribution"))").tag(0)
                             Text(selectedChart == 1 ? "􀐿 \(String(localized: "Monitoring"))" : "􀐾 \(String(localized: "Monitoring"))").tag(1)
@@ -144,10 +149,7 @@ struct AccountsDashboardView: View {
                         ContentUnavailableView("No accounts", systemImage: "creditcard")
                     } else {
                         List {
-                            let groups = repo.groupByCategory(accounts).sorted {
-                                $0.key.localizedCategory < $1.key.localizedCategory
-                            }
-                            ForEach(Array(groups), id: \.key) { (category, items) in
+                            ForEach(groupedAccounts, id: \.key) { (category, items) in
                                 Section {
                                     ForEach(items) { account in
                                         NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
@@ -208,9 +210,6 @@ struct AccountsDashboardView: View {
             repo.update(accounts: accounts)
         }
     }
-    
-    
-    
 }
 
 #Preview {

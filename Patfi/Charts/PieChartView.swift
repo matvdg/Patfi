@@ -24,13 +24,21 @@ struct PieChartView: View {
     private var allSlices: [Slice] {
         switch grouping {
         case .categories:
-            return repo.groupByCategory(accounts).map { cat, accounts in
-                Slice(label: cat.localizedCategory, color: cat.color, total: repo.balance(for: accounts))
-            }
+            return repo.groupByCategory(accounts)
+                .map { cat, accounts in
+                    Slice(label: cat.localizedCategory, color: cat.color, total: repo.balance(for: accounts))
+                }
+                .sorted {
+                    $0.total > $1.total
+                }
         case .banks:
-            return repo.groupByBank(accounts).map { bank, accounts in
-                Slice(label: bank.name, color: bank.swiftUIColor, total: repo.balance(for: accounts))
-            }
+            return repo.groupByBank(accounts)
+                .map { bank, accounts in
+                    Slice(label: bank.name, color: bank.swiftUIColor, total: repo.balance(for: accounts))
+                }
+                .sorted {
+                    $0.total > $1.total
+                }
         }
     }
 
