@@ -124,28 +124,32 @@ struct HomeView: View {
                                     }
                                 }
                             } else {
-                                ForEach(balancesByPeriod) { point in
+                                ForEach(balancesByPeriod.enumerated(), id: \.element.id) { index, point in
                                     HStack {
-                                        switch totalChartPeriod {
-                                        case .days:
-                                            Text(point.date.toString)
-                                        case .weeks:
-                                            let weekOfYear = Calendar.current.component(.weekOfYear, from: point.date)
-                                            HStack {
-                                                Text("W\(weekOfYear)")
-                                                Text("•  \(point.date.toString)")
-                                            }
-                                        case .months:
-                                            let month = Calendar.current.component(.month, from: point.date)
-                                            HStack {
-                                                Text("\(month)")
-                                                Text("•  \(point.date.toString)")
-                                            }
-                                        case .years:
-                                            let year = Calendar.current.component(.year, from: point.date)
-                                            HStack {
-                                                Text(String(format: "%02d", year % 100))
-                                                Text("•  \(point.date.toString)")
+                                        if index == 0 {
+                                            Text("Now")
+                                        } else {
+                                            switch totalChartPeriod {
+                                            case .days:
+                                                Text(point.date.toString)
+                                            case .weeks:
+                                                let weekOfYear = Calendar.current.component(.weekOfYear, from: point.date)
+                                                HStack {
+                                                    Text("W\(weekOfYear)")
+                                                    Text("•  \(point.date.toString)")
+                                                }
+                                            case .months:
+                                                let month = Calendar.current.component(.month, from: point.date)
+                                                HStack {
+                                                    Text("\(month)")
+                                                    Text("•  \(point.date.toString)")
+                                                }
+                                            case .years:
+                                                let year = Calendar.current.component(.year, from: point.date)
+                                                HStack {
+                                                    Text(String(format: "%02d", year % 100))
+                                                    Text("•  \(point.date.toString)")
+                                                }
                                             }
                                         }
                                         Spacer()
