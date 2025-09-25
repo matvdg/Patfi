@@ -14,4 +14,5 @@ Are you looking for a simple app to track all your accounts in your different ba
 - Synchronization of your data on your iCloud (secure and encrypted) through your devices (iPhone/iPad/Mac/Vision Pro)
 
 **Feedbacks / feature request / bug report:**
+
 Feel free to create an issue on GitHub or contact me: matvdg@me.com 
