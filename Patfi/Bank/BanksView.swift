@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-import TipKit
 
 struct BanksView: View {
     
@@ -23,7 +22,6 @@ struct BanksView: View {
                 )
                 .padding()
             } else {
-                let bankTip = BankTip()
                 List {
                     ForEach(banks) { bank in
                         Button(action: {
@@ -44,13 +42,11 @@ struct BanksView: View {
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button(role: .destructive) {
                                 deleteBank(bank)
-                                bankTip.invalidate(reason: .actionPerformed)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
                             Button(role: .confirm) {
                                 bankToModify = bank
-                                bankTip.invalidate(reason: .actionPerformed)
                             } label: {
                                 Label("Edit", systemImage: "pencil")
                             }
@@ -58,13 +54,11 @@ struct BanksView: View {
                         .contextMenu {
                             Button(role: .destructive) {
                                 deleteBank(bank)
-                                bankTip.invalidate(reason: .actionPerformed)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
                             Button(role: .confirm) {
                                 bankToModify = bank
-                                bankTip.invalidate(reason: .actionPerformed)
                             } label: {
                                 Label("Edit", systemImage: "pencil")
                             }
@@ -74,7 +68,6 @@ struct BanksView: View {
                     Text("tipBankDescription").foregroundStyle(.tertiary).italic()
                 }
                 .id(refreshID)
-                .popoverTip(bankTip, arrowEdge: .trailing)
 #if os(iOS) || os(tvOS) || os(visionOS)
                 .listStyle(.insetGrouped)
 #endif
@@ -116,23 +109,4 @@ struct BanksView: View {
 
 #Preview {
     BanksView(selectedBank: .constant(nil))
-}
-
-struct BankTip: Tip {
-    
-    var title: Text {
-        Text("tipBankTitle")
-    }
-    
-    var message: Text? {
-        Text("tipBankDescription")
-    }
-    
-    var image: Image? {
-        Image(systemName: "trash")
-    }
-    
-    var options: [Option] {
-        MaxDisplayCount(3)
-    }
 }

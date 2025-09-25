@@ -1,4 +1,3 @@
-import TipKit
 import SwiftUI
 import SwiftData
 
@@ -8,10 +7,7 @@ struct PatfiApp: App {
     var body: some Scene {
         
         WindowGroup {
-            AccountsDashboardView()
-                .onAppear {
-                    try? Tips.configure()
-                }
+            HomeView()
         }
         .modelContainer(sharedContainer)
     }

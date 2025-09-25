@@ -46,7 +46,7 @@ struct AccountRow: View {
         } else {
             HStack {
                 Circle()
-                    .fill(Color(account.category.color))
+                    .fill(Color(account.bank?.swiftUIColor ?? .gray))
                     .frame(width: 10, height: 10)
                 Text(account.name)
                     .font(.headline)

@@ -8,7 +8,7 @@ struct PieChartView: View {
 
     private let repo = BalanceRepository()
 
-    private enum Grouping: String, CaseIterable, Identifiable {
+    enum Mode: String, CaseIterable, Identifiable {
         case categories, banks
         var id: String { rawValue }
         var title: LocalizedStringResource {
@@ -19,7 +19,7 @@ struct PieChartView: View {
         }
     }
 
-    @State private var grouping: Grouping = .categories
+    @Binding var grouping: Mode
 
     private var allSlices: [Slice] {
         switch grouping {
@@ -49,13 +49,11 @@ struct PieChartView: View {
         VStack(alignment: .center, spacing: 20) {
             // Segmented control
             Picker("", selection: $grouping) {
-                ForEach(Grouping.allCases) { g in
+                ForEach(Mode.allCases) { g in
                     Text(g.title).tag(g)
                 }
             }
             .pickerStyle(.segmented)
-
-            Spacer()
             
             if slices.isEmpty || total <= 0 {
                 ContentUnavailableView(
@@ -95,23 +93,6 @@ struct PieChartView: View {
                             .multilineTextAlignment(.center)
                     }
                 }
-                
-                Spacer()
-                
-                // Summary list below the chart
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(allSlices) { s in
-                        HStack(spacing: 12) {
-                            Circle().fill(s.color).frame(width: 10, height: 10)
-                            Text(s.label)
-                            Spacer()
-                            Text(s.total.toString).monospacedDigit()
-                        }
-                    }
-                }
-
-                Spacer()
-                
             }
         }
         .padding()
@@ -127,6 +108,6 @@ struct PieChartView: View {
 }
 
 #Preview {
-    PieChartView()
+    PieChartView(grouping: Binding<PieChartView.Mode>(projectedValue: .constant(.banks)))
         .modelContainer(for: [Account.self, BalanceSnapshot.self, Bank.self], inMemory: true)
 }

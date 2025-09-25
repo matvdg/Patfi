@@ -6,7 +6,7 @@ struct TotalChartView: View {
     
     let snapshots: [BalanceSnapshot]
 
-    @State private var period: Period = .months
+    @Binding var period: Period
     let repo = BalanceRepository()
 
     var body: some View {
@@ -92,6 +92,6 @@ struct TotalChartView: View {
 }
 
 #Preview {
-    TotalChartView(snapshots: [])
+    TotalChartView(snapshots: [], period: Binding<Period>(projectedValue: .constant(.months)))
         .modelContainer(for: [Account.self, BalanceSnapshot.self], inMemory: true)
 }
