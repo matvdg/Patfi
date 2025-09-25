@@ -21,20 +21,6 @@
                ReferencedContainer = "container:Patfi.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F6FEFAD82E7D7BE200E5FBB0"
-               BuildableName = "PatfiWatch Watch App.app"
-               BlueprintName = "PatfiWatch Watch App"
-               ReferencedContainer = "container:Patfi.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

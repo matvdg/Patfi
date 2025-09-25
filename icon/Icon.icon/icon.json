@@ -1,5 +1,7 @@
 {
-  "fill" : "system-light",
+  "fill" : {
+    "automatic-gradient" : "extended-srgb:0.00000,0.53333,1.00000,1.00000"
+  },
   "groups" : [
     {
       "blur-material" : null,
@@ -32,7 +34,7 @@
             }
           ],
           "glass" : true,
-          "hidden" : false,
+          "hidden" : true,
           "image-name" : "Arrow.svg",
           "name" : "Arrow"
         }

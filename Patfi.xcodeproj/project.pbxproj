@@ -40,7 +40,6 @@
 /* Begin PBXFileReference section */
 		F60DBEBF2E69FD3300ED214A /* Patfi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Patfi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F63DB5A72E799D1100688CC7 /* TotalBalanceWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TotalBalanceWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		F63DB5B92E79A76800688CC7 /* TotalBalanceWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TotalBalanceWidgetExtension.entitlements; sourceTree = "<group>"; };
 		F6A8107C2E797CEF00BD327E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F6A810842E79815C00BD327E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		F6A810862E79815C00BD327E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -134,7 +133,6 @@
 			isa = PBXGroup;
 			children = (
 				F69AC0792E7D5449009846BB /* Shared */,
-				F63DB5B92E79A76800688CC7 /* TotalBalanceWidgetExtension.entitlements */,
 				F6A8107C2E797CEF00BD327E /* README.md */,
 				F60DBEC12E69FD3300ED214A /* Patfi */,
 				F63DB5AA2E799D1100688CC7 /* TotalBalanceWidget */,
@@ -579,7 +577,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = TotalBalanceWidgetExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = TotalBalanceWidget/TotalBalanceWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
@@ -623,7 +621,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = TotalBalanceWidgetExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = TotalBalanceWidget/TotalBalanceWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
