@@ -13,3 +13,5 @@ Are you looking for a simple app to track all your accounts in your different ba
 - Ultra-light cross-platform app & widgets in SwiftUI multiplatform (iOS 26 / iPadOS 26 / macOS 26 / visionOS 26 / watchOS 26) with LiquidGlass
 - Synchronization of your data on your iCloud (secure and encrypted) through your devices (iPhone/iPad/Mac/Vision Pro)
 
+**Feedbacks / feature request / bug report:**
+Feel free to create an issue on GitHub or contact me: matvdg@me.com 
