@@ -7,7 +7,7 @@ struct AccountDetailView: View {
     
     @Bindable var account: Account
     
-    @State private var showingAddSnapshot = false
+    @State private var showAddSnapshot = false
     @State private var showDeleteAccountConfirm = false
     @State private var snapshots: [BalanceSnapshot] = []
     @State private var period: Period = .months
@@ -109,7 +109,7 @@ struct AccountDetailView: View {
 #endif
             .navigationTitle(account.name.isEmpty ? String(localized: "Account") : account.name)
             Button(action: {
-                showingAddSnapshot = true
+                showAddSnapshot = true
             }, label: {
                 Label("Add balance", systemImage: "plus")
 #if os(iOS) || os(tvOS) || os(visionOS)
@@ -124,7 +124,7 @@ struct AccountDetailView: View {
 #endif
             })
             .padding(20)
-            .sheet(isPresented: $showingAddSnapshot) {
+            .sheet(isPresented: $showAddSnapshot) {
                 AddBalanceView(account: account)
             }
             .onChange(of: account.balances) {
