@@ -68,6 +68,14 @@
 			);
 			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
 		};
+		F6EF52A82E8610F800C45AF2 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Banks.xcassets,
+				Icon.icon,
+			);
+			target = F6FEFAD82E7D7BE200E5FBB0 /* PatfiWatch Watch App */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -91,6 +99,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				F69CAE972E7F053F00627394 /* Exceptions for "Shared" folder in "TotalBalanceWidgetExtension" target */,
+				F6EF52A82E8610F800C45AF2 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */,
 			);
 			path = Shared;
 			sourceTree = "<group>";

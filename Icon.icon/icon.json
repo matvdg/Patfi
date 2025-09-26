@@ -64,7 +64,7 @@
             }
           ],
           "glass" : true,
-          "hidden" : true,
+          "hidden" : false,
           "image-name" : "Chart 2.svg",
           "name" : "Chart"
         }
