@@ -15,9 +15,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F6FEFAD82E7D7BE200E5FBB0"
-               BuildableName = "PatfiWatch Watch App.app"
-               BlueprintName = "PatfiWatch Watch App"
+               BlueprintIdentifier = "F6EF52AF2E8617B900C45AF2"
+               BuildableName = "Patfi Watch Watch App.app"
+               BlueprintName = "Patfi Watch Watch App"
+               ReferencedContainer = "container:Patfi.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "F6EF52AA2E8617B900C45AF2"
+               BuildableName = "Patfi Watch.app"
+               BlueprintName = "Patfi Watch"
                ReferencedContainer = "container:Patfi.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -44,9 +58,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F6FEFAD82E7D7BE200E5FBB0"
-            BuildableName = "PatfiWatch Watch App.app"
-            BlueprintName = "PatfiWatch Watch App"
+            BlueprintIdentifier = "F6EF52AF2E8617B900C45AF2"
+            BuildableName = "Patfi Watch Watch App.app"
+            BlueprintName = "Patfi Watch Watch App"
             ReferencedContainer = "container:Patfi.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -61,9 +75,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F6FEFAD82E7D7BE200E5FBB0"
-            BuildableName = "PatfiWatch Watch App.app"
-            BlueprintName = "PatfiWatch Watch App"
+            BlueprintIdentifier = "F6EF52AF2E8617B900C45AF2"
+            BuildableName = "Patfi Watch Watch App.app"
+            BlueprintName = "Patfi Watch Watch App"
             ReferencedContainer = "container:Patfi.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
