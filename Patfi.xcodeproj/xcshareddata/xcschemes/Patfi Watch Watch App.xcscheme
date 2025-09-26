@@ -15,7 +15,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F6EF52AF2E8617B900C45AF2"
+               BlueprintIdentifier = "F6EF52E92E861DE500C45AF2"
                BuildableName = "Patfi Watch Watch App.app"
                BlueprintName = "Patfi Watch Watch App"
                ReferencedContainer = "container:Patfi.xcodeproj">
@@ -29,7 +29,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F6EF52AA2E8617B900C45AF2"
+               BlueprintIdentifier = "F6EF52E42E861DE500C45AF2"
                BuildableName = "Patfi Watch.app"
                BlueprintName = "Patfi Watch"
                ReferencedContainer = "container:Patfi.xcodeproj">
@@ -58,7 +58,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F6EF52AF2E8617B900C45AF2"
+            BlueprintIdentifier = "F6EF52E92E861DE500C45AF2"
             BuildableName = "Patfi Watch Watch App.app"
             BlueprintName = "Patfi Watch Watch App"
             ReferencedContainer = "container:Patfi.xcodeproj">
@@ -75,7 +75,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F6EF52AF2E8617B900C45AF2"
+            BlueprintIdentifier = "F6EF52E92E861DE500C45AF2"
             BuildableName = "Patfi Watch Watch App.app"
             BlueprintName = "Patfi Watch Watch App"
             ReferencedContainer = "container:Patfi.xcodeproj">
