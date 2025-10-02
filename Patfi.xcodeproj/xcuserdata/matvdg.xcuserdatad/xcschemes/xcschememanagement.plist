@@ -4,15 +4,15 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Patfi Watch Watch App.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
-		</dict>
 		<key>Patfi.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+		<key>PatfiWatch Watch App.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
 		</dict>
 		<key>TotalBalanceWidgetExtension.xcscheme_^#shared#^_</key>
 		<dict>
@@ -28,6 +28,11 @@
 			<true/>
 		</dict>
 		<key>F63DB5A62E799D1100688CC7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F6B833912E8EA57C00B2AB0C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
