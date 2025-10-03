@@ -67,12 +67,28 @@ struct AccountDetailView: View {
                     if let snaps = account.balances, !snaps.isEmpty {
                         NavigationLink {
                             VStack {
+                                Picker("", selection: $period) {
+                                    ForEach(Period.allCases) { period in
+                                        Text(period.title).tag(period)
+                                    }
+                                }
+                                .pickerStyle(.segmented)
+                                .padding()
                                 TotalChartView(snapshots: snapshots, period: $period)
                                 Spacer()
                             }
                         } label: {
-                            TotalChartView(snapshots: snapshots, period: $period)
-                                .frame(height: 150)
+                            VStack {
+                                Picker("", selection: $period) {
+                                    ForEach(Period.allCases) { period in
+                                        Text(period.title).tag(period)
+                                    }
+                                }
+                                .pickerStyle(.segmented)
+                                TotalChartView(snapshots: snapshots, period: $period)
+                                    .frame(height: 150)
+                            }
+                            
                         }
                         ForEach(snaps.sorted(by: { $0.date > $1.date })) { snap in
                             HStack {

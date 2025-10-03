@@ -14,12 +14,6 @@ struct TotalChartView: View {
         let series = repo.generateSeries(for: period, from: snapshots)
 
         VStack(alignment: .center, spacing: 30) {
-            Picker("", selection: $period) {
-                ForEach(Period.allCases) { p in
-                    Text(p.title).tag(p)
-                }
-            }
-            .pickerStyle(.segmented)
 
             if series.isEmpty {
                 ContentUnavailableView(

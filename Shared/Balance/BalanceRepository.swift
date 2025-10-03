@@ -173,3 +173,14 @@ enum Period: String, CaseIterable, Identifiable {
         }
     }
 }
+
+enum Mode: String, CaseIterable, Identifiable {
+    case categories, banks
+    var id: String { rawValue }
+    var title: LocalizedStringResource {
+        switch self {
+        case .categories: return "Categories"
+        case .banks: return "Banks"
+        }
+    }
+}

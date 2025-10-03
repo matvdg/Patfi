@@ -8,17 +8,6 @@ struct PieChartView: View {
 
     private let repo = BalanceRepository()
 
-    enum Mode: String, CaseIterable, Identifiable {
-        case categories, banks
-        var id: String { rawValue }
-        var title: LocalizedStringResource {
-            switch self {
-            case .categories: return "Categories"
-            case .banks: return "Banks"
-            }
-        }
-    }
-
     @Binding var grouping: Mode
 
     private var allSlices: [Slice] {
@@ -47,13 +36,6 @@ struct PieChartView: View {
         let total = repo.balance(for: accounts)
 
         VStack(alignment: .center, spacing: 20) {
-            // Segmented control
-            Picker("", selection: $grouping) {
-                ForEach(Mode.allCases) { g in
-                    Text(g.title).tag(g)
-                }
-            }
-            .pickerStyle(.segmented)
             
             if slices.isEmpty || total <= 0 {
                 ContentUnavailableView(
@@ -108,6 +90,6 @@ struct PieChartView: View {
 }
 
 #Preview {
-    PieChartView(grouping: Binding<PieChartView.Mode>(projectedValue: .constant(.banks)))
+    PieChartView(grouping: Binding<Mode>(projectedValue: .constant(.banks)))
         .modelContainer(for: [Account.self, BalanceSnapshot.self, Bank.self], inMemory: true)
 }

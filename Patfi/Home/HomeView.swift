@@ -13,8 +13,8 @@ struct HomeView: View {
     @Query(sort: \BalanceSnapshot.date, order: .forward) private var snapshots: [BalanceSnapshot]
     @State private var showingAddAccount = false
     @State private var selectedChart = 0
-    @State var pieChartMode: PieChartView.Mode = .categories
-    @State var totalChartPeriod: Period = .months
+    @State var mode: Mode = .categories
+    @State var period: Period = .months
     @State private var isGraphHidden = false
     
     let repo = BalanceRepository()
@@ -34,7 +34,7 @@ struct HomeView: View {
     }
     
     private var balancesByPeriod: [BalanceRepository.TotalPoint] {
-        repo.generateSeries(for: totalChartPeriod, from: snapshots).sorted { $0.date > $1.date }
+        repo.generateSeries(for: period, from: snapshots).sorted { $0.date > $1.date }
     }
     
     private var isLandscape: Bool {
@@ -68,9 +68,28 @@ struct HomeView: View {
                     }
                     Group {
                         if selectedChart == 0 {
-                            PieChartView(grouping: $pieChartMode)
+                            Picker("", selection: $mode) {
+                                ForEach(Mode.allCases) { mode in
+                                    Text(mode.title).tag(mode)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .padding()
                         } else {
-                            TotalChartView(snapshots: snapshots, period: $totalChartPeriod)
+                            Picker("", selection: $period) {
+                                ForEach(Period.allCases) { period in
+                                    Text(period.title).tag(period)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .padding()
+                        }
+                    }
+                    Group {
+                        if selectedChart == 0 {
+                            PieChartView(grouping: $mode)
+                        } else {
+                            TotalChartView(snapshots: snapshots, period: $period)
                                 .frame(maxHeight: .infinity)
                         }
                     }
@@ -80,7 +99,7 @@ struct HomeView: View {
                         ArrowButton(isUp: $isGraphHidden)
                         List {
                             if selectedChart == 0 {
-                                switch pieChartMode {
+                                switch mode {
                                 case .categories:
                                     ForEach(accountsByCategory, id: \.key) { (category, items) in
                                         Section {
@@ -135,7 +154,7 @@ struct HomeView: View {
                                         if index == 0 {
                                             Text("Now")
                                         } else {
-                                            switch totalChartPeriod {
+                                            switch period {
                                             case .days:
                                                 Text(point.date.toString)
                                             case .weeks:
