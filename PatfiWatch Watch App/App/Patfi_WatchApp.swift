@@ -2,13 +2,11 @@ import SwiftUI
 import SwiftData
 
 @main
-struct PatfiApp: App {
-            
+struct PatfiWatch_Watch_AppApp: App {
     var body: some Scene {
-        
         WindowGroup {
             HomeView()
+                .modelContainer(ModelContainer.getSharedContainer())
         }
-        .modelContainer(ModelContainer.getSharedContainer())
     }
 }

@@ -12,7 +12,7 @@ struct AccountDetailView: View {
     @State private var snapshots: [BalanceSnapshot] = []
     @State private var period: Period = .months
     
-    let repo = BalanceRepository()
+    private let repo = BalanceRepository()
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {

@@ -17,7 +17,7 @@ struct HomeView: View {
     @State var period: Period = .months
     @State private var isGraphHidden = false
     
-    let repo = BalanceRepository()
+    private let repo = BalanceRepository()
         
     private var accountsByCategory: [Dictionary<Category, [Account]>.Element] {
         Array(repo.groupByCategory(accounts).sorted { $0.key.localizedCategory < $1.key.localizedCategory })

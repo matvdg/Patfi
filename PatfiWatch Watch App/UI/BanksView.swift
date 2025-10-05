@@ -1,24 +1,25 @@
 import SwiftUI
 import SwiftData
 
-struct BanksWidgetView: View {
+struct BanksView: View {
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
-    let repo = BalanceRepository()
+    private let repo = BalanceRepository()
     
     var body: some View {
         
         VStack(alignment: .leading, spacing: 4) {
             Spacer()
-            let sorted = repo.groupByBank(accounts).sorted { $0.key.name < $1.key.name }
-            ForEach(sorted, id: \.key) { bank, bankAccounts in
-                let total = repo.balance(for: bankAccounts)
+            let sorted = repo.groupByBank(accounts)
+                .map { ($0.key, repo.balance(for: $0.value))}
+                .sorted { $0.1 > $1.1 }
+            ForEach(sorted, id: \.0) { bank, total in
                 HStack {
                     BankRow(bank: bank)
-                        .minimumScaleFactor(0.3)
                     Spacer()
                     Text(total.toString)
-                        .minimumScaleFactor(0.3)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.1)
                 }
             }
             Spacer()
@@ -30,5 +31,5 @@ struct BanksWidgetView: View {
 }
 
 #Preview {
-    BanksWidgetView()
+    BanksView()
 }

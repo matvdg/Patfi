@@ -1,21 +1,22 @@
 import SwiftUI
 import SwiftData
 
-struct WatchMainView: View {
+struct HomeView: View {
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
-    let repo = BalanceRepository()
+    private let repo = BalanceRepository()
     
     var body: some View {
         TabView {
             if repo.balance(for: accounts).isZero {
-                TotalWidgetView()
+                TotalView()
             } else {
-                TotalWidgetView()
-                BanksWidgetView()
-                CategoriesWidgetView()
-                PieChartWidgetView()
-                TotalChartWidgetView()
+                TotalView()
+                AccountsView()
+                BanksView()
+                CategoriesView()
+                PieChartView()
+                TotalChartView()
             }
         }
         .tabViewStyle(.verticalPage)
@@ -23,5 +24,5 @@ struct WatchMainView: View {
 }
 
 #Preview {
-    WatchMainView()
+    HomeView()
 }

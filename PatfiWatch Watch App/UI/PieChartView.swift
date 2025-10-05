@@ -2,10 +2,10 @@ import SwiftUI
 import Charts
 import SwiftData
 
-struct PieChartWidgetView: View {
+struct PieChartView: View {
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
-    let repo = BalanceRepository()
+    private let repo = BalanceRepository()
     
     var body: some View {
         Chart {
@@ -24,5 +24,5 @@ struct PieChartWidgetView: View {
 }
 
 #Preview {
-    PieChartWidgetView()
+    PieChartView()
 }

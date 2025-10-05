@@ -7,7 +7,7 @@ struct TotalChartView: View {
     let snapshots: [BalanceSnapshot]
 
     @Binding var period: Period
-    let repo = BalanceRepository()
+    private let repo = BalanceRepository()
 
     var body: some View {
         

@@ -1,10 +1,10 @@
 import SwiftUI
 import SwiftData
 
-struct TotalWidgetView: View {
+struct TotalView: View {
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
-    let repo = BalanceRepository()
+    private let repo = BalanceRepository()
     
     var body: some View {
         VStack(alignment: .center, spacing: 10) {
@@ -26,5 +26,5 @@ struct TotalWidgetView: View {
 }
 
 #Preview {
-    TotalWidgetView()
+    TotalView()
 }

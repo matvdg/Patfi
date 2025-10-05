@@ -3,7 +3,7 @@ import SwiftData
 import SwiftUI
 
 @Model
-final class Account {
+final class Account: Identifiable {
     var name: String = ""
     var category: Category = Category.other
     

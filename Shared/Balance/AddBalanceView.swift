@@ -17,9 +17,9 @@ struct AddBalanceView: View {
             Form {
                 DatePicker("Date", selection: $date, displayedComponents: [.date])
                 TextField("Amount", text: $amountText)
-#if os(iOS) || os(tvOS) || os(visionOS)
+                    #if os(iOS) || os(tvOS) || os(visionOS)
                     .keyboardType(.decimalPad)
-#endif
+                    #endif
                     .focused($focused)
                     .onChange(of: amountText) { _, newValue in
                         let cleaned = newValue.filter { !$0.isWhitespace }
@@ -28,12 +28,16 @@ struct AddBalanceView: View {
                         }
                     }
             }
-#if os(macOS)
+            #if os(macOS)
             .padding()
-#endif
+            #endif
+            #if os(iOS) || os(tvOS) || os(visionOS)
             .navigationTitle(String(localized: "New snapshot"))
+            #endif
             .toolbar {
+                #if !os(watchOS)
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                #endif
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") { add() }
                         .disabled(Double(amountText.replacingOccurrences(of: ",", with: ".")) == nil)

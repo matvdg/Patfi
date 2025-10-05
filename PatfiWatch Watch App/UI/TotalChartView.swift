@@ -2,10 +2,10 @@ import SwiftUI
 import Charts
 import SwiftData
 
-struct TotalChartWidgetView: View {
+struct TotalChartView: View {
     
     @Query(sort: \BalanceSnapshot.date, order: .forward) private var snapshots: [BalanceSnapshot]
-    let repo = BalanceRepository()
+    private let repo = BalanceRepository()
     
     var body: some View {
         
@@ -50,5 +50,5 @@ struct TotalChartWidgetView: View {
 }
 
 #Preview {
-    TotalChartWidgetView()
+    TotalChartView()
 }
