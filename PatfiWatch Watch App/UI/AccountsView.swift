@@ -110,4 +110,5 @@ struct AccountsView: View {
 
 #Preview {
     AccountsView()
+        .modelContainer(ModelContainer.getSharedContainer())
 }

@@ -222,5 +222,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
-        .modelContainer(for: [Account.self, BalanceSnapshot.self], inMemory: true)
+        .modelContainer(ModelContainer.getSharedContainer())
 }

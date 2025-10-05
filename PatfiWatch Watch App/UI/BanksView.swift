@@ -32,4 +32,5 @@ struct BanksView: View {
 
 #Preview {
     BanksView()
+        .modelContainer(ModelContainer.getSharedContainer())
 }

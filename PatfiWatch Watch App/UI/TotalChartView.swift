@@ -51,4 +51,5 @@ struct TotalChartView: View {
 
 #Preview {
     TotalChartView()
+        .modelContainer(ModelContainer.getSharedContainer())
 }

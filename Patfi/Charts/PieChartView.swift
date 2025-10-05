@@ -91,5 +91,5 @@ struct PieChartView: View {
 
 #Preview {
     PieChartView(grouping: Binding<Mode>(projectedValue: .constant(.banks)))
-        .modelContainer(for: [Account.self, BalanceSnapshot.self, Bank.self], inMemory: true)
+        .modelContainer(ModelContainer.getSharedContainer())
 }

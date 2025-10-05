@@ -35,4 +35,5 @@ struct CategoriesView: View {
 
 #Preview {
     CategoriesView()
+        .modelContainer(ModelContainer.getSharedContainer())
 }

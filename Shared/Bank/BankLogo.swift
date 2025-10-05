@@ -103,6 +103,5 @@ struct BankLogo: View {
         BankLogo(bank: Bank(name: "Unicaja Banco", color: .green))
         BankLogo(bank: Bank(name: "Abanca", color: .blue))
         BankLogo(bank: Bank(name: "Ibercaja", color: .red))
-        BankLogo(bank: Bank(name: "Openbank", color: .pink))
     }
 }

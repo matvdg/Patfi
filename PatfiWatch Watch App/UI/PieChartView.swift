@@ -25,4 +25,5 @@ struct PieChartView: View {
 
 #Preview {
     PieChartView()
+        .modelContainer(ModelContainer.getSharedContainer())
 }

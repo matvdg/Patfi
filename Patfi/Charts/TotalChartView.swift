@@ -87,5 +87,5 @@ struct TotalChartView: View {
 
 #Preview {
     TotalChartView(snapshots: [], period: Binding<Period>(projectedValue: .constant(.months)))
-        .modelContainer(for: [Account.self, BalanceSnapshot.self], inMemory: true)
+        .modelContainer(ModelContainer.getSharedContainer())
 }

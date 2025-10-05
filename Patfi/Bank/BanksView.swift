@@ -109,4 +109,5 @@ struct BanksView: View {
 
 #Preview {
     BanksView(selectedBank: .constant(nil))
+        .modelContainer(ModelContainer.getSharedContainer())
 }
