@@ -82,7 +82,7 @@ struct TotalBalanceWidgetEntryView : View {
                 let rows = entry.balancesByBank.sorted { $0.bankName < $1.bankName }
                 ForEach(Array(rows.enumerated()), id: \.offset) { _, item in
                     let bank = Bank(name: item.bankName, color: Bank.Palette(rawValue: item.colorPalette) ?? .gray)
-                    let logo = Bank.getLogoFromCache(normalizedName: Bank.getNormalizedName(bank.name))
+                    let logo = bank.getLogoFromCache()
                     let total = item.total
                     HStack {
                         if let logoImage = logo {
@@ -171,7 +171,7 @@ struct TotalBalanceWidgetEntryView : View {
                     let rows = entry.balancesByBank.sorted { $0.bankName < $1.bankName }
                     ForEach(Array(rows.enumerated()), id: \.offset) { _, item in
                         let bank = Bank(name: item.bankName, color: Bank.Palette(rawValue: item.colorPalette) ?? .gray)
-                        let logo = Bank.getLogoFromCache(normalizedName: Bank.getNormalizedName(bank.name))
+                        let logo = bank.getLogoFromCache()
                         let total = item.total
                         HStack {
                             if let logoImage = logo {

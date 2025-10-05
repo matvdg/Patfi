@@ -51,7 +51,7 @@ struct AccountDetailView: View {
                 // MARK: - Bank
                 Section("Bank") {
                     NavigationLink {
-                        //                        BanksView(selectedBank: $account.bank)
+                        EditBanksView(selectedBank: $account.bank)
                     } label: {
                         if let bank = account.bank {
                             BankRow(bank: bank).id(bank.id)
@@ -134,4 +134,5 @@ struct AccountDetailView: View {
     let balances = [b1, b2, b3, b4, b5, b6, b7, b8, b9]
     account.balances = balances
     return AccountDetailView(account: account)
+        .modelContainer(ModelContainer.getSharedContainer())
 }

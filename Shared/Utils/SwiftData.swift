@@ -37,7 +37,8 @@ extension ModelContainer {
         let crypto = Bank(name: "Crypto", color: .blue)
         let tradeRepublic = Bank(name: "Trade Republic", color: .gray)
         let revolut = Bank(name: "Revolut", color: .blue)
-        let banks: [Bank] = [boursoBank, greenGot, bnp, crypto, tradeRepublic, revolut]
+        let test = Bank(name: "Test", color: .yellow, logoAvaibility: .optedOut)
+        let banks: [Bank] = [boursoBank, greenGot, bnp, crypto, tradeRepublic, revolut, test]
         banks.forEach { bank in
             container.mainContext.insert(bank)
         }
@@ -50,8 +51,9 @@ extension ModelContainer {
         let a6 = Account(name: "Gold", category: .commodities, bank: revolut)
         let a7 = Account(name: "PEA", category: .stocks, bank: bnp)
         let a8 = Account(name: " APL", category: .stocks, bank: tradeRepublic)
+        let a9 = Account(name: "Test", category: .stocks, bank: test)
         
-        let accounts: [Account] = [a1, a2, a3, a4, a5, a6, a7, a8]
+        let accounts: [Account] = [a1, a2, a3, a4, a5, a6, a7, a8, a9]
         accounts.forEach { a in
             container.mainContext.insert(a)
         }

@@ -4,25 +4,24 @@ struct BankLogo: View {
     
     var bank: Bank?
     @State private var logoImage: Image? = nil
-
+    
     var body: some View {
-        HStack(alignment: .center, spacing: 8) {
+        Group {
             if let logoImage = logoImage {
                 logoImage
                     .renderingMode(.original)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 30, height: 30)
+                    .frame(width: 32, height: 32)
                     .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
             } else {
                 ZStack {
-                    Circle()
-                        .fill((bank?.swiftUIColor ?? Color.gray).opacity( bank == nil ? 0.3 : 1.0))
-                        .frame(width: 14, height: 14)
-                    Text(bank?.initialLetter ?? "")
-                        .font(.caption2.bold())
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(bank?.swiftUIColor ?? Color.gray)
+                        .frame(width: 32, height: 32)
+                    Text(bank?.initialLetter ?? "?")
+                        .font(.title2.bold())
                         .foregroundStyle(.white)
-                        .opacity(bank == nil ? 0 : 1)
                 }
             }
         }
@@ -66,7 +65,7 @@ struct BankLogo: View {
         BankLogo(bank: Bank(name: "Hello bank!", color: .cyan))
         BankLogo(bank: Bank(name: "Orange Bank", color: .orange))
         BankLogo(bank: Bank(name: "AXA Banque", color: .blue))
-
+        
         // 🇺🇸 US Banks
         BankLogo(bank: Bank(name: "JPMorgan Chase", color: .blue))
         BankLogo(bank: Bank(name: "Bank of America", color: .red))
@@ -80,7 +79,7 @@ struct BankLogo: View {
         BankLogo(bank: Bank(name: "TD Bank", color: .green))
         BankLogo(bank: Bank(name: "Chime", color: .green))
         BankLogo(bank: Bank(name: "Ally Bank", color: .purple))
-
+        
         // 🇬🇧 UK Banks
         BankLogo(bank: Bank(name: "HSBC", color: .red))
         BankLogo(bank: Bank(name: "Barclays", color: .blue))
@@ -92,7 +91,7 @@ struct BankLogo: View {
         BankLogo(bank: Bank(name: "Metro Bank", color: .red))
         BankLogo(bank: Bank(name: "Halifax", color: .blue))
         BankLogo(bank: Bank(name: "Virgin Money", color: .red))
-
+        
         // 🇪🇸 Spanish Banks
         BankLogo(bank: Bank(name: "Banco Santander", color: .red))
         BankLogo(bank: Bank(name: "BBVA", color: .blue))

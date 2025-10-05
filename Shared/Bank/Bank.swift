@@ -6,9 +6,7 @@ import SwiftUI
 final class Bank: Hashable {
     
     var name: String = ""
-    var normalizedName: String { Bank.getNormalizedName(name) }
-    
-    static func getNormalizedName(_ name: String) -> String {
+    var normalizedName: String {
         name
             .folding(options: .diacriticInsensitive, locale: .current)
             .lowercased()
@@ -91,7 +89,8 @@ final class Bank: Hashable {
     
     var initialLetter: String {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.first.map { String($0).uppercased() } ?? " "
+        let result = trimmed.first.map { String($0).uppercased() } ?? "?"
+        return result.isEmpty ? "?" : result
     }
     
     static var sfSymbol: Image {

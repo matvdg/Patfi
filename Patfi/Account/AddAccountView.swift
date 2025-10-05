@@ -34,7 +34,7 @@ struct AddAccountView: View {
                         
                         Section("Bank") {
                             NavigationLink {
-                                BanksView(selectedBank: $selectedBank)
+                                EditBanksView(selectedBank: $selectedBank)
                             } label: {
                                 if let bank = selectedBank {
                                     BankRow(bank: bank)
@@ -92,7 +92,7 @@ struct AddAccountView: View {
                 
                 Section("Bank") {
                     NavigationLink {
-                        BanksView(selectedBank: $selectedBank)
+                        EditBanksView(selectedBank: $selectedBank)
                     } label: {
                         if let bank = selectedBank {
                             BankRow(bank: bank)

@@ -6,23 +6,24 @@ extension Bank {
     
     /// Attempts to retrieve the bank's logo from local cache or remote API
     /// - Returns: A SwiftUI Image if found, otherwise nil
+    @MainActor
     func getLogo() async -> Image? {
-        if logoAvailability == .unavailable {
+        if logoAvailability == .unavailable || logoAvailability == .optedOut {
             return nil
         }
-        if let logo = await Bank.getLogo(name: name) {
-            if logoAvailability != .optedOut {
-                logoAvailability = .available
-            }
+        if let logo = await fetchLogo() {
+            logoAvailability = .available
             return logo
         } else {
             return nil
         }
     }
     
+    
     /// Attempts to retrieve the bank's logo from local cache
     /// - Returns: A SwiftUI Image if found, otherwise nil
-    @MainActor static func getLogoFromCache(normalizedName: String) -> Image? {
+    @MainActor
+    func getLogoFromCache() -> Image? {
         
 #if os(iOS) || os(tvOS) || os(visionOS) || os(watchOS) || os(macOS)
         
@@ -38,7 +39,7 @@ extension Bank {
         
         // Local file path in cache directory
         let fileManager = FileManager.default
-        let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: "group.fr.matvdg.patfi")!
+        let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: AppIDs.appGroupID)!
         let cacheURL = groupURL.appendingPathComponent("Caches", isDirectory: true)
         try? fileManager.createDirectory(at: cacheURL, withIntermediateDirectories: true)
         let logoFileURL = cacheURL.appendingPathComponent("\(normalizedName).png")
@@ -58,15 +59,15 @@ extension Bank {
     
     /// Attempts to retrieve the bank's logo from local cache or remote API
     /// - Returns: A SwiftUI Image if found, otherwise nil
-    @MainActor static func getLogo(name: String) async -> Image? {
-        let normalizedName = Bank.getNormalizedName(name)
+    @MainActor
+    private func fetchLogo() async -> Image? {
         let fileManager = FileManager.default
-        let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: "group.fr.matvdg.patfi")!
+        let groupURL = fileManager.containerURL(forSecurityApplicationGroupIdentifier: AppIDs.appGroupID)!
         let cacheURL = groupURL.appendingPathComponent("Caches", isDirectory: true)
         try? fileManager.createDirectory(at: cacheURL, withIntermediateDirectories: true)
         let logoFileURL = cacheURL.appendingPathComponent("\(normalizedName).png")
         
-        if let logo = Bank.getLogoFromCache(normalizedName: normalizedName) {
+        if let logo = getLogoFromCache() {
             return logo
         }
         
@@ -89,7 +90,7 @@ extension Bank {
             return nil
         }
     }
-    
+  
 }
 
 

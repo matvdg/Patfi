@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-struct BanksView: View {
+struct EditBanksView: View {
     
     @Binding var selectedBank: Bank?
     @Environment(\.dismiss) private var dismiss
@@ -11,7 +11,6 @@ struct BanksView: View {
     @State private var bankToModify: Bank?
     @State private var refreshID = UUID()
 
-        
     var body: some View {
         NavigationStack {
             if banks.isEmpty {
@@ -51,6 +50,7 @@ struct BanksView: View {
                                 Label("Edit", systemImage: "pencil")
                             }
                         }
+                        #if !os(watchOS)
                         .contextMenu {
                             Button(role: .destructive) {
                                 deleteBank(bank)
@@ -63,14 +63,19 @@ struct BanksView: View {
                                 Label("Edit", systemImage: "pencil")
                             }
                         }
+                        #endif
                     }
+                    #if !os(watchOS)
                     .listRowSeparator(.hidden)
+                    #endif
+                    #if !os(watchOS)
                     Text("tipBankDescription").foregroundStyle(.tertiary).italic()
+                    #endif
                 }
                 .id(refreshID)
-#if os(iOS) || os(tvOS) || os(visionOS)
+                #if os(iOS) || os(tvOS) || os(visionOS)
                 .listStyle(.insetGrouped)
-#endif
+                #endif
                 .safeAreaInset(edge: .bottom) {
                     Color.clear.frame(height: 0)
                 }
@@ -88,10 +93,10 @@ struct BanksView: View {
             }
         }
         .sheet(item: $bankToModify, onDismiss: { refreshID = UUID() }) { bank in
-            BankView(bank: bank)
+            EditBankView(bank: bank)
         }
         .sheet(isPresented: $showingAddBank, onDismiss: { refreshID = UUID() }) {
-            BankView()
+            EditBankView()
         }
 
     }
@@ -108,6 +113,6 @@ struct BanksView: View {
 }
 
 #Preview {
-    BanksView(selectedBank: .constant(nil))
+    EditBanksView(selectedBank: .constant(nil))
         .modelContainer(ModelContainer.getSharedContainer())
 }

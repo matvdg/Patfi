@@ -87,6 +87,8 @@
 				Balance/AddBalanceView.swift,
 				Bank/BankLogo.swift,
 				Bank/BankRow.swift,
+				Bank/EditBanksView.swift,
+				Bank/EditBankView.swift,
 			);
 			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
 		};

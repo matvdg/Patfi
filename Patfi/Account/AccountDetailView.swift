@@ -51,7 +51,7 @@ struct AccountDetailView: View {
                 // MARK: - Bank
                 Section("Bank") {
                     NavigationLink {
-                        BanksView(selectedBank: $account.bank)
+                        EditBanksView(selectedBank: $account.bank)
                     } label: {
                         if let bank = account.bank {
                             BankRow(bank: bank).id(bank.id) 

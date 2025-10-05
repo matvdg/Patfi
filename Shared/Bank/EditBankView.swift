@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-struct BankView: View {
+struct EditBankView: View {
     
     var bank: Bank? = nil
     @Environment(\.dismiss) private var dismiss
@@ -19,26 +19,16 @@ struct BankView: View {
         NavigationStack {
             Form {
                 Section {
-                    HStack(spacing: 12) {
-                        if let logoImage, displayLogo {
-                            logoImage
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 50, height: 50)
+                    HStack(spacing: 20) {
+                        if logoImage != nil, displayLogo {
+                            BankLogo(bank: Bank(name: name, color: palette, logoAvaibility: .available))
                         } else {
-                            ZStack {
-                                Circle()
-                                    .fill(palette.swiftUIColor)
-                                    .frame(width: 32, height: 32)
-                                Text(initialLetter())
-                                    .font(.headline)
-                                    .foregroundStyle(.white)
-                            }
+                            BankLogo(bank: Bank(name: name, color: palette, logoAvaibility: .optedOut))
                         }
-                        TextField("Bank's name", text: $name)
-#if os(iOS) || os(tvOS) || os(visionOS)
+                        TextField("Bank", text: $name)
+                            #if os(iOS) || os(tvOS) || os(visionOS)
                             .textInputAutocapitalization(.words)
-#endif
+                            #endif
                             .autocorrectionDisabled()
                             .focused($focused)
                     }
@@ -49,7 +39,8 @@ struct BankView: View {
                     let task = DispatchWorkItem {
                         Task {
                             if newValue.count > 2 {
-                                if let img = await Bank.getLogo(name: newValue) {
+                                let bank = Bank(name: newValue)
+                                if let img = await bank.getLogo() {
                                     logoImage = img
                                     if logoAvailability != .optedOut {
                                         displayLogo = true
@@ -116,12 +107,16 @@ struct BankView: View {
                 }
                 
             }
-#if os(macOS)
+            #if os(macOS)
             .padding()
-#endif
+            #endif
+            #if !os(watchOS)
             .navigationTitle(bank == nil ? "New bank" : "Edit bank")
+            #endif
             .toolbar {
+                #if !os(watchOS)
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                #endif
                 ToolbarItem(placement: .confirmationAction) {
                     Button(bank == nil ? "Create" : "Save") { save() }
                         .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -155,13 +150,13 @@ struct BankView: View {
     
     private func save() {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let bank {
+        if let bank { // Update
             if bank.name != trimmedName {
                 bank.name = trimmedName
             }
             bank.color = palette
             bank.logoAvailability = logoAvailability
-        } else {
+        } else { // Creation
             let bank = Bank(name: trimmedName, color: palette, logoAvaibility: logoAvailability)
             context.insert(bank)
         }
@@ -177,7 +172,6 @@ struct BankView: View {
 }
 
 #Preview {
-    BankView()
-        .modelContainer(for: [Bank.self], inMemory: true)
+    EditBankView()
 }
 
