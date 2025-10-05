@@ -71,6 +71,8 @@ struct AccountDetailView: View {
                             Text(snap.balance.toString)
                                 .monospacedDigit()
                         }
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.1)
                         .swipeActions(edge: .trailing) {
                             Button(role: .destructive) {
                                 deleteSnapshot(snap)
@@ -120,5 +122,16 @@ struct AccountDetailView: View {
 
 #Preview {
     let account = Account(name: "BoursoBank", category: .savings)
-    AccountDetailView(account: account)
+    let b1 = BalanceSnapshot(date: Date(), balance: 100000, account: account)
+    let b2 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*4), balance: 127650.55, account: account)
+    let b3 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*15), balance: 1265.55, account: account)
+    let b4 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*10), balance: 3000, account: account)
+    let b5 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*9), balance: 10000, account: account)
+    let b6 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*8), balance: 30000, account: account)
+    let b7 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*7), balance: 100000, account: account)
+    let b8 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*6), balance: 90000, account: account)
+    let b9 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*5), balance: 100000, account: account)
+    let balances = [b1, b2, b3, b4, b5, b6, b7, b8, b9]
+    account.balances = balances
+    return AccountDetailView(account: account)
 }

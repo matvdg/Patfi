@@ -64,8 +64,10 @@ extension ModelContainer {
         let b6 = BalanceSnapshot(date: Date(), balance: 2222, account: a6)
         let b7 = BalanceSnapshot(date: Date(), balance: 6435.88, account: a7)
         let b8 = BalanceSnapshot(date: Date(), balance: 12765.55, account: a8)
+        let b9 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*2), balance: 127650.55, account: a8)
+        let b10 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*15), balance: 1265.55, account: a8)
         
-        let balances: [BalanceSnapshot] = [b1, b2, b3, b4, b5, b6, b7, b8]
+        let balances: [BalanceSnapshot] = [b1, b2, b3, b4, b5, b6, b7, b8, b9, b10]
         balances.forEach { b in
             container.mainContext.insert(b)
         }

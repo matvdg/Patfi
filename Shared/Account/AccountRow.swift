@@ -33,15 +33,13 @@ struct AccountRow: View {
                 Text(account.name)
                     .font(.headline)
                     .foregroundColor(.primary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.1)
                 Spacer()
                 Text((account.latestBalance?.balance ?? 0).toString)
                     .font(.body)
                     .bold()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.1)
             }
+            .lineLimit(1)
+            .minimumScaleFactor(0.1)
             .task(priority: .high) {
                 if bank?.logoAvailability != .optedOut {
                     logoImage = await bank?.getLogo()
@@ -55,15 +53,13 @@ struct AccountRow: View {
                 Text(account.name)
                     .font(.headline)
                     .foregroundColor(.primary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.1)
                 Spacer()
                 Text((account.latestBalance?.balance ?? 0).toString)
                     .font(.body)
                     .bold()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.1)
             }
+            .lineLimit(1)
+            .minimumScaleFactor(0.1)
         }
     }
 }

@@ -19,14 +19,12 @@ struct CategoriesView: View {
                     HStack(spacing: 8) {
                         Circle().fill(cat.color).frame(width: 10, height: 10)
                         Text(cat.localizedName)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.1)
                     }
                     Spacer()
                     Text(total.toString)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.1)
                 }
+                .lineLimit(1)
+                .minimumScaleFactor(0.1)
             }
         }
         .padding()

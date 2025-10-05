@@ -52,13 +52,11 @@ struct AccountsView: View {
                                 HStack(spacing: 8) {
                                     Circle().fill(category.color).frame(width: 10, height: 10)
                                     Text(category.localizedName)
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.1)
                                     Spacer()
                                     Text(repo.balance(for: items).toString)
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.1)
                                 }
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.1)
                             }
                         }
                     }
@@ -74,21 +72,24 @@ struct AccountsView: View {
                                 }
                             }
                         } header: {
-                            VStack(alignment: .center, spacing: 8) {
+                            HStack {
+                                BankRow(bank: bank)
                                 Spacer()
-                                HStack {
-                                    BankRow(bank: bank)
-                                    Spacer()
-                                    Text(repo.balance(for: items).toString)
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.1)
-                                }
+                                Text(repo.balance(for: items).toString)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.1)
                             }
+                            .padding(.bottom, 1)
                         }
                     }
                 default:
                     ForEach(sorted) { account in
-                        AccountRow(account: account)
+                        NavigationLink {
+                            AccountDetailView(account: account)
+                                .toolbar(.hidden, for: .bottomBar)
+                        } label: {
+                            AccountRow(account: account)
+                        }
                     }
                 }
             }
