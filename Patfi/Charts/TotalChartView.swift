@@ -24,10 +24,16 @@ struct TotalChartView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 GeometryReader { geo in
+                    let minValue = series.map(\.total).min() ?? 0
+                    let maxValue = series.map(\.total).max() ?? 0
+                    let padding = (maxValue - minValue) * 0.05
+                    let yMin = minValue == maxValue ? minValue - 1 : minValue - padding
+                    let yMax = minValue == maxValue ? maxValue + 1 : maxValue + padding
                     Chart(series) { point in
                         BarMark(
                             x: .value("Date", point.date),
-                            y: .value("Total", point.total),
+                            yStart: .value("Min", yMin),
+                            yEnd: .value("Total", point.total),
                             width: .fixed(geo.size.width / 20)
                         )
                         .foregroundStyle(by: .value("Change", point.change))
@@ -37,6 +43,7 @@ struct TotalChartView: View {
                         "up": .green,
                         "down": .red
                     ])
+                    .chartYScale(domain: yMin...yMax)
                     .chartLegend(.hidden)
                     .chartXAxis {
                         AxisMarks(values: .automatic(desiredCount: 12)) { value in
@@ -87,14 +94,14 @@ struct TotalChartView: View {
 
 #Preview {
     let account = Account(name: "test", category: .savings, bank: nil)
-    let b1 = BalanceSnapshot(date: Date(), balance: 100000, account: account)
-    let b2 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*4), balance: 127650.55, account: account)
-    let b3 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*15), balance: 1265.55, account: account)
-    let b4 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*10), balance: 3000, account: account)
-    let b5 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*9), balance: 10000, account: account)
-    let b6 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*8), balance: 30000, account: account)
-    let b7 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*7), balance: 100000, account: account)
-    let b8 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*6), balance: 90000, account: account)
-    let b9 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*5), balance: 100000, account: account)
+    let b1 = BalanceSnapshot(date: Date(), balance: Double.random(in: 10000...30000), account: account)
+    let b2 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*4), balance: Double.random(in: 10000...30000), account: account)
+    let b3 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*15), balance: Double.random(in: 10000...30000), account: account)
+    let b4 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*10), balance: Double.random(in: 10000...30000), account: account)
+    let b5 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*9), balance: Double.random(in: 10000...30000), account: account)
+    let b6 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*8), balance: Double.random(in: 10000...30000), account: account)
+    let b7 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*7), balance: Double.random(in: 10000...30000), account: account)
+    let b8 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*6), balance: Double.random(in: 10000...30000), account: account)
+    let b9 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*5), balance: Double.random(in: 10000...30000), account: account)
     TotalChartView(snapshots: [b1, b2, b3, b4, b5, b6, b7, b8, b9], period: Binding<Period>(projectedValue: .constant(.months)))
 }
