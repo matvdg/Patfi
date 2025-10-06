@@ -11,7 +11,7 @@ struct AccountsView: View {
     private let repo = BalanceRepository()
     
     private var accountsByCategory: [Dictionary<Category, [Account]>.Element] {
-        Array(repo.groupByCategory(accounts).sorted { $0.key.localizedCategory < $1.key.localizedCategory })
+        Array(repo.groupByCategory(accounts).sorted { $0.key.localized < $1.key.localized })
             .sorted {
                 repo.balance(for: $0.value) > repo.balance(for: $1.value)
             }
@@ -51,7 +51,7 @@ struct AccountsView: View {
                                 Spacer()
                                 HStack(spacing: 8) {
                                     Circle().fill(category.color).frame(width: 10, height: 10)
-                                    Text(category.localizedName)
+                                    Text(category.localized)
                                     Spacer()
                                     Text(repo.balance(for: items).toString)
                                 }

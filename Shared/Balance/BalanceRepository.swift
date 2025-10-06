@@ -164,7 +164,7 @@ class BalanceRepository {
 enum Period: String, CaseIterable, Identifiable {
     case days, weeks, months, years
     var id: String { rawValue }
-    var title: LocalizedStringResource {
+    var localized: LocalizedStringResource {
         switch self {
         case .days: return "Days"
         case .weeks: return "Weeks"
@@ -177,7 +177,7 @@ enum Period: String, CaseIterable, Identifiable {
 enum Mode: String, CaseIterable, Identifiable {
     case categories, banks
     var id: String { rawValue }
-    var title: LocalizedStringResource {
+    var localized: LocalizedStringResource {
         switch self {
         case .categories: return "Categories"
         case .banks: return "Banks"

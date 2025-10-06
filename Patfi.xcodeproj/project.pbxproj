@@ -89,6 +89,8 @@
 				Bank/BankRow.swift,
 				Bank/EditBanksView.swift,
 				Bank/EditBankView.swift,
+				Charts/PieChartView.swift,
+				Charts/TotalChartView.swift,
 			);
 			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
 		};

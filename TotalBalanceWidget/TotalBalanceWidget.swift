@@ -155,7 +155,7 @@ struct TotalBalanceWidgetEntryView : View {
                         let category = Category(rawValue: category) ?? .other
                         HStack(spacing: 8) {
                             Circle().fill(category.color).frame(width: 10, height: 10)
-                            Text(category.localizedName).minimumScaleFactor(0.5)
+                            Text(category.localized).minimumScaleFactor(0.5)
                         }
                         Spacer()
                         Text(total.toString)
@@ -217,7 +217,7 @@ struct TotalBalanceWidgetEntryView : View {
                             let category = Category(rawValue: category) ?? .other
                             HStack(spacing: 8) {
                                 Circle().fill(category.color).frame(width: 10, height: 10)
-                                Text(category.localizedName).minimumScaleFactor(0.5)
+                                Text(category.localized).minimumScaleFactor(0.5)
                             }
                             Spacer()
                             Text(total.toString)

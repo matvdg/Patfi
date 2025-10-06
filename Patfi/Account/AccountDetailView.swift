@@ -9,7 +9,6 @@ struct AccountDetailView: View {
     
     @State private var showAddSnapshot = false
     @State private var showDeleteAccountConfirm = false
-    @State private var snapshots: [BalanceSnapshot] = []
     @State private var period: Period = .months
     
     private let repo = BalanceRepository()
@@ -26,7 +25,7 @@ struct AccountDetailView: View {
                         Circle().fill(account.category.color).frame(width: 10, height: 10)
                         Picker("Category", selection: $account.category) {
                             ForEach(Category.allCases) { c in
-                                Text(c.localizedName)
+                                Text(c.localized)
                                     .tag(c)
                             }
                         }
@@ -69,23 +68,23 @@ struct AccountDetailView: View {
                             VStack {
                                 Picker("", selection: $period) {
                                     ForEach(Period.allCases) { period in
-                                        Text(period.title).tag(period)
+                                        Text(period.localized).tag(period)
                                     }
                                 }
                                 .pickerStyle(.segmented)
                                 .padding()
-                                TotalChartView(snapshots: snapshots, period: $period)
+                                TotalChartView(snapshots: snaps, period: $period)
                                 Spacer()
                             }
                         } label: {
                             VStack {
                                 Picker("", selection: $period) {
                                     ForEach(Period.allCases) { period in
-                                        Text(period.title).tag(period)
+                                        Text(period.localized).tag(period)
                                     }
                                 }
                                 .pickerStyle(.segmented)
-                                TotalChartView(snapshots: snapshots, period: $period)
+                                TotalChartView(snapshots: snaps, period: $period)
                                     .frame(height: 150)
                             }
                             
@@ -142,12 +141,6 @@ struct AccountDetailView: View {
             .padding(20)
             .sheet(isPresented: $showAddSnapshot) {
                 AddBalanceView(account: account)
-            }
-            .onChange(of: account.balances) {
-                snapshots = account.balances ?? []
-            }
-            .onAppear {
-                snapshots = account.balances ?? []
             }
         }
     }

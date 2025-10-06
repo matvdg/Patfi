@@ -18,11 +18,11 @@ enum Category: String, Codable, CaseIterable, Identifiable {
         }
     }
     
-    var localizedCategory: String {
+    var localized: String {
         String(localized: localizedName)
     }
     
-    var localizedName: LocalizedStringResource {
+    private var localizedName: LocalizedStringResource {
             switch self {
             case .current:       "category.current"
             case .savings:       "category.savings"

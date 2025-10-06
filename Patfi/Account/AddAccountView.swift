@@ -83,7 +83,7 @@ struct AddAccountView: View {
                         Circle().fill(category.color).frame(width: 10, height: 10)
                         Picker("Category", selection: $category) {
                             ForEach(Category.allCases) { c in
-                                Text(c.localizedName)
+                                Text(c.localized)
                                 .tag(c)
                             }
                         }

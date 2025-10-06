@@ -26,7 +26,7 @@ struct AccountDetailView: View {
                         Circle().fill(account.category.color).frame(width: 10, height: 10)
                         Picker("Category", selection: $account.category) {
                             ForEach(Category.allCases) { c in
-                                Text(c.localizedName)
+                                Text(c.localized)
                                     .tag(c)
                             }
                         }

@@ -43,5 +43,5 @@ struct SortView: View {
 }
 
 #Preview {
-    SortView(sorting: Binding<Sorting>.constant(.bank))
+    SortView(sorting: .constant(.bank))
 }

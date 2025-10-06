@@ -14,9 +14,8 @@ struct HomeView: View {
                 TotalView()
                 AccountsView()
                 BanksView()
-                CategoriesView()
-                PieChartView()
-                TotalChartView()
+                PieView()
+                BarView()
             }
         }
         .tabViewStyle(.verticalPage)

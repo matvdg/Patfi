@@ -21,5 +21,5 @@ struct ArrowButton: View {
 }
 
 #Preview {
-    ArrowButton(isUp: Binding<Bool>(projectedValue: .constant(false)))
+    ArrowButton(isUp: .constant(false))
 }

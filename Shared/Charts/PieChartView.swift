@@ -15,7 +15,7 @@ struct PieChartView: View {
         case .categories:
             return repo.groupByCategory(accounts)
                 .map { cat, accounts in
-                    Slice(label: cat.localizedCategory, color: cat.color, total: repo.balance(for: accounts))
+                    Slice(label: cat.localized, color: cat.color, total: repo.balance(for: accounts))
                 }
                 .sorted {
                     $0.total > $1.total
@@ -32,7 +32,7 @@ struct PieChartView: View {
     }
 
     var body: some View {
-        let slices = allSlices.filter { grouping != .categories || $0.label != Category.loan.localizedCategory }
+        let slices = allSlices.filter { grouping != .categories || $0.label != Category.loan.localized }
         let total = repo.balance(for: accounts)
 
         VStack(alignment: .center, spacing: 20) {
@@ -90,6 +90,7 @@ struct PieChartView: View {
 }
 
 #Preview {
-    PieChartView(grouping: Binding<Mode>(projectedValue: .constant(.banks)))
+    PieChartView(grouping: .constant(.banks))
         .modelContainer(ModelContainer.getSharedContainer())
 }
+

@@ -37,8 +37,7 @@ extension ModelContainer {
         let crypto = Bank(name: "Crypto", color: .blue)
         let tradeRepublic = Bank(name: "Trade Republic", color: .gray)
         let revolut = Bank(name: "Revolut", color: .blue)
-        let test = Bank(name: "Test", color: .yellow, logoAvaibility: .optedOut)
-        let banks: [Bank] = [boursoBank, greenGot, bnp, crypto, tradeRepublic, revolut, test]
+        let banks: [Bank] = [boursoBank, greenGot, bnp, crypto, tradeRepublic, revolut]
         banks.forEach { bank in
             container.mainContext.insert(bank)
         }
@@ -51,23 +50,22 @@ extension ModelContainer {
         let a6 = Account(name: "Gold", category: .commodities, bank: revolut)
         let a7 = Account(name: "PEA", category: .stocks, bank: bnp)
         let a8 = Account(name: " APL", category: .stocks, bank: tradeRepublic)
-        let a9 = Account(name: "Test", category: .stocks, bank: test)
         
-        let accounts: [Account] = [a1, a2, a3, a4, a5, a6, a7, a8, a9]
+        let accounts: [Account] = [a1, a2, a3, a4, a5, a6, a7, a8]
         accounts.forEach { a in
             container.mainContext.insert(a)
         }
         
-        let b1 = BalanceSnapshot(date: Date(), balance: 12000, account: a1)
-        let b2 = BalanceSnapshot(date: Date(), balance: 6000, account: a2)
-        let b3 = BalanceSnapshot(date: Date(), balance: 3456.49, account: a3)
-        let b4 = BalanceSnapshot(date: Date(), balance: 23900, account: a4)
-        let b5 = BalanceSnapshot(date: Date(), balance: 3564, account: a5)
-        let b6 = BalanceSnapshot(date: Date(), balance: 2222, account: a6)
-        let b7 = BalanceSnapshot(date: Date(), balance: 6435.88, account: a7)
-        let b8 = BalanceSnapshot(date: Date(), balance: 12765.55, account: a8)
-        let b9 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*2), balance: 127650.55, account: a8)
-        let b10 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*15), balance: 1265.55, account: a8)
+        let b1 = BalanceSnapshot(date: Date(), balance: Double.random(in: 10000...20000), account: a1)
+        let b2 = BalanceSnapshot(date: Date(), balance: Double.random(in: 10000...20000), account: a2)
+        let b3 = BalanceSnapshot(date: Date(), balance: Double.random(in: 10000...20000), account: a3)
+        let b4 = BalanceSnapshot(date: Date(), balance: Double.random(in: 10000...20000), account: a4)
+        let b5 = BalanceSnapshot(date: Date(), balance: Double.random(in: 10000...20000), account: a5)
+        let b6 = BalanceSnapshot(date: Date(), balance: Double.random(in: 10000...20000), account: a6)
+        let b7 = BalanceSnapshot(date: Date(), balance: Double.random(in: 10000...20000), account: a7)
+        let b8 = BalanceSnapshot(date: Date(), balance: Double.random(in: 10000...20000), account: a8)
+        let b9 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*2), balance: Double.random(in: 10000...20000), account: a8)
+        let b10 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*15), balance: Double.random(in: 10000...20000), account: a8)
         
         let balances: [BalanceSnapshot] = [b1, b2, b3, b4, b5, b6, b7, b8, b9, b10]
         balances.forEach { b in

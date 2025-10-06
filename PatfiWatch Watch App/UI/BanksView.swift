@@ -8,8 +8,7 @@ struct BanksView: View {
     
     var body: some View {
         
-        VStack(alignment: .leading, spacing: 4) {
-            Spacer()
+        List {
             let sorted = repo.groupByBank(accounts)
                 .map { ($0.key, repo.balance(for: $0.value))}
                 .sorted { $0.1 > $1.1 }
@@ -22,10 +21,7 @@ struct BanksView: View {
                         .minimumScaleFactor(0.1)
                 }
             }
-            Spacer()
         }
-        .padding()
-        .padding()
         
     }
 }

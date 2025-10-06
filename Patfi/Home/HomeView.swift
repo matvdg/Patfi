@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 import Playgrounds
-import WidgetKit
+//import WidgetKit
 
 struct HomeView: View {
 
@@ -20,7 +20,7 @@ struct HomeView: View {
     private let repo = BalanceRepository()
         
     private var accountsByCategory: [Dictionary<Category, [Account]>.Element] {
-        Array(repo.groupByCategory(accounts).sorted { $0.key.localizedCategory < $1.key.localizedCategory })
+        Array(repo.groupByCategory(accounts).sorted { $0.key.localized < $1.key.localized })
             .sorted {
                 repo.balance(for: $0.value) > repo.balance(for: $1.value)
             }
@@ -70,7 +70,7 @@ struct HomeView: View {
                         if selectedChart == 0 {
                             Picker("", selection: $mode) {
                                 ForEach(Mode.allCases) { mode in
-                                    Text(mode.title).tag(mode)
+                                    Text(mode.localized).tag(mode)
                                 }
                             }
                             .pickerStyle(.segmented)
@@ -78,7 +78,7 @@ struct HomeView: View {
                         } else {
                             Picker("", selection: $period) {
                                 ForEach(Period.allCases) { period in
-                                    Text(period.title).tag(period)
+                                    Text(period.localized).tag(period)
                                 }
                             }
                             .pickerStyle(.segmented)
@@ -111,7 +111,7 @@ struct HomeView: View {
                                                 Spacer()
                                                 HStack(spacing: 8) {
                                                     Circle().fill(category.color).frame(width: 10, height: 10)
-                                                    Text(category.localizedName)
+                                                    Text(category.localized)
                                                     Spacer()
                                                     Text(repo.balance(for: items).toString)
                                                 }
