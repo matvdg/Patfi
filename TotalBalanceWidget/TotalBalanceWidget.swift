@@ -79,7 +79,7 @@ struct TotalBalanceWidgetEntryView : View {
         case .systemMedium:
             VStack(alignment: .leading, spacing: 4) {
                 Spacer()
-                let rows = entry.balancesByBank.sorted { $0.bankName < $1.bankName }
+                let rows = entry.balancesByBank.sorted { $0.total > $1.total }
                 ForEach(Array(rows.enumerated()), id: \.offset) { _, item in
                     let bank = Bank(name: item.bankName, color: Bank.Palette(rawValue: item.colorPalette) ?? .gray)
                     let logo = bank.getLogoFromCache()
@@ -124,7 +124,7 @@ struct TotalBalanceWidgetEntryView : View {
             VStack(alignment: .center, spacing: 4) {
                 ZStack {
                     Chart {
-                        ForEach(entry.balancesByCategory.sorted(by: { $0.key < $1.key }), id: \.key) { categoryKey, total in
+                        ForEach(entry.balancesByCategory.sorted(by: { $0.value > $1.value }), id: \.key) { categoryKey, total in
                             let category = Category(rawValue: categoryKey) ?? .other
                             SectorMark(
                                 angle: .value("Total", total),
@@ -150,7 +150,7 @@ struct TotalBalanceWidgetEntryView : View {
                     }
                 }
                 Spacer()
-                ForEach(entry.balancesByCategory.sorted(by: { $0.key < $1.key }), id: \.key) { category, total in
+                ForEach(entry.balancesByCategory.sorted(by: { $0.value > $1.value }), id: \.key) { category, total in
                     HStack {
                         let category = Category(rawValue: category) ?? .other
                         HStack(spacing: 8) {
@@ -168,7 +168,7 @@ struct TotalBalanceWidgetEntryView : View {
             HStack {
                 VStack(alignment: .leading) {
                     Spacer()
-                    let rows = entry.balancesByBank.sorted { $0.bankName < $1.bankName }
+                    let rows = entry.balancesByBank.sorted { $0.total > $1.total }
                     ForEach(Array(rows.enumerated()), id: \.offset) { _, item in
                         let bank = Bank(name: item.bankName, color: Bank.Palette(rawValue: item.colorPalette) ?? .gray)
                         let logo = bank.getLogoFromCache()
@@ -212,7 +212,7 @@ struct TotalBalanceWidgetEntryView : View {
                 Divider()
                 VStack(alignment: .leading) {
                     Spacer()
-                    ForEach(entry.balancesByCategory.sorted(by: { $0.key < $1.key }), id: \.key) { category, total in
+                    ForEach(entry.balancesByCategory.sorted(by: { $0.value > $1.value }), id: \.key) { category, total in
                         HStack {
                             let category = Category(rawValue: category) ?? .other
                             HStack(spacing: 8) {
