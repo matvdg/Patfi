@@ -217,6 +217,9 @@ struct HomeView: View {
             print("ℹ️ \(scenePhase)")
             repo.update(accounts: accounts)
         }
+        .onChange(of: isLandscape, {
+            isGraphHidden = false
+        })
     }
 }
 
