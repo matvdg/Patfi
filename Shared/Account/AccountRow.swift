@@ -8,8 +8,8 @@ struct AccountRow: View {
     var body: some View {
         
         HStack(alignment: .center, spacing: 8) {
-            if displayBankLogo {
-                BankLogo(bank: account.bank)
+            if let bank = account.bank, displayBankLogo {
+                BankLogo(bank: bank)
             } else {
                 Circle()
                     .fill(Color(account.bank?.swiftUIColor ?? .gray))

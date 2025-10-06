@@ -91,7 +91,7 @@ class BalanceRepository {
     }
 
     func groupByBank(_ accounts: [Account]) -> [Bank: [Account]] {
-        Dictionary(grouping: accounts, by: { $0.bank ?? Bank(name: "No bank", color: .gray) })
+        Dictionary(grouping: accounts, by: { $0.bank ?? Bank(name: "?", color: .gray, logoAvaibility: .optedOut) })
     }
     
     func balance(for accounts: [Account]) -> Double {

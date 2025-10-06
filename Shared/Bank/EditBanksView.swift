@@ -15,7 +15,7 @@ struct EditBanksView: View {
         NavigationStack {
             if banks.isEmpty {
                 ContentUnavailableView(
-                    "No banks",
+                    "No bank",
                     systemImage: "building.columns",
                     description: Text("Create your first bank")
                 )

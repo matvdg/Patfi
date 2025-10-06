@@ -2,7 +2,7 @@ import SwiftUI
 
 struct BankLogo: View {
     
-    var bank: Bank?
+    @Bindable var bank: Bank
     @State private var logoImage: Image? = nil
     
     var body: some View {
@@ -17,17 +17,19 @@ struct BankLogo: View {
             } else {
                 ZStack {
                     RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(bank?.swiftUIColor ?? Color.gray)
+                        .fill(bank.swiftUIColor)
                         .frame(width: 32, height: 32)
-                    Text(bank?.initialLetter ?? "?")
+                    Text(bank.initialLetter)
                         .font(.title2.bold())
                         .foregroundStyle(.white)
                 }
             }
         }
         .task(priority: .high) {
-            if bank?.logoAvailability != .optedOut {
-                logoImage = await bank?.getLogo()
+            if bank.logoAvailability != .optedOut {
+                logoImage = await bank.getLogo()
+            } else {
+                logoImage = nil
             }
         }
     }
@@ -37,8 +39,7 @@ struct BankLogo: View {
     let columns = Array(repeating: GridItem(.flexible()), count: 4)
     LazyVGrid(columns: columns) {
         
-        // Empty or without logo
-        BankLogo()
+        // Without logo
         BankLogo(bank: Bank(name: "A", color: .purple, logoAvaibility: .optedOut))
         BankLogo(bank: Bank(name: "B", color: .red, logoAvaibility: .optedOut))
         BankLogo(bank: Bank(name: "C", color: .green, logoAvaibility: .optedOut))

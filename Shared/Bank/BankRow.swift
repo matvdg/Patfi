@@ -2,12 +2,13 @@ import SwiftUI
 
 struct BankRow: View {
     
-    var bank: Bank?
+    @Bindable var bank: Bank
 
     var body: some View {
         HStack(alignment: .center, spacing: 8) {
             BankLogo(bank: bank)
-            Text(bank?.name.isEmpty == false ? (bank?.name ?? "") : (bank == nil ? String(localized: "No bank") : "—"))
+            let name = bank.name == "?" ? String(localized: "No bank") : bank.name
+            Text(name)
                 .foregroundColor(.primary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.1)
@@ -16,7 +17,6 @@ struct BankRow: View {
 }
 
 #Preview {
-    BankRow()
     BankRow(bank: Bank(name: "BoursoBank", color: .purple))
     BankRow(bank: Bank(name: "GreenGot", color: .green))
     BankRow(bank: Bank(name: "BNP Paribas", color: .green))
