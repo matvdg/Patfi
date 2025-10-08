@@ -57,7 +57,7 @@ struct BankLogo: View {
         BankLogo(bank: Bank(name: "Banque Populaire", color: .blue))
         BankLogo(bank: Bank(name: "CIC", color: .green))
         BankLogo(bank: Bank(name: "Crédit Mutuel", color: .red))
-        BankLogo(bank: Bank(name: "N26", color: .black))
+        BankLogo(bank: Bank(name: "N26", color: .gray))
         BankLogo(bank: Bank(name: "Crédit Agricole", color: .green))
         BankLogo(bank: Bank(name: "LCL", color: .blue))
         BankLogo(bank: Bank(name: "Fortuneo", color: .green))

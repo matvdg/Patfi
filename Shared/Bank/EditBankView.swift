@@ -89,13 +89,13 @@ struct EditBankView: View {
                                         .overlay(
                                             Circle()
                                                 .strokeBorder(
-                                                    p == palette ? Color.primary.opacity(0.6) : Color.primary.opacity(0.15),
-                                                    lineWidth: p == palette ? 3 : 1
+                                                    Color.primary.opacity(p == palette ? 1 : 0),
+                                                    lineWidth: p == palette ? 3 : 0
                                                 )
                                         )
                                         .overlay(
                                             Group {
-                                                if p == palette { Image(systemName: "checkmark").font(.caption.bold()).foregroundStyle(.white) }
+                                                if p == palette { Image(systemName: "checkmark").font(.caption.bold()).foregroundStyle(.primary) }
                                             }
                                         )
                                 }

@@ -29,7 +29,7 @@ struct PieView: View {
                         
                         ForEach(sorted, id: \.0) { bank, total in
                             NavigationLink {
-                                EditBankView(bank: bank)
+                                ColorView(bank: bank)
                             } label: {
                                 HStack {
                                     HStack(spacing: 8) {
