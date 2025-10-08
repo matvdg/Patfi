@@ -1,7 +1,6 @@
 import SwiftUI
 import SwiftData
 import Playgrounds
-//import WidgetKit
 
 struct HomeView: View {
 
@@ -11,7 +10,7 @@ struct HomeView: View {
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     @Query(sort: \BalanceSnapshot.date, order: .forward) private var snapshots: [BalanceSnapshot]
-    @State private var showingAddAccount = false
+    @State private var showAddAccount = false
     @State private var selectedChart = 0
     @State var mode: Mode = .categories
     @State var period: Period = .months
@@ -50,7 +49,19 @@ struct HomeView: View {
         NavigationStack {
             VStack(alignment: .center) {
                 if accounts.isEmpty {
-                    ContentUnavailableView("No accounts", systemImage: "creditcard")
+                    ContentUnavailableView {
+                        Image(systemName: "creditcard")
+                    } description: {
+                        Text("No accounts")
+                    } actions: {
+                        Button {
+                            showAddAccount = true
+                        } label: {
+                            Label("Create your first account", systemImage: "plus")
+                                .padding()
+                        }
+                        .buttonStyle(.glassProminent)
+                    }
                 } else {
                     if !isLandscape {
                         Picker("", selection: $selectedChart) {
@@ -199,12 +210,12 @@ struct HomeView: View {
             .ignoresSafeArea(edges: .bottom)
             .toolbar {
                 ToolbarItem(placement: .automatic) {
-                    Button(action: { showingAddAccount = true }) {
+                    Button(action: { showAddAccount = true }) {
                         Image(systemName: "plus")
                     }
                 }
             }
-            .navigationDestination(isPresented: $showingAddAccount) {
+            .navigationDestination(isPresented: $showAddAccount) {
                 AddAccountView()
             }
             .navigationTitle("Patfi")

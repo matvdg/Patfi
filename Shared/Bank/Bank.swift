@@ -93,12 +93,12 @@ final class Bank: Hashable {
         return result.isEmpty ? "?" : result
     }
     
-    static var sfSymbol: Image {
+    static var sfSymbol: String {
         let locale = Locale.current.currency?.identifier ?? "USD"
         switch locale {
-        case "EUR" : return Image(systemName: "eurosign.bank.building")
-        case "GPB" : return Image(systemName: "sterlingsign.bank.building")
-        default : return Image(systemName: "dollarsign.bank.building")
+        case "EUR" : return "eurosign.bank.building"
+        case "GPB" : return "sterlingsign.bank.building"
+        default : return "dollarsign.bank.building"
         }
     }
 }

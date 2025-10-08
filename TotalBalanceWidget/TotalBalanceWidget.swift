@@ -64,7 +64,7 @@ struct TotalBalanceWidgetEntryView : View {
         case .systemSmall:
             VStack(alignment: .center, spacing: 10) {
                 HStack(alignment: .center, spacing: 8) {
-                    Bank.sfSymbol
+                    Image(systemName: Bank.sfSymbol)
                     Text("Patfi")
                         .font(.headline)
                 }

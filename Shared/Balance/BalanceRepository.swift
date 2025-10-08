@@ -13,6 +13,7 @@ class BalanceRepository {
     }
     
     func generateSeries(for period: Period, from snapshots: [BalanceSnapshot]) -> [TotalPoint] {
+        if snapshots.isEmpty { return [] }
         var cal = Calendar.current
         cal.timeZone = TimeZone.current
         let now = Date()

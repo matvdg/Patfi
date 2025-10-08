@@ -66,6 +66,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F61F9A112E95715E0009BDE3 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Utils/ArrowButton.swift,
+			);
+			target = F6B833912E8EA57C00B2AB0C /* PatfiWatch Watch App */;
+		};
 		F63DB5B82E799D1100688CC7 /* Exceptions for "TotalBalanceWidget" folder in "TotalBalanceWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -83,7 +90,9 @@
 		F69CAE972E7F053F00627394 /* Exceptions for "Shared" folder in "TotalBalanceWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Account/AccountDetailView.swift,
 				Account/AccountRow.swift,
+				Account/AddAccountView.swift,
 				Balance/AddBalanceView.swift,
 				Bank/BankLogo.swift,
 				Bank/BankRow.swift,
@@ -91,6 +100,7 @@
 				Bank/EditBankView.swift,
 				Charts/PieChartView.swift,
 				Charts/TotalChartView.swift,
+				Utils/ArrowButton.swift,
 			);
 			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
 		};
@@ -117,6 +127,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				F69CAE972E7F053F00627394 /* Exceptions for "Shared" folder in "TotalBalanceWidgetExtension" target */,
+				F61F9A112E95715E0009BDE3 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */,
 			);
 			path = Shared;
 			sourceTree = "<group>";

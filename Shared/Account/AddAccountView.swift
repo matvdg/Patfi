@@ -25,7 +25,7 @@ struct AddAccountView: View {
                                 Circle().fill(category.color).frame(width: 10, height: 10)
                                 Picker("Category", selection: $category) {
                                     ForEach(Category.allCases) { c in
-                                        Text(c.localizedName)
+                                        Text(c.localized)
                                         .tag(c)
                                     }
                                 }
@@ -63,11 +63,8 @@ struct AddAccountView: View {
         }
         .navigationTitle("New Account")
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") { dismiss() }
-            }
             ToolbarItem(placement: .confirmationAction) {
-                Button("Create") { create() }
+                Button(role: .confirm, action: { create() })
                     .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedBank == nil)
             }
         }
@@ -105,7 +102,9 @@ struct AddAccountView: View {
                 
                 Section("Initial balance") {
                     TextField("Amount", text: $initialBalanceText)
+                    #if !os(watchOS)
                         .keyboardType(.decimalPad)
+                    #endif
                         .focused($focused)
                         .onChange(of: initialBalanceText) { _, newValue in
                             let cleaned = newValue.filter { !$0.isWhitespace }
@@ -118,7 +117,7 @@ struct AddAccountView: View {
             .navigationTitle("New Account")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Create") { create() }
+                    Button(role: .confirm, action: { create() })
                         .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedBank == nil)
                 }
             }

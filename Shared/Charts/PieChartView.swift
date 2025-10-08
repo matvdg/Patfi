@@ -5,11 +5,11 @@ import Charts
 struct PieChartView: View {
     @Query(sort: [SortDescriptor(\Account.name, order: .forward)])
     private var accounts: [Account]
-
+    
     private let repo = BalanceRepository()
-
+    
     @Binding var grouping: Mode
-
+    
     private var allSlices: [Slice] {
         switch grouping {
         case .categories:
@@ -30,56 +30,46 @@ struct PieChartView: View {
                 }
         }
     }
-
+    
     var body: some View {
         let slices = allSlices.filter { grouping != .categories || $0.label != Category.loan.localized }
         let total = repo.balance(for: accounts)
-
+        
         VStack(alignment: .center, spacing: 20) {
-            
-            if slices.isEmpty || total <= 0 {
-                ContentUnavailableView(
-                    "No data",
-                    systemImage: "chart.pie.fill",
-                    description: Text("Add balances to see distribution")
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                ZStack {
-                    Chart(slices) { slice in
-                        SectorMark(
-                            angle: .value("Total", slice.total),
-                            innerRadius: .ratio(0.6),
-                            angularInset: 1.0
-                        )
-                        // Group by a concrete String label (Plottable)
-                        .foregroundStyle(by: .value("", slice.label))
-                    }
-                    // Map legend colors to the dynamic labels for the current grouping
-                    .chartForegroundStyleScale(
-                        domain: slices.map { $0.label },
-                        range: slices.map { $0.color }
+            ZStack {
+                Chart(slices) { slice in
+                    SectorMark(
+                        angle: .value("Total", slice.total),
+                        innerRadius: .ratio(0.6),
+                        angularInset: 1.0
                     )
-                    .chartLegend(.hidden)
-                    .frame(height: 240)
-
-                    // Center label (total)
-                    VStack {
-                        Text("Total")
-                            .font(.caption)
-                        Text(total.toString)
-                            .font(.headline)
-                            .bold()
-                            .minimumScaleFactor(0.5)
-                            .frame(maxWidth: 100)
-                            .multilineTextAlignment(.center)
-                    }
+                    // Group by a concrete String label (Plottable)
+                    .foregroundStyle(by: .value("", slice.label))
+                }
+                // Map legend colors to the dynamic labels for the current grouping
+                .chartForegroundStyleScale(
+                    domain: slices.map { $0.label },
+                    range: slices.map { $0.color }
+                )
+                .chartLegend(.hidden)
+                .frame(height: 240)
+                
+                // Center label (total)
+                VStack {
+                    Text("Total")
+                        .font(.caption)
+                    Text(total.toString)
+                        .font(.headline)
+                        .bold()
+                        .minimumScaleFactor(0.5)
+                        .frame(maxWidth: 90)
+                        .multilineTextAlignment(.center)
                 }
             }
         }
         .padding()
     }
-
+    
     // MARK: - Types
     private struct Slice: Identifiable {
         let label: String

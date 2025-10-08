@@ -110,16 +110,16 @@ struct EditBankView: View {
             #if os(macOS)
             .padding()
             #endif
-            #if !os(watchOS)
             .navigationTitle(bank == nil ? "New bank" : "Edit bank")
-            #endif
             .toolbar {
                 #if !os(watchOS)
-                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .cancel, action: { dismiss() })
+                }
                 #endif
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(bank == nil ? "Create" : "Save") { save() }
-                        .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    Button(role: .confirm, action: { save() })
+                    .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
             .onAppear {

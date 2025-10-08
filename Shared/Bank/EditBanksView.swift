@@ -14,12 +14,20 @@ struct EditBanksView: View {
     var body: some View {
         NavigationStack {
             if banks.isEmpty {
-                ContentUnavailableView(
-                    "No bank",
-                    systemImage: "building.columns",
-                    description: Text("Create your first bank")
-                )
-                .padding()
+                ContentUnavailableView {
+                    Image(systemName: Bank.sfSymbol)
+                } description: {
+                    Text("No bank")
+                } actions: {
+                    Button {
+                        bankToModify = nil
+                        showingAddBank = true
+                    } label: {
+                        Label("Create your first bank", systemImage: "plus")
+                            .padding()
+                    }
+                    .buttonStyle(.glassProminent)
+                }
             } else {
                 List {
                     ForEach(banks) { bank in
@@ -68,9 +76,7 @@ struct EditBanksView: View {
                     #if !os(watchOS)
                     .listRowSeparator(.hidden)
                     #endif
-                    #if !os(watchOS)
-                    Text("tipBankDescription").foregroundStyle(.tertiary).italic()
-                    #endif
+                    Text("tipBank").foregroundStyle(.tertiary).italic()
                 }
                 .id(refreshID)
                 #if os(iOS) || os(tvOS) || os(visionOS)
@@ -79,26 +85,25 @@ struct EditBanksView: View {
                 .safeAreaInset(edge: .bottom) {
                     Color.clear.frame(height: 0)
                 }
-            }
-        }
-        .navigationTitle("Banks")
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button {
-                    bankToModify = nil
-                    showingAddBank = true
-                } label: {
-                    Image(systemName: "plus")
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button {
+                            bankToModify = nil
+                            showingAddBank = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                    }
                 }
             }
         }
+        .navigationTitle("Banks")
         .sheet(item: $bankToModify, onDismiss: { refreshID = UUID() }) { bank in
             EditBankView(bank: bank)
         }
         .sheet(isPresented: $showingAddBank, onDismiss: { refreshID = UUID() }) {
             EditBankView()
         }
-
     }
     
     private func deleteBank(_ bank: Bank) {
@@ -113,6 +118,8 @@ struct EditBanksView: View {
 }
 
 #Preview {
-    EditBanksView(selectedBank: .constant(nil))
-        .modelContainer(ModelContainer.getSharedContainer())
+    NavigationStack {
+        EditBanksView(selectedBank: .constant(nil))
+            .modelContainer(ModelContainer.getSharedContainer())
+    }
 }

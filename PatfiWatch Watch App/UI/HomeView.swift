@@ -7,18 +7,44 @@ struct HomeView: View {
     private let repo = BalanceRepository()
     
     var body: some View {
-        TabView {
-            if repo.balance(for: accounts).isZero {
+        NavigationStack {
+            VStack(alignment: .center, spacing: 8) {
                 TotalView()
-            } else {
-                TotalView()
-                AccountsView()
-                BanksView()
-                PieView()
-                BarView()
+                HStack(alignment: .center, spacing: 8) {
+                    NavigationLink {
+                        AccountsView()
+                    } label: {
+                        Image(systemName: "list.bullet")
+                    }
+                    NavigationLink {
+                        BanksView()
+                    } label: {
+                        Image(systemName: Bank.sfSymbol)
+                    }
+                    NavigationLink {
+                        PieView()
+                    } label: {
+                        Image(systemName: "chart.pie")
+                    }
+                    NavigationLink {
+                        BarView()
+                    } label: {
+                        Image(systemName: "chart.bar")
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .bottomBar) {
+                        NavigationLink {
+                            AddAccountView()
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                    }
+                }
             }
+            
         }
-        .tabViewStyle(.verticalPage)
+        
     }
 }
 

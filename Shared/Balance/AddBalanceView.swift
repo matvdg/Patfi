@@ -31,16 +31,16 @@ struct AddBalanceView: View {
             #if os(macOS)
             .padding()
             #endif
-            #if os(iOS) || os(tvOS) || os(visionOS)
             .navigationTitle(String(localized: "New snapshot"))
-            #endif
             .toolbar {
                 #if !os(watchOS)
-                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .cancel, action: { dismiss() })
+                }
                 #endif
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") { add() }
-                        .disabled(Double(amountText.replacingOccurrences(of: ",", with: ".")) == nil)
+                    Button(role: .confirm, action: { add() })
+                    .disabled(Double(amountText.replacingOccurrences(of: ",", with: ".")) == nil)
                 }
             }
             .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }
