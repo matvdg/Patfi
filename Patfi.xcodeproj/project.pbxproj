@@ -69,7 +69,7 @@
 		F61F9A112E95715E0009BDE3 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Utils/ArrowButton.swift,
+				Utils/CustomButtons.swift,
 			);
 			target = F6B833912E8EA57C00B2AB0C /* PatfiWatch Watch App */;
 		};
@@ -100,7 +100,7 @@
 				Bank/EditBankView.swift,
 				Charts/PieChartView.swift,
 				Charts/TotalChartView.swift,
-				Utils/ArrowButton.swift,
+				Utils/CustomButtons.swift,
 			);
 			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
 		};

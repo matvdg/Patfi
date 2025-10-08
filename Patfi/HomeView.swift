@@ -3,7 +3,7 @@ import SwiftData
 import Playgrounds
 
 struct HomeView: View {
-
+    
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.verticalSizeClass) private var verticalSizeClass
@@ -15,9 +15,37 @@ struct HomeView: View {
     @State var mode: Mode = .categories
     @State var period: Period = .months
     @State private var isGraphHidden = false
+    @State private var collapsedSections: Set<String> = []
+    
+    private var allKeys: [String] {
+        switch mode {
+        case .categories:
+            accountsByCategory.map { $0.key.localized }
+        case .banks:
+            accountsByBank.map { $0.key.normalizedName }
+        }
+    }
+    
+    private var allCollapsed: Bool {
+        collapsedSections.count == allKeys.count
+    }
+    
+    private var allCollapsedBinding: Binding<Bool> {
+        Binding(
+            get: {
+                allCollapsed },
+            set: { newValue in
+                if newValue {
+                    collapsedSections = Set(allKeys)
+                } else {
+                    collapsedSections.removeAll()
+                }
+            }
+        )
+    }
     
     private let repo = BalanceRepository()
-        
+    
     private var accountsByCategory: [Dictionary<Category, [Account]>.Element] {
         Array(repo.groupByCategory(accounts).sorted { $0.key.localized < $1.key.localized })
             .sorted {
@@ -37,12 +65,12 @@ struct HomeView: View {
     }
     
     private var isLandscape: Bool {
-            #if os(iOS)
-            return UIDevice.current.userInterfaceIdiom == .phone && verticalSizeClass == .compact
-            #else
-            return false
-            #endif
-        }
+#if os(iOS)
+        return UIDevice.current.userInterfaceIdiom == .phone && verticalSizeClass == .compact
+#else
+        return false
+#endif
+    }
     
     var body: some View {
         
@@ -107,53 +135,85 @@ struct HomeView: View {
                     .frame(height: isGraphHidden ? 0 : nil)
                     .opacity(isGraphHidden ? 0 : 1)
                     if !isLandscape {
-                        ArrowButton(isUp: $isGraphHidden)
+                        ZStack {
+                            ArrowButton(isUp: $isGraphHidden)
+                            if selectedChart == 0 {
+                                HStack {
+                                    Spacer()
+                                    CollapseButton(isCollapsed: allCollapsedBinding).padding(.trailing, 12)
+                                }
+                            }
+                        }
                         List {
                             if selectedChart == 0 {
                                 switch mode {
                                 case .categories:
                                     ForEach(accountsByCategory, id: \.key) { (category, items) in
+                                        let isCollapsed = collapsedSections.contains(category.localized)
                                         Section {
-                                            ForEach(items) { account in
-                                                NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
+                                            if !isCollapsed {
+                                                ForEach(items) { account in
+                                                    NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
+                                                }
                                             }
                                         } header: {
-                                            VStack(alignment: .center, spacing: 8) {
+                                            HStack(spacing: 8) {
+                                                Circle().fill(category.color).frame(width: 10, height: 10)
+                                                Text(category.localized)
                                                 Spacer()
-                                                HStack(spacing: 8) {
-                                                    Circle().fill(category.color).frame(width: 10, height: 10)
-                                                    Text(category.localized)
-                                                    Spacer()
-                                                    Text(repo.balance(for: items).toString)
-                                                }
-#if os(macOS)
-                                                .padding(.vertical, 8)
-#endif
+                                                Text(repo.balance(for: items).toString)
+                                                ArrowRightButton(isRight: Binding(
+                                                    get: { isCollapsed },
+                                                    set: { isCollapsed in
+                                                        if isCollapsed {
+                                                            collapsedSections.insert(category.localized)
+                                                        } else {
+                                                            collapsedSections.remove(category.localized)
+                                                        }
+                                                    }
+                                                ))
+                                                .buttonStyle(.plain)
                                             }
+                                            .frame(height: isCollapsed ? 5 : 30)
+                                            .padding(.top, isCollapsed ? 12 : 0)
 #if os(macOS)
+                                            .padding(.vertical, 8)
                                             .frame(height: 50)
 #endif
                                         }
                                     }
                                 case .banks:
                                     ForEach(accountsByBank, id: \.key) { (bank, items) in
+                                        let isCollapsed = collapsedSections.contains(bank.normalizedName)
                                         Section {
-                                            ForEach(items) { account in
-                                                NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account, displayBankLogo: false) }
+                                            if !isCollapsed {
+                                                ForEach(items) { account in
+                                                    NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account, displayBankLogo: false) }
+                                                }
+                                            } else {
+                                                EmptyView().frame(height: 100)
                                             }
                                         } header: {
-                                            VStack(alignment: .center, spacing: 8) {
+                                            HStack {
+                                                BankRow(bank: bank)
                                                 Spacer()
-                                                HStack {
-                                                    BankRow(bank: bank)
-                                                    Spacer()
-                                                    Text(repo.balance(for: items).toString)
-                                                }
-#if os(macOS)
-                                                .padding(.vertical, 8)
-#endif
+                                                Text(repo.balance(for: items).toString)
+                                                ArrowRightButton(isRight: Binding(
+                                                    get: { isCollapsed },
+                                                    set: { isCollapsed in
+                                                        if isCollapsed {
+                                                            collapsedSections.insert(bank.normalizedName)
+                                                        } else {
+                                                            collapsedSections.remove(bank.normalizedName)
+                                                        }
+                                                    }
+                                                ))
+                                                .buttonStyle(.plain)
                                             }
+                                            .frame(height: isCollapsed ? 22 : 30)
+                                            .padding(.top, isCollapsed ? 4 : 0)
 #if os(macOS)
+                                            .padding(.vertical, 8)
                                             .frame(height: 50)
 #endif
                                         }
@@ -195,18 +255,18 @@ struct HomeView: View {
                             }
                         }
                         .scrollIndicators(.hidden)
-                        #if os(macOS)
+#if os(macOS)
                         .listStyle(.plain)
                         .padding()
-                        #else
+#else
                         .listStyle(.insetGrouped)
-                        #endif
+#endif
                     }
                 }
             }
-            #if os(macOS)
+#if os(macOS)
             .padding()
-            #endif
+#endif
             .ignoresSafeArea(edges: .bottom)
             .toolbar {
                 ToolbarItem(placement: .automatic) {
@@ -220,9 +280,9 @@ struct HomeView: View {
             }
             .navigationTitle("Patfi")
             
-            #if !os(macOS)
+#if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
-            #endif
+#endif
         }
         .onChange(of: scenePhase) { old, newPhase in
             print("ℹ️ \(scenePhase)")
@@ -231,6 +291,9 @@ struct HomeView: View {
         .onChange(of: isLandscape, {
             isGraphHidden = false
         })
+        .onChange(of: mode) { _, _ in
+            collapsedSections = []
+        }
     }
 }
 
