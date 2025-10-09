@@ -3,7 +3,7 @@
 ## Description
 Patfi is a simple, ad-free, ultra-light app that lets you manually track and categorize all your bank accounts and balances with clear totals and graphs.
 
-![Patfi Screenshot](https://github.com/matvdg/Patfi/blob/603654a5e8a4b1f1b63f1f7973db682c9070e51c/Patfi.png)
+![Patfi Screenshot](https://github.com/matvdg/Patfi/blob/c3c5815d775b816af2142bb39b6ddcbaaaa6bfb6/Patfi.png)
 
 Are you looking for a simple app to track all your accounts in your different banks? Tired of tracking apps with ads and subscriptions, with automatic synchronization that never works? Patfi is a very simple, ultra-light app, without ads, without subscriptions, where you can manually enter your balances into your various accounts whenever you want. 
 
@@ -19,6 +19,6 @@ Are you looking for a simple app to track all your accounts in your different ba
 - Ultra-light cross-platform app & widget in SwiftUI (iOS 26 / iPadOS 26 / macOS 26 / visionOS 26 / watchOS 26) with LiquidGlass
 
 
-## Feedbacks / feature request / bug balanceRepositoryrt
+## Feedbacks / feature request / bug
 
 Feel free to create an issue on GitHub or contact me: matvdg@me.com
