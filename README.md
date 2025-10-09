@@ -14,8 +14,10 @@ Are you looking for a simple app to track all your accounts in your different ba
 - Simple & safe: Patfi is consultative, no financial transaction is possible. No need for an account or authentication: the synchronization of your data (secure and encrypted) through your devices (iPhone / iPad / Mac / Apple Vision Pro / Apple Watch) is done on your iCloud!
 - Displays your total balance at any time
 - Sort your assets by category (current, savings, stock market, crypto...)
-- Sort your assets by bank 
+- Sort your assets by bank
 - Offers tracking graphs
+- Expense tracking by period (day/week/month/year) / by banks / by means of payment
+- Income tracking  by period (day/week/month/year)
 - Ultra-light cross-platform app & widget in SwiftUI (iOS 26 / iPadOS 26 / macOS 26 / visionOS 26 / watchOS 26) with LiquidGlass
 
 
