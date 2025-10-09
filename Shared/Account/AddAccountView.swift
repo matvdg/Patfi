@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct AddAccountView: View {
+    
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @Query(sort: [SortDescriptor(\Bank.name, order: .forward)]) private var banks: [Bank]
@@ -9,7 +10,7 @@ struct AddAccountView: View {
     @State private var name: String = ""
     @State private var category: Category = .other
     @State private var initialBalanceText: String = ""
-    @State private var selectedBank: Bank? = nil
+    @State private var bank: Bank? = nil
     @FocusState private var focused: Bool
     
     let accountRepository = AccountRepository()
@@ -40,9 +41,9 @@ struct AddAccountView: View {
             
             Section("Bank") {
                 NavigationLink {
-                    EditBanksView(selectedBank: $selectedBank)
+                    EditBanksView(selectedBank: $bank)
                 } label: {
-                    if let bank = selectedBank {
+                    if let bank {
                         BankRow(bank: bank)
                     } else {
                         Text("Select/create/modify a bank")
@@ -52,7 +53,7 @@ struct AddAccountView: View {
             }
             
             Section("Initial balance") {
-                TextField("Amount", text: $initialBalanceText)
+                TextField("Balance", text: $initialBalanceText)
 #if os(iOS) || os(tvOS) || os(visionOS)
                     .keyboardType(.decimalPad)
 #endif
@@ -70,12 +71,12 @@ struct AddAccountView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {
-                    guard let bank = selectedBank, let balance = balance else { return }
+                    guard let bank, let balance else { return }
                     accountRepository.create(name: name, balance: balance, category: category, bank: bank, context: context)
                     dismiss()
                     
                 })
-                .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedBank == nil || balance == nil)
+                .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || bank == nil || balance == nil)
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }

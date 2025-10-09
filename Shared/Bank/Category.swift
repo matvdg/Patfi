@@ -1,6 +1,7 @@
 import SwiftUI
 
 enum Category: String, Codable, CaseIterable, Identifiable {
+    
     case current, savings, crypto, stocks, lifeInsurance, loan, commodities, other
 
     var id: String { rawValue }

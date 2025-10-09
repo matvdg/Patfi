@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ModeView: View {
+    
     @Environment(\.dismiss) private var dismiss
     @Binding var mode: Mode
 

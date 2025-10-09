@@ -8,7 +8,7 @@ enum Sorting: String, CaseIterable, Identifiable {
             case .name:      "Name"
             case .bank:      "Bank"
             case .category:  "Category"
-            case .amount:    "Amount"
+            case .amount:    "Balance"
             }
         }
 }

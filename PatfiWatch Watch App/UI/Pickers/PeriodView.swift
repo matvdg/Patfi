@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PeriodView: View {
+    
     @Environment(\.dismiss) private var dismiss
     @Binding var period: Period
 

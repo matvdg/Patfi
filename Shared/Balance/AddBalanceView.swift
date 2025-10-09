@@ -17,7 +17,7 @@ struct AddBalanceView: View {
         NavigationStack {
             Form {
                 DatePicker("Date", selection: $date, displayedComponents: [.date])
-                TextField("Amount", text: $amountText)
+                TextField("Balance", text: $amountText)
                     #if os(iOS) || os(tvOS) || os(visionOS)
                     .keyboardType(.decimalPad)
                     #endif

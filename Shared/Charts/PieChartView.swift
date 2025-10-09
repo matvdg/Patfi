@@ -3,6 +3,7 @@ import SwiftData
 import Charts
 
 struct PieChartView: View {
+    
     @Query(sort: [SortDescriptor(\Account.name, order: .forward)])
     private var accounts: [Account]
     

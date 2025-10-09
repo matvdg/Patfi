@@ -81,6 +81,16 @@ final class Transaction {
             case .bankTransfer: return "arrow.left.arrow.right"
             }
         }
+        
+        var color: Color {
+            switch self {
+            case .applePay: return .green
+            case .creditCard: return .blue
+            case .cheque: return .orange
+            case .cashWithdrawal: return .yellow
+            case .bankTransfer: return .red
+            }
+        }
     }
 
 }

@@ -4,6 +4,7 @@ import SwiftUI
 
 @Model
 final class Account: Identifiable {
+    
     var name: String = ""
     var category: Category = Category.other
     
