@@ -133,9 +133,7 @@ struct AccountDetailView: View {
             }
             .padding(.all)
         }
-#if os(macOS)
-        .padding(.all)
-#endif
+        .formStyle(.grouped)
         .navigationTitle(account.name.isEmpty ? String(localized: "Account") : account.name)
         .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
