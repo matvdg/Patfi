@@ -20,9 +20,14 @@ struct ArrowButton: View {
     }
 }
 
-struct ArrowRightButton: View {
-    
+struct ArrowRightButton<Content: View>: View {
     @Binding var isRight: Bool
+    let content: () -> Content
+
+    init(isRight: Binding<Bool>, @ViewBuilder content: @escaping () -> Content) {
+        self._isRight = isRight
+        self.content = content
+    }
 
     var body: some View {
         Button(action: {
@@ -30,10 +35,16 @@ struct ArrowRightButton: View {
                 isRight.toggle()
             }
         }) {
-            Image(systemName: "chevron.right")
-                .rotationEffect(.degrees(isRight ? 0 : 90))
-                .padding(4)
+            HStack {
+                content()
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .rotationEffect(.degrees(isRight ? 0 : 90))
+                    .padding(4)
+            }
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
     }
 }
 
@@ -54,6 +65,9 @@ struct CollapseButton: View {
 
 #Preview {
     ArrowButton(isUp: .constant(false))
-    ArrowRightButton(isRight: .constant(false))
+    ArrowRightButton(isRight: .constant(false)) {
+        Text("Exemple")
+            .padding(.leading, 8)
+    }
     CollapseButton(isCollapsed: .constant(false))
 }

@@ -157,22 +157,22 @@ struct HomeView: View {
                                                 }
                                             }
                                         } header: {
-                                            HStack(spacing: 8) {
-                                                Circle().fill(category.color).frame(width: 10, height: 10)
-                                                Text(category.localized)
-                                                Spacer()
-                                                Text(repo.balance(for: items).toString)
-                                                ArrowRightButton(isRight: Binding(
-                                                    get: { isCollapsed },
-                                                    set: { isCollapsed in
-                                                        if isCollapsed {
-                                                            collapsedSections.insert(category.localized)
-                                                        } else {
-                                                            collapsedSections.remove(category.localized)
-                                                        }
+                                            ArrowRightButton(isRight: Binding(
+                                                get: { isCollapsed },
+                                                set: { isCollapsed in
+                                                    if isCollapsed {
+                                                        collapsedSections.insert(category.localized)
+                                                    } else {
+                                                        collapsedSections.remove(category.localized)
                                                     }
-                                                ))
-                                                .buttonStyle(.plain)
+                                                }
+                                            )) {
+                                                HStack(spacing: 8) {
+                                                    Circle().fill(category.color).frame(width: 10, height: 10)
+                                                    Text(category.localized)
+                                                    Spacer()
+                                                    Text(repo.balance(for: items).toString)
+                                                }
                                             }
                                             .frame(height: isCollapsed ? 5 : 30)
                                             .padding(.top, isCollapsed ? 12 : 0)
@@ -194,21 +194,21 @@ struct HomeView: View {
                                                 EmptyView().frame(height: 100)
                                             }
                                         } header: {
-                                            HStack {
-                                                BankRow(bank: bank)
-                                                Spacer()
-                                                Text(repo.balance(for: items).toString)
-                                                ArrowRightButton(isRight: Binding(
-                                                    get: { isCollapsed },
-                                                    set: { isCollapsed in
-                                                        if isCollapsed {
-                                                            collapsedSections.insert(bank.normalizedName)
-                                                        } else {
-                                                            collapsedSections.remove(bank.normalizedName)
-                                                        }
+                                            ArrowRightButton(isRight: Binding(
+                                                get: { isCollapsed },
+                                                set: { isCollapsed in
+                                                    if isCollapsed {
+                                                        collapsedSections.insert(bank.normalizedName)
+                                                    } else {
+                                                        collapsedSections.remove(bank.normalizedName)
                                                     }
-                                                ))
-                                                .buttonStyle(.plain)
+                                                }
+                                            )) {
+                                                HStack {
+                                                    BankRow(bank: bank)
+                                                    Spacer()
+                                                    Text(repo.balance(for: items).toString)
+                                                }
                                             }
                                             .frame(height: isCollapsed ? 22 : 30)
                                             .padding(.top, isCollapsed ? 4 : 0)
