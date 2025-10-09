@@ -9,19 +9,19 @@ struct AccountsView: View {
     
     @Query private var accounts: [Account]
     
-    private let repo = BalanceRepository()
+    private let balanceRepository = BalanceRepository()
     
     private var accountsByCategory: [Dictionary<Category, [Account]>.Element] {
-        Array(repo.groupByCategory(accounts).sorted { $0.key.localized < $1.key.localized })
+        Array(balanceRepository.groupByCategory(accounts).sorted { $0.key.localized < $1.key.localized })
             .sorted {
-                repo.balance(for: $0.value) > repo.balance(for: $1.value)
+                balanceRepository.balance(for: $0.value) > balanceRepository.balance(for: $1.value)
             }
     }
     
     private var accountsByBank: [Dictionary<Bank, [Account]>.Element] {
-        Array(repo.groupByBank(accounts).sorted { $0.key.normalizedName < $1.key.normalizedName })
+        Array(balanceRepository.groupByBank(accounts).sorted { $0.key.normalizedName < $1.key.normalizedName })
             .sorted {
-                repo.balance(for: $0.value) > repo.balance(for: $1.value)
+                balanceRepository.balance(for: $0.value) > balanceRepository.balance(for: $1.value)
             }
     }
     
@@ -39,7 +39,11 @@ struct AccountsView: View {
                         Label("Create your first account", systemImage: "plus")
                             .padding()
                     }
+#if os(visionOS)
+                    .buttonStyle(.borderedProminent)
+#else
                     .buttonStyle(.glassProminent)
+#endif
                     .navigationDestination(isPresented: $showAddAccount) {
                         AddAccountView()
                     }
@@ -71,7 +75,7 @@ struct AccountsView: View {
                                         Circle().fill(category.color).frame(width: 10, height: 10)
                                         Text(category.localized)
                                         Spacer()
-                                        Text(repo.balance(for: items).toString)
+                                        Text(balanceRepository.balance(for: items).toString)
                                     }
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.1)
@@ -93,7 +97,7 @@ struct AccountsView: View {
                                 HStack {
                                     BankRow(bank: bank)
                                     Spacer()
-                                    Text(repo.balance(for: items).toString)
+                                    Text(balanceRepository.balance(for: items).toString)
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.1)
                                 }

@@ -11,6 +11,7 @@ struct AddBalanceView: View {
     @State private var date: Date = .now
     @State private var amountText: String = ""
     @FocusState private var focused: Bool
+    let balanceRepository = BalanceRepository()
 
     var body: some View {
         NavigationStack {
@@ -39,20 +40,16 @@ struct AddBalanceView: View {
                 }
                 #endif
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(role: .confirm, action: { add() })
+                    Button(role: .confirm) {
+                        guard let amount = Double(amountText.replacingOccurrences(of: ",", with: ".")) else { return }
+                        balanceRepository.add(amount: amount, date: date, account: account, context: context)
+                        dismiss()
+                    }
                     .disabled(Double(amountText.replacingOccurrences(of: ",", with: ".")) == nil)
                 }
             }
             .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }
         }
-    }
-
-    private func add() {
-        guard let amount = Double(amountText.replacingOccurrences(of: ",", with: ".")) else { return }
-        let snap = BalanceSnapshot(date: Calendar.current.startOfDay(for: date), balance: amount, account: account)
-        context.insert(snap)
-        try? context.save()
-        dismiss()
     }
 }
 

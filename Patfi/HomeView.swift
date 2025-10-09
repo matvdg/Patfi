@@ -44,24 +44,24 @@ struct HomeView: View {
         )
     }
     
-    private let repo = BalanceRepository()
+    private let balanceRepository = BalanceRepository()
     
     private var accountsByCategory: [Dictionary<Category, [Account]>.Element] {
-        Array(repo.groupByCategory(accounts).sorted { $0.key.localized < $1.key.localized })
+        Array(balanceRepository.groupByCategory(accounts).sorted { $0.key.localized < $1.key.localized })
             .sorted {
-                repo.balance(for: $0.value) > repo.balance(for: $1.value)
+                balanceRepository.balance(for: $0.value) > balanceRepository.balance(for: $1.value)
             }
     }
     
     private var accountsByBank: [Dictionary<Bank, [Account]>.Element] {
-        Array(repo.groupByBank(accounts).sorted { $0.key.normalizedName < $1.key.normalizedName })
+        Array(balanceRepository.groupByBank(accounts).sorted { $0.key.normalizedName < $1.key.normalizedName })
             .sorted {
-                repo.balance(for: $0.value) > repo.balance(for: $1.value)
+                balanceRepository.balance(for: $0.value) > balanceRepository.balance(for: $1.value)
             }
     }
     
     private var balancesByPeriod: [BalanceRepository.TotalPoint] {
-        repo.generateSeries(for: period, from: snapshots).sorted { $0.date > $1.date }
+        balanceRepository.generateSeries(for: period, from: snapshots).sorted { $0.date > $1.date }
     }
     
     private var isLandscape: Bool {
@@ -88,7 +88,11 @@ struct HomeView: View {
                             Label("Create your first account", systemImage: "plus")
                                 .padding()
                         }
+#if os(visionOS)
+                        .buttonStyle(.borderedProminent)
+#else
                         .buttonStyle(.glassProminent)
+#endif
                     }
                 } else {
                     if !isLandscape {
@@ -171,7 +175,7 @@ struct HomeView: View {
                                                     Circle().fill(category.color).frame(width: 10, height: 10)
                                                     Text(category.localized)
                                                     Spacer()
-                                                    Text(repo.balance(for: items).toString)
+                                                    Text(balanceRepository.balance(for: items).toString)
                                                 }
                                             }
                                             .frame(height: isCollapsed ? 5 : 30)
@@ -207,7 +211,7 @@ struct HomeView: View {
                                                 HStack {
                                                     BankRow(bank: bank)
                                                     Spacer()
-                                                    Text(repo.balance(for: items).toString)
+                                                    Text(balanceRepository.balance(for: items).toString)
                                                 }
                                             }
                                             .frame(height: isCollapsed ? 22 : 30)
@@ -286,7 +290,7 @@ struct HomeView: View {
         }
         .onChange(of: scenePhase) { old, newPhase in
             print("ℹ️ \(scenePhase)")
-            repo.update(accounts: accounts)
+            balanceRepository.update(accounts: accounts)
         }
         .onChange(of: isLandscape, {
             isGraphHidden = false

@@ -15,6 +15,8 @@ struct EditBankView: View {
     @State private var debounceTask: DispatchWorkItem? = nil
     @State private var logoAvailability: Bank.LogoAvailability = .unknown
     
+    private let bankRepository = BankRepository()
+    
     var body: some View {
         NavigationStack {
             Form {
@@ -118,7 +120,10 @@ struct EditBankView: View {
                 }
                 #endif
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(role: .confirm, action: { save() })
+                    Button(role: .confirm, action: {
+                        bankRepository.updateOrSave(name: name, bank: bank, palette: palette, logoAvailability: logoAvailability, context: context)
+                        dismiss()
+                    })
                     .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
@@ -140,33 +145,6 @@ struct EditBankView: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true }
             }
         }
-    }
-    
-    private func initialLetter() -> String {
-        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let first = trimmed.first { return String(first).uppercased() }
-        return "?"
-    }
-    
-    private func save() {
-        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let bank { // Update
-            if bank.name != trimmedName {
-                bank.name = trimmedName
-            }
-            bank.color = palette
-            bank.logoAvailability = logoAvailability
-        } else { // Creation
-            let bank = Bank(name: trimmedName, color: palette, logoAvaibility: logoAvailability)
-            context.insert(bank)
-        }
-        do {
-            try context.save()
-        }
-        catch {
-            print("Save error:", error)
-        }
-        dismiss()
     }
     
 }

@@ -19,6 +19,6 @@ Are you looking for a simple app to track all your accounts in your different ba
 - Ultra-light cross-platform app & widget in SwiftUI (iOS 26 / iPadOS 26 / macOS 26 / visionOS 26 / watchOS 26) with LiquidGlass
 
 
-## Feedbacks / feature request / bug report
+## Feedbacks / feature request / bug balanceRepositoryrt
 
 Feel free to create an issue on GitHub or contact me: matvdg@me.com

@@ -4,7 +4,7 @@ import SwiftData
 struct HomeView: View {
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
-    private let repo = BalanceRepository()
+    private let balanceRepository = BalanceRepository()
     
     var body: some View {
         NavigationStack {

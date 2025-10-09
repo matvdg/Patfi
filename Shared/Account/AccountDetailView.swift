@@ -11,7 +11,8 @@ struct AccountDetailView: View {
     @State private var showDeleteAccountConfirm = false
     @State private var period: Period = .months
     
-    private let repo = BalanceRepository()
+    private let balanceRepository = BalanceRepository()
+    private let accountRepository = AccountRepository()
     
     var body: some View {
         Form {
@@ -19,7 +20,7 @@ struct AccountDetailView: View {
             Section("Account") {
                 TextField("Name", text: $account.name)
                     .disableAutocorrection(true)
-                
+                    .frame(maxWidth: 300)
                 HStack {
                     Circle().fill(account.category.color).frame(width: 10, height: 10)
                     Picker("Category", selection: $account.category) {
@@ -38,7 +39,8 @@ struct AccountDetailView: View {
                 }
                 .confirmationDialog("Delete this account?", isPresented: $showDeleteAccountConfirm, titleVisibility: .visible) {
                     Button("Delete", role: .destructive) {
-                        deleteAccount()
+                        accountRepository.delete(account: account, context: context)
+                        dismiss()
                     }
                     Button(role: .cancel, action: { dismiss() })
                 } message: {
@@ -111,13 +113,13 @@ struct AccountDetailView: View {
                         }
                         .swipeActions(edge: .trailing) {
                             Button(role: .destructive) {
-                                deleteSnapshot(snap)
+                                balanceRepository.delete(snap, context: context)
                             } label: { Label("Delete", systemImage: "trash") }
                         }
 #if !os(watchOS)
                         .contextMenu {
                             Button(role: .destructive) {
-                                deleteSnapshot(snap)
+                                balanceRepository.delete(snap, context: context)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
@@ -145,24 +147,6 @@ struct AccountDetailView: View {
                         }
                     }
     }
-    
-    // MARK: - Actions
-    private func deleteAccount() {
-        // Delete all snapshots first (defensive, even with cascade)
-        if let snaps = account.balances {
-            for s in snaps { context.delete(s) }
-        }
-        context.delete(account)
-        try? context.save()
-        dismiss()
-    }
-    
-    private func deleteSnapshot(_ snap: BalanceSnapshot) {
-        context.delete(snap)
-        try? context.save()
-    }
-    
-    
 }
 
 #Preview {

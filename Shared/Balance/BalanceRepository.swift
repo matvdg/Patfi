@@ -12,6 +12,36 @@ class BalanceRepository {
         var id: Double { date.timeIntervalSince1970 }
     }
     
+    func add(amount: Double, date: Date, account: Account, context: ModelContext) {
+        
+        let dayStart = Calendar.current.startOfDay(for: date)
+
+        // Compute day range for predicate-friendly filtering
+        let endOfDay = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: dayStart) ?? dayStart
+
+        // Fetch existing snapshot for the same day, then match account in-memory to avoid relationship comparison issues in predicates
+        let fetchRequest = FetchDescriptor<BalanceSnapshot>(
+            predicate: #Predicate { snap in
+                snap.date >= dayStart && snap.date <= endOfDay
+            }
+        )
+
+        let sameDaySnaps = (try? context.fetch(fetchRequest)) ?? []
+        if let existingSnap = sameDaySnaps.first(where: { $0.account == account }) {
+            existingSnap.balance = amount
+        } else {
+            let snap = BalanceSnapshot(date: dayStart, balance: amount, account: account)
+            context.insert(snap)
+        }
+
+        try? context.save()
+    }
+    
+    func delete(_ snap: BalanceSnapshot, context: ModelContext) {
+        context.delete(snap)
+        try? context.save()
+    }
+    
     func generateSeries(for period: Period, from snapshots: [BalanceSnapshot]) -> [TotalPoint] {
         if snapshots.isEmpty { return [] }
         var cal = Calendar.current

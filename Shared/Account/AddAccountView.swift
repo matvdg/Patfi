@@ -11,16 +11,23 @@ struct AddAccountView: View {
     @State private var initialBalanceText: String = ""
     @State private var selectedBank: Bank? = nil
     @FocusState private var focused: Bool
+    
+    let accountRepository = AccountRepository()
+    
+    var balance: Double? {
+        Double(initialBalanceText.replacingOccurrences(of: ",", with: "."))
+    }
 
     var body: some View {
 #if os(macOS)
-        VStack(alignment: .leading) {
+        Form {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     Form {
                         Section("Account") {
                             TextField("Name", text: $name)
                                 .autocorrectionDisabled()
+                                .frame(maxWidth: 300)
                             HStack {
                                 Circle().fill(category.color).frame(width: 10, height: 10)
                                 Picker("Category", selection: $category) {
@@ -47,6 +54,7 @@ struct AddAccountView: View {
                         
                         Section("Initial balance") {
                             TextField("Amount", text: $initialBalanceText)
+                                .frame(maxWidth: 300)
                                 .focused($focused)
                                 .onChange(of: initialBalanceText) { _, newValue in
                                     let cleaned = newValue.filter { !$0.isWhitespace }
@@ -57,6 +65,7 @@ struct AddAccountView: View {
                         }
                     }
                     .padding()
+                    .padding()
                 }
                 .frame(maxHeight: .infinity, alignment: .top)
             }
@@ -64,8 +73,13 @@ struct AddAccountView: View {
         .navigationTitle("New Account")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(role: .confirm, action: { create() })
-                    .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedBank == nil)
+                Button(role: .confirm, action: {
+                    guard let bank = selectedBank, let balance = balance else { return }
+                    accountRepository.create(name: name, balance: balance, category: category, bank: bank, context: context)
+                    dismiss()
+                    
+                })
+                .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedBank == nil || balance == nil)
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }
@@ -117,28 +131,19 @@ struct AddAccountView: View {
             .navigationTitle("New Account")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(role: .confirm, action: { create() })
-                        .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedBank == nil)
+                    Button(role: .confirm, action: {
+                        guard let bank = selectedBank, let balance = balance else { return }
+                        accountRepository.create(name: name, balance: balance, category: category, bank: bank, context: context)
+                        dismiss()
+                        
+                    })
+                    .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedBank == nil || balance == nil)
                 }
             }
             .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }
         }
 #endif
     }
-
-    private func create() {
-        let account = Account(name: name, category: category, bank: selectedBank)
-        context.insert(account)
-
-        if let amount = Double(initialBalanceText.replacingOccurrences(of: ",", with: ".")) {
-            let snap = BalanceSnapshot(date: Date(), balance: amount, account: account)
-            context.insert(snap)
-        }
-
-        do { try context.save() } catch { print("Save error:", error) }
-        dismiss()
-    }
-
 }
 
 #Preview {

@@ -4,11 +4,11 @@ import SwiftData
 struct TotalView: View {
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
-    private let repo = BalanceRepository()
+    private let balanceRepository = BalanceRepository()
     
     var body: some View {
         VStack(alignment: .center, spacing: 10) {
-            let balance = repo.balance(for: accounts)
+            let balance = balanceRepository.balance(for: accounts)
             Text(balance.toString)
                 .font(.largeTitle)
                 .bold()

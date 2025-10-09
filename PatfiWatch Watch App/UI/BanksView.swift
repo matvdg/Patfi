@@ -9,7 +9,8 @@ struct BanksView: View {
     @State private var bankToModify: Bank?
     @State private var refreshID = UUID()
     
-    private let repo = BalanceRepository()
+    private let balanceRepository = BalanceRepository()
+    private let bankRepository = BankRepository()
     
     var body: some View {
         Group {
@@ -26,7 +27,11 @@ struct BanksView: View {
                         Label("Create your first bank", systemImage: "plus")
                             .padding()
                     }
+#if os(visionOS)
+                    .buttonStyle(.borderedProminent)
+#else
                     .buttonStyle(.glassProminent)
+#endif
                 }
             } else {
                 List {
@@ -38,7 +43,7 @@ struct BanksView: View {
                                 BankRow(bank: bank)
                                 Spacer()
                                 if let accounts = bank.accounts {
-                                    let total = repo.balance(for: accounts)
+                                    let total = balanceRepository.balance(for: accounts)
                                     Text(total.toString)
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.1)
@@ -48,7 +53,7 @@ struct BanksView: View {
                         }
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button(role: .destructive) {
-                                deleteBank(bank)
+                                bankRepository.delete(bank, context: context)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
@@ -82,17 +87,6 @@ struct BanksView: View {
             EditBankView()
         }
     }
-    
-        private func deleteBank(_ bank: Bank) {
-            context.delete(bank)
-            do {
-                try context.save()
-            } catch {
-                // Handle the error appropriately in a real app
-                print("Failed to delete banks: \(error.localizedDescription)")
-            }
-        }
-        
 }
 
 #Preview {

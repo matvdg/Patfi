@@ -7,11 +7,11 @@ struct TotalChartView: View {
     let snapshots: [BalanceSnapshot]
     
     @Binding var period: Period
-    private let repo = BalanceRepository()
+    private let balanceRepository = BalanceRepository()
     
     var body: some View {
         
-        let series = repo.generateSeries(for: period, from: snapshots)
+        let series = balanceRepository.generateSeries(for: period, from: snapshots)
         
         GeometryReader { geo in
             let minValue = series.map(\.total).min() ?? 0

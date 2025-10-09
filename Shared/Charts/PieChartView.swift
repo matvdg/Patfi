@@ -6,24 +6,24 @@ struct PieChartView: View {
     @Query(sort: [SortDescriptor(\Account.name, order: .forward)])
     private var accounts: [Account]
     
-    private let repo = BalanceRepository()
+    private let balanceRepository = BalanceRepository()
     
     @Binding var grouping: Mode
     
     private var allSlices: [Slice] {
         switch grouping {
         case .categories:
-            return repo.groupByCategory(accounts)
+            return balanceRepository.groupByCategory(accounts)
                 .map { cat, accounts in
-                    Slice(label: cat.localized, color: cat.color, total: repo.balance(for: accounts))
+                    Slice(label: cat.localized, color: cat.color, total: balanceRepository.balance(for: accounts))
                 }
                 .sorted {
                     $0.total > $1.total
                 }
         case .banks:
-            return repo.groupByBank(accounts)
+            return balanceRepository.groupByBank(accounts)
                 .map { bank, accounts in
-                    Slice(label: bank.name, color: bank.swiftUIColor, total: repo.balance(for: accounts))
+                    Slice(label: bank.name, color: bank.swiftUIColor, total: balanceRepository.balance(for: accounts))
                 }
                 .sorted {
                     $0.total > $1.total
@@ -33,7 +33,7 @@ struct PieChartView: View {
     
     var body: some View {
         let slices = allSlices.filter { grouping != .categories || $0.label != Category.loan.localized }
-        let total = repo.balance(for: accounts)
+        let total = balanceRepository.balance(for: accounts)
         
         VStack(alignment: .center, spacing: 20) {
             ZStack {
