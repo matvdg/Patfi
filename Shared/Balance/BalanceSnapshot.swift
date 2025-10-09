@@ -2,7 +2,8 @@ import Foundation
 import SwiftData
 
 @Model
-final class BalanceSnapshot {
+final class BalanceSnapshot: Identifiable {
+    
     var date: Date = Date()
     var balance: Double = 0.0
     var account: Account? = nil

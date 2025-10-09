@@ -1,7 +1,7 @@
 import SwiftUI
 
 enum Category: String, Codable, CaseIterable, Identifiable {
-    case current,savings, crypto, stocks, lifeInsurance, loan, commodities, other
+    case current, savings, crypto, stocks, lifeInsurance, loan, commodities, other
 
     var id: String { rawValue }
 
@@ -23,16 +23,16 @@ enum Category: String, Codable, CaseIterable, Identifiable {
     }
     
     private var localizedName: LocalizedStringResource {
-            switch self {
-            case .current:       "category.current"
-            case .savings:       "category.savings"
-            case .crypto:        "category.crypto"
-            case .stocks:        "category.stocks"
-            case .lifeInsurance: "category.lifeInsurance"
-            case .loan:          "category.loan"
-            case .commodities:   "category.commodities"
-            case .other:         "category.other"
-            }
+        switch self {
+        case .current:       "category.current"
+        case .savings:       "category.savings"
+        case .crypto:        "category.crypto"
+        case .stocks:        "category.stocks"
+        case .lifeInsurance: "category.lifeInsurance"
+        case .loan:          "category.loan"
+        case .commodities:   "category.commodities"
+        case .other:         "category.other"
         }
+    }
     
 }

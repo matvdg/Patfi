@@ -13,6 +13,9 @@ final class Account: Identifiable {
     @Relationship(deleteRule: .cascade, inverse: \BalanceSnapshot.account)
     var balances: [BalanceSnapshot]? = nil
     
+    @Relationship(deleteRule: .cascade, inverse: \Transaction.account)
+    var transactions: [Transaction]? = nil
+    
     init(name: String = "", category: Category = Category.other, bank: Bank? = nil) {
         self.name = name
         self.category = category
