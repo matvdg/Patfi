@@ -105,11 +105,19 @@ struct EditBanksView: View {
             }
         }
         .navigationTitle("Banks")
-        .sheet(item: $bankToModify, onDismiss: { refreshID = UUID() }) { bank in
-            EditBankView(bank: bank)
-        }
-        .sheet(isPresented: $showingAddBank, onDismiss: { refreshID = UUID() }) {
+        .navigationDestination(isPresented: $showingAddBank, destination: {
             EditBankView()
+        })
+        .navigationDestination(item: $bankToModify, destination: { bank in
+            EditBankView(bank: bank)
+        })
+        .onChange(of: showingAddBank) { _, newValue in
+            if newValue == false {
+                refreshID = UUID()
+            }
+        }
+        .onChange(of: bankToModify) { _, newValue in
+            refreshID = UUID()
         }
     }
 }

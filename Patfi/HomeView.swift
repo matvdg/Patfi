@@ -16,6 +16,7 @@ struct HomeView: View {
     @State var period: Period = .months
     @State private var isGraphHidden = false
     @State private var collapsedSections: Set<String> = []
+    @State private var showActions = false
     
     private var allKeys: [String] {
         switch mode {
@@ -268,13 +269,62 @@ struct HomeView: View {
                     }
                 }
             }
+        .onChange(of: scenePhase) { old, newPhase in
+            print("ℹ️ \(scenePhase)")
+            balanceRepository.update(accounts: accounts)
+        }
+        .onChange(of: isLandscape, {
+            isGraphHidden = false
+        })
+        .onChange(of: mode) { _, _ in
+            collapsedSections = []
+        }
+        .confirmationDialog("Add", isPresented: $showActions) {
+            NavigationLink("Account") { AddAccountView() }
+//                    NavigationLink("Balance") { AddBalanceView() }
+            NavigationLink("Expense") { AddExpenseView() }
+            NavigationLink("Income") { AddIncomeView() }
+            NavigationLink("Internal transfer") { AddInternalTransferView() }
+            NavigationLink("Bank") { EditBankView() }
+        }
 #if os(macOS)
             .padding()
 #endif
             .ignoresSafeArea(edges: .bottom)
             .toolbar {
                 ToolbarItem(placement: .automatic) {
-                    Button(action: { showAddAccount = true }) {
+                    Menu {
+                        NavigationLink {
+                            AddExpenseView()
+                        } label: {
+                            Label("Add expense", systemImage: "minus.circle")
+                        }
+                        NavigationLink {
+                            AddIncomeView()
+                        } label: {
+                            Label("Add income", systemImage: "plus.circle")
+                        }
+                        NavigationLink {
+                            AddInternalTransferView()
+                        } label: {
+                            Label("Add internal transfer", systemImage: "arrow.left.arrow.right.circle")
+                        }
+//                        NavigationLink {
+//                            AddBalanceView()
+//                        } label: {
+//                            Label("Add balance", systemImage: "dollarsign.circle")
+//                        }
+                        NavigationLink {
+                            AddAccountView()
+                        } label: {
+                            Label("Add account", systemImage: "person.crop.circle.badge.plus")
+                        }
+                        NavigationLink {
+                            EditBankView()
+                        } label: {
+                            Label("Add bank", systemImage: "building.columns")
+                        }
+                    } label: {
                         Image(systemName: "plus")
                     }
                 }
@@ -287,16 +337,6 @@ struct HomeView: View {
 #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
 #endif
-        }
-        .onChange(of: scenePhase) { old, newPhase in
-            print("ℹ️ \(scenePhase)")
-            balanceRepository.update(accounts: accounts)
-        }
-        .onChange(of: isLandscape, {
-            isGraphHidden = false
-        })
-        .onChange(of: mode) { _, _ in
-            collapsedSections = []
         }
     }
 }

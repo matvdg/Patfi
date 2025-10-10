@@ -114,11 +114,6 @@ struct EditBankView: View {
             #endif
             .navigationTitle(bank == nil ? "Add bank" : "Edit bank")
             .toolbar {
-                #if !os(watchOS)
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .cancel, action: { dismiss() })
-                }
-                #endif
                 ToolbarItem(placement: .confirmationAction) {
                     Button(role: .confirm, action: {
                         bankRepository.updateOrSave(name: name, bank: bank, palette: palette, logoAvailability: logoAvailability, context: context)

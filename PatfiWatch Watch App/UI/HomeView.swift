@@ -4,6 +4,7 @@ import SwiftData
 struct HomeView: View {
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
+    @State private var showActions = false
     private let balanceRepository = BalanceRepository()
     
     var body: some View {
@@ -34,12 +35,20 @@ struct HomeView: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .bottomBar) {
-                        NavigationLink {
-                            AddAccountView()
+                        Button {
+                            showActions = true
                         } label: {
                             Image(systemName: "plus")
                         }
                     }
+                }
+                .confirmationDialog("Add", isPresented: $showActions) {
+                    NavigationLink("Account") { AddAccountView() }
+//                    NavigationLink("Balance") { AddBalanceView() }
+                    NavigationLink("Expense") { AddExpenseView() }
+                    NavigationLink("Income") { AddIncomeView() }
+                    NavigationLink("Internal transfer") { AddInternalTransferView() }
+                    NavigationLink("Bank") { EditBankView() }
                 }
             }
             
