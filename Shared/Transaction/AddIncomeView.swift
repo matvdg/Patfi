@@ -33,7 +33,6 @@ struct AddIncomeView: View {
                 .keyboardType(.decimalPad)
 #endif
                 .focused($focused)
-                .frame(maxWidth: 300)
                 .onChange(of: amountText) { _, newValue in
                     let cleaned = newValue.filter { !$0.isWhitespace }
                     if cleaned != newValue {
@@ -46,7 +45,6 @@ struct AddIncomeView: View {
                 .textInputAutocapitalization(.words)
 #endif
                 .autocorrectionDisabled()
-                .frame(maxWidth: 300)
             HStack {
                 if let bank = account?.bank {
                     BankLogo(bank: bank)

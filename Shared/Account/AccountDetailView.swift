@@ -21,7 +21,6 @@ struct AccountDetailView: View {
             Section("Account") {
                 TextField("Name", text: $account.name)
                     .disableAutocorrection(true)
-                    .frame(maxWidth: 300)
                 HStack {
                     Circle().fill(account.category.color).frame(width: 10, height: 10)
                     Picker("Category", selection: $account.category) {

@@ -27,7 +27,6 @@ struct AddAccountView: View {
                     .textInputAutocapitalization(.words)
                 #endif
                     .autocorrectionDisabled()
-                    .frame(maxWidth: 300)
                 HStack {
                     Circle().fill(category.color).frame(width: 10, height: 10)
                     Picker("Category", selection: $category) {
@@ -58,7 +57,6 @@ struct AddAccountView: View {
                     .keyboardType(.decimalPad)
 #endif
                     .focused($focused)
-                    .frame(maxWidth: 300)
                     .onChange(of: initialBalanceText) { _, newValue in
                         let cleaned = newValue.filter { !$0.isWhitespace }
                         if cleaned != newValue {

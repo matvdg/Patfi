@@ -35,7 +35,6 @@ struct AddExpenseView: View {
                 .keyboardType(.decimalPad)
 #endif
                 .focused($focused)
-                .frame(maxWidth: 300)
                 .onChange(of: amountText) { _, newValue in
                     let cleaned = newValue.filter { !$0.isWhitespace }
                     if cleaned != newValue {
@@ -48,7 +47,6 @@ struct AddExpenseView: View {
                 .textInputAutocapitalization(.words)
 #endif
                 .autocorrectionDisabled()
-                .frame(maxWidth: 300)
             HStack {
                 Image(systemName: paymentMethod.iconName)
                 Picker("PaymentMethod", selection: $paymentMethod) {
