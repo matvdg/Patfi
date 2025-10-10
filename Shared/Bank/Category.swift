@@ -20,19 +20,15 @@ enum Category: String, Codable, CaseIterable, Identifiable {
     }
     
     var localized: String {
-        String(localized: localizedName)
-    }
-    
-    private var localizedName: LocalizedStringResource {
         switch self {
-        case .current:       "category.current"
-        case .savings:       "category.savings"
-        case .crypto:        "category.crypto"
-        case .stocks:        "category.stocks"
-        case .lifeInsurance: "category.lifeInsurance"
-        case .loan:          "category.loan"
-        case .commodities:   "category.commodities"
-        case .other:         "category.other"
+        case .current:       String(localized: "category.current")
+        case .savings:       String(localized: "category.savings")
+        case .crypto:        String(localized: "category.crypto")
+        case .stocks:        String(localized: "category.stocks")
+        case .lifeInsurance: String(localized: "category.lifeInsurance")
+        case .loan:          String(localized: "category.loan")
+        case .commodities:   String(localized: "category.commodities")
+        case .other:         String(localized: "category.other")
         }
     }
     

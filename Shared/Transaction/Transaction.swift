@@ -13,6 +13,7 @@ final class Transaction {
     var account: Account? = nil
     var transactionType: TransactionType = TransactionType.expense
     var paymentMethod: PaymentMethod? = nil
+    var expenseCategory: ExpenseCategory? = nil
     /// True if this transaction is an internal transfer between accounts
     var isInternalTransfer: Bool = false
 
@@ -20,6 +21,7 @@ final class Transaction {
         title: String,
         transactionType: TransactionType,
         paymentMethod: PaymentMethod? = nil,
+        expenseCategory: ExpenseCategory? = nil,
         date: Date,
         amount: Double,
         account: Account?,
@@ -32,6 +34,7 @@ final class Transaction {
         self.transactionType = transactionType
         self.paymentMethod = paymentMethod
         self.isInternalTransfer = isInternalTransfer
+        self.expenseCategory = expenseCategory
     }
     
     enum TransactionType: String, Codable, CaseIterable, Identifiable {
@@ -89,6 +92,94 @@ final class Transaction {
             case .cheque: return .orange
             case .cashWithdrawal: return .yellow
             case .bankTransfer: return .red
+            }
+        }
+    }
+    
+    enum ExpenseCategory: String, Codable, CaseIterable, Identifiable {
+        case foodGroceries
+        case diningOut
+        case transportation
+        case housing
+        case utilities
+        case insurance
+        case healthcare
+        case entertainment
+        case shopping
+        case education
+        case travel
+        case personalCare
+        case subscriptions
+        case taxes
+        case giftsDonations
+        case savingsInvestments
+        case other
+        
+        var id: String { rawValue }
+        
+        var localized: String {
+            switch self {
+            case .foodGroceries: return String(localized: "expense.foodGroceries") // Groceries & food
+            case .diningOut: return String(localized: "expense.diningOut") // Restaurants
+            case .transportation: return String(localized: "expense.transportation") // Transportation
+            case .housing: return String(localized: "expense.housing") // Housing
+            case .utilities: return String(localized: "expense.utilities") // Bills & utilities
+            case .insurance: return String(localized: "expense.insurance") // Insurance
+            case .healthcare: return String(localized: "expense.healthcare") // Healthcare
+            case .entertainment: return String(localized: "expense.entertainment") // Entertainment
+            case .shopping: return String(localized: "expense.shopping") // Shopping
+            case .education: return String(localized: "expense.education") // Education
+            case .travel: return String(localized: "expense.travel") // Travel
+            case .personalCare: return String(localized: "expense.personalCare") // Personal care
+            case .subscriptions: return String(localized: "expense.subscriptions") // Subscriptions
+            case .taxes: return String(localized: "expense.taxes") // Taxes
+            case .giftsDonations: return String(localized: "expense.giftsDonations") // Gifts & donations
+            case .savingsInvestments: return String(localized: "expense.savingsInvestments") // Savings & investments
+            case .other: return String(localized: "expense.other") // Other
+            }
+        }
+        
+        var iconName: String {
+            switch self {
+            case .foodGroceries: return "cart.fill"
+            case .diningOut: return "fork.knife"
+            case .transportation: return "car.fill"
+            case .housing: return "house.fill"
+            case .utilities: return "bolt.fill"
+            case .insurance: return "shield.fill"
+            case .healthcare: return "cross.case.fill"
+            case .entertainment: return "film.fill"
+            case .shopping: return "bag.fill"
+            case .education: return "book.fill"
+            case .travel: return "airplane"
+            case .personalCare: return "figure.wave"
+            case .subscriptions: return "play.rectangle.fill"
+            case .taxes: return "banknote.fill"
+            case .giftsDonations: return "gift.fill"
+            case .savingsInvestments: return "chart.line.uptrend.xyaxis"
+            case .other: return "ellipsis.circle.fill"
+            }
+        }
+        
+        var color: Color {
+            switch self {
+            case .foodGroceries: return .green
+            case .diningOut: return .orange
+            case .transportation: return .blue
+            case .housing: return .brown
+            case .utilities: return .yellow
+            case .insurance: return .purple
+            case .healthcare: return .red
+            case .entertainment: return .pink
+            case .shopping: return .mint
+            case .education: return .teal
+            case .travel: return .indigo
+            case .personalCare: return .cyan
+            case .subscriptions: return .gray
+            case .taxes: return .black
+            case .giftsDonations: return .red
+            case .savingsInvestments: return .green
+            case .other: return .secondary
             }
         }
     }

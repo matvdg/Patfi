@@ -9,6 +9,7 @@ class TransactionRepository {
                     amount: Double,
                     account: Account,
                     paymentMethod: Transaction.PaymentMethod,
+                    expenseCategory: Transaction.ExpenseCategory,
                     context: ModelContext) {
         addTransaction(type: .expense,
                        title: title,
@@ -16,6 +17,7 @@ class TransactionRepository {
                        account: account,
                        paymentMethod: paymentMethod,
                        isInternalTransfer: false,
+                       expenseCategory: expenseCategory,
                        context: context)
     }
     
@@ -59,11 +61,13 @@ class TransactionRepository {
                                 account: Account,
                                 paymentMethod: Transaction.PaymentMethod?,
                                 isInternalTransfer: Bool,
+                                expenseCategory: Transaction.ExpenseCategory? = nil,
                                 context: ModelContext) {
         let transaction = Transaction(
             title: title,
             transactionType: type,
             paymentMethod: paymentMethod,
+            expenseCategory: expenseCategory,
             date: Date(),
             amount: abs(amount),
             account: account,
