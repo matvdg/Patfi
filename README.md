@@ -16,7 +16,7 @@ Are you looking for a simple app to track all your accounts in your different ba
 - Sort your assets by category (current, savings, stock market, crypto...)
 - Sort your assets by bank
 - Offers tracking graphs
-- Expense tracking by period (day/week/month/year) / by banks / by means of payment
+- Expense tracking by period (day/week/month/year) / by banks / by means of payment / by expense category
 - Income tracking  by period (day/week/month/year)
 - Ultra-light cross-platform app & widget in SwiftUI (iOS 26 / iPadOS 26 / macOS 26 / visionOS 26 / watchOS 26) with LiquidGlass
 
