@@ -129,7 +129,7 @@ struct AccountDetailView: View {
                     }
                     Text("tipBalance").foregroundStyle(.tertiary).italic()
                 } else {
-                    ContentUnavailableView("No snapshots", systemImage: "clock.arrow.circlepath", description: Text("AddBalance"))
+                    ContentUnavailableView("No snapshots", systemImage: "clock.arrow.circlepath", description: Text("Add balance"))
                 }
             }
             .padding(.all)

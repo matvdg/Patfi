@@ -67,7 +67,7 @@ struct AddAccountView: View {
                     }
             }
         }
-        .navigationTitle("New Account")
+        .navigationTitle("Add account")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {

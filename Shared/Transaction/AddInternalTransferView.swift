@@ -1,18 +1,16 @@
 import SwiftUI
 import SwiftData
 
-struct AddExpenseView: View {
+struct AddInternalTransferView: View {
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     
-    @State private var title: String = ""
-    @State private var paymentMethod: Transaction.PaymentMethod = .applePay
-    @State private var expenseCategory: Transaction.ExpenseCategory?
     @State private var amountText: String = ""
-    @State private var account: Account? = nil
+    @State private var sourceAccount: Account? = nil
+    @State private var destinationAccount: Account? = nil
     @FocusState private var focused: Bool
     
     let transactionRepository =  TransactionRepository()
@@ -43,27 +41,12 @@ struct AddExpenseView: View {
                     }
                 }
 #endif
-            TextField("Name", text: $title)
-#if !os(macOS)
-                .textInputAutocapitalization(.words)
-#endif
-                .autocorrectionDisabled()
-                .frame(maxWidth: 300)
             HStack {
-                Image(systemName: paymentMethod.iconName)
-                Picker("PaymentMethod", selection: $paymentMethod) {
-                    ForEach(Transaction.PaymentMethod.allCases) { p in
-                        Text(p.localized)
-                            .tag(p)
-                    }
-                }
-            }
-            HStack {
-                if let bank = account?.bank {
+                if let bank = sourceAccount?.bank {
                     BankLogo(bank: bank)
                         .id(bank.id)
                 }
-                Picker("Account", selection: $account) {
+                Picker("Source Account", selection: $sourceAccount) {
                     ForEach(accounts) { account in
                         if let name = account.bank?.name {
                             Text("\(name ) • \(account.name)")
@@ -77,27 +60,35 @@ struct AddExpenseView: View {
                 }
             }
             HStack {
-                if let icon = expenseCategory?.iconName {
-                    Image(systemName: icon)
+                if let bank = destinationAccount?.bank {
+                    BankLogo(bank: bank)
+                        .id(bank.id)
                 }
-                Picker("ExpenseCategory", selection: $expenseCategory) {
-                    ForEach(Transaction.ExpenseCategory.allCases) { cat in
-                        Text(cat.localized)
-                            .tag(cat)
+                Picker("Destination Account", selection: $destinationAccount) {
+                    ForEach(accounts) { account in
+                        if let name = account.bank?.name {
+                            Text("\(name ) • \(account.name)")
+                                .tag(account)
+                        } else {
+                            Text(account.name)
+                                .tag(account)
+                        }
+                        
                     }
                 }
             }
         }
-        .navigationTitle("Add expense")
+        .navigationTitle("Internal transfer")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {
-                    guard let amount, let account, let expenseCategory else { return }
-                    transactionRepository.addExpense(title: title, amount: amount, account: account, paymentMethod: paymentMethod, expenseCategory: expenseCategory, context: context)
+                    guard let amount, let sourceAccount, let destinationAccount else { return }
+                    let internalTransfer = String(localized: "Internal transfer")
+                    transactionRepository.addInternalTransfer(title: internalTransfer, amount: amount, sourceAccount: sourceAccount, destinationAccount: destinationAccount, context: context)
                     dismiss()
                     
                 })
-                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || account == nil || amount == nil || expenseCategory == nil)
+                .disabled(sourceAccount == nil || destinationAccount == nil || amount == nil)
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }
@@ -107,7 +98,7 @@ struct AddExpenseView: View {
 
 #Preview {
     NavigationStack{
-        AddExpenseView()
+        AddInternalTransferView()
     }
     .modelContainer(ModelContainer.getSharedContainer())
 }

@@ -103,6 +103,8 @@
 				Charts/PieChartView.swift,
 				Charts/TotalChartView.swift,
 				Transaction/AddExpenseView.swift,
+				Transaction/AddIncomeView.swift,
+				Transaction/AddInternalTransferView.swift,
 				Transaction/TransactionRepository.swift,
 				Utils/CustomButtons.swift,
 			);

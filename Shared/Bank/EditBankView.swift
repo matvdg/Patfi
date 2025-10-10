@@ -112,7 +112,7 @@ struct EditBankView: View {
             #if os(macOS)
             .padding()
             #endif
-            .navigationTitle(bank == nil ? "New bank" : "Edit bank")
+            .navigationTitle(bank == nil ? "Add bank" : "Edit bank")
             .toolbar {
                 #if !os(watchOS)
                 ToolbarItem(placement: .cancellationAction) {

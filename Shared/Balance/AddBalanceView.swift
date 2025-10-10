@@ -32,7 +32,7 @@ struct AddBalanceView: View {
             #if os(macOS)
             .padding()
             #endif
-            .navigationTitle(String(localized: "New snapshot"))
+            .navigationTitle(String(localized: "Add balance"))
             .toolbar {
                 #if !os(watchOS)
                 ToolbarItem(placement: .cancellationAction) {
