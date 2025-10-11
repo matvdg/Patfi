@@ -143,6 +143,6 @@ struct AccountsView: View {
 }
 
 #Preview {
-    AccountsView()
+    NavigationStack { AccountsView() }
         .modelContainer(ModelContainer.getSharedContainer())
 }

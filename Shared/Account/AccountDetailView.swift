@@ -30,6 +30,19 @@ struct AccountDetailView: View {
                         }
                     }
                 }
+                if account.isDefault {
+                    Button(role: .confirm) {
+                        accountRepository.unsetAsDefault(account: account, context: context)
+                    } label: {
+                        Label("Unset as default", systemImage: "star.slash")
+                    }
+                } else {
+                    Button(role: .confirm) {
+                        accountRepository.setAsDefault(account: account, context: context)
+                    } label: {
+                        Label("Set as default", systemImage: "star")
+                    }
+                }
                 
                 Button(role: .destructive) {
                     showDeleteAccountConfirm = true
@@ -101,9 +114,6 @@ struct AccountDetailView: View {
                         }
                     }
                     .buttonStyle(.plain)
-                    .sheet(isPresented: $showAddSnapshot) {
-                        AddBalanceView(account: account)
-                    }
                     ForEach(snaps.sorted(by: { $0.date > $1.date })) { snap in
                         HStack {
                             Text(snap.date.toString)
@@ -134,6 +144,9 @@ struct AccountDetailView: View {
             .padding(.all)
         }
         .formStyle(.grouped)
+        .navigationDestination(isPresented: $showAddSnapshot, destination: {
+            AddBalanceView(account: account)
+        })
         .navigationTitle(account.name.isEmpty ? String(localized: "Account") : account.name)
         .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
@@ -160,5 +173,6 @@ struct AccountDetailView: View {
     let b9 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*5), balance: 100000, account: account)
     let balances = [b1, b2, b3, b4, b5, b6, b7, b8, b9]
     account.balances = balances
-    return AccountDetailView(account: account)
+    return NavigationStack { AccountDetailView(account: account) }
 }
+

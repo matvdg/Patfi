@@ -7,6 +7,7 @@ final class Account: Identifiable {
     
     var name: String = ""
     var category: Category = Category.other
+    var isDefault: Bool = false
     
     @Relationship(inverse: \Bank.accounts)
     var bank: Bank? = nil

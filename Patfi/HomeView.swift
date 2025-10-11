@@ -16,7 +16,6 @@ struct HomeView: View {
     @State var period: Period = .months
     @State private var isGraphHidden = false
     @State private var collapsedSections: Set<String> = []
-    @State private var showActions = false
     
     private var allKeys: [String] {
         switch mode {
@@ -279,14 +278,6 @@ struct HomeView: View {
         .onChange(of: mode) { _, _ in
             collapsedSections = []
         }
-        .confirmationDialog("Add", isPresented: $showActions) {
-            NavigationLink("Account") { AddAccountView() }
-//                    NavigationLink("Balance") { AddBalanceView() }
-            NavigationLink("Expense") { AddExpenseView() }
-            NavigationLink("Income") { AddIncomeView() }
-            NavigationLink("Internal transfer") { AddInternalTransferView() }
-            NavigationLink("Bank") { EditBankView() }
-        }
 #if os(macOS)
             .padding()
 #endif
@@ -294,26 +285,28 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .automatic) {
                     Menu {
-                        NavigationLink {
-                            AddExpenseView()
-                        } label: {
-                            Label("Add expense", systemImage: "minus.circle")
+                        if !accounts.isEmpty {
+                            NavigationLink {
+                                AddExpenseView()
+                            } label: {
+                                Label("Add expense", systemImage: "minus.circle")
+                            }
+                            NavigationLink {
+                                AddIncomeView()
+                            } label: {
+                                Label("Add income", systemImage: "plus.circle")
+                            }
+                            NavigationLink {
+                                AddInternalTransferView()
+                            } label: {
+                                Label("Add internal transfer", systemImage: "arrow.left.arrow.right.circle")
+                            }
+                            NavigationLink {
+                                AddBalanceView()
+                            } label: {
+                                Label("Add balance", systemImage: "dollarsign.circle")
+                            }
                         }
-                        NavigationLink {
-                            AddIncomeView()
-                        } label: {
-                            Label("Add income", systemImage: "plus.circle")
-                        }
-                        NavigationLink {
-                            AddInternalTransferView()
-                        } label: {
-                            Label("Add internal transfer", systemImage: "arrow.left.arrow.right.circle")
-                        }
-//                        NavigationLink {
-//                            AddBalanceView()
-//                        } label: {
-//                            Label("Add balance", systemImage: "dollarsign.circle")
-//                        }
                         NavigationLink {
                             AddAccountView()
                         } label: {

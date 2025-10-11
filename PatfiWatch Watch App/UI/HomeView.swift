@@ -43,11 +43,13 @@ struct HomeView: View {
                     }
                 }
                 .confirmationDialog("Add", isPresented: $showActions) {
+                    if !accounts.isEmpty {
+                        NavigationLink("Expense") { AddExpenseView() }
+                        NavigationLink("Income") { AddIncomeView() }
+                        NavigationLink("Internal transfer") { AddInternalTransferView() }
+                        NavigationLink("Balance") { AddBalanceView() }
+                    }
                     NavigationLink("Account") { AddAccountView() }
-//                    NavigationLink("Balance") { AddBalanceView() }
-                    NavigationLink("Expense") { AddExpenseView() }
-                    NavigationLink("Income") { AddIncomeView() }
-                    NavigationLink("Internal transfer") { AddInternalTransferView() }
                     NavigationLink("Bank") { EditBankView() }
                 }
             }
