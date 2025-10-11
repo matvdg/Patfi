@@ -39,5 +39,5 @@ struct BarView: View {
 
 #Preview {
     BarView()
-        .modelContainer(ModelContainer.getSharedContainer())
+        .modelContainer(ModelContainer.shared)
 }

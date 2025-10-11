@@ -4,7 +4,7 @@ import SwiftData
 extension ModelContainer {
     
     @MainActor
-    static func getSharedContainer() -> ModelContainer {
+    static var shared: ModelContainer {
         let schema = Schema([Account.self, BalanceSnapshot.self, Bank.self])
         #if targetEnvironment(simulator)
         return ModelContainer.getSimulatorSharedContainer(schema: schema)
@@ -49,6 +49,7 @@ extension ModelContainer {
             let a1 = Account(name: "Livret A", category: .savings, bank: boursoBank)
             let a2 = Account(name: "LDD", category: .savings, bank: boursoBank)
             let a3 = Account(name: "CAV", category: .current, bank: greenGot)
+            a3.isDefault = true
             let a4 = Account(name: "GGPlanet", category: .lifeInsurance, bank: greenGot)
             let a5 = Account(name: "Bitcoins", category: .crypto, bank: crypto)
             let a6 = Account(name: "Gold", category: .commodities, bank: revolut)

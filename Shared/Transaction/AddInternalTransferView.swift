@@ -99,5 +99,5 @@ struct AddInternalTransferView: View {
     NavigationStack{
         AddInternalTransferView()
     }
-    .modelContainer(ModelContainer.getSharedContainer())
+    .modelContainer(ModelContainer.shared)
 }

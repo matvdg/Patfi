@@ -107,5 +107,5 @@ struct AddExpenseView: View {
     NavigationStack{
         AddExpenseView()
     }
-    .modelContainer(ModelContainer.getSharedContainer())
+    .modelContainer(ModelContainer.shared)
 }

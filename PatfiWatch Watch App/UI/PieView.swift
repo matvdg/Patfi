@@ -84,5 +84,5 @@ struct PieView: View {
 
 #Preview {
     PieView()
-        .modelContainer(ModelContainer.getSharedContainer())
+        .modelContainer(ModelContainer.shared)
 }

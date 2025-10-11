@@ -85,5 +85,5 @@ struct AddIncomeView: View {
     NavigationStack{
         AddIncomeView()
     }
-    .modelContainer(ModelContainer.getSharedContainer())
+    .modelContainer(ModelContainer.shared)
 }

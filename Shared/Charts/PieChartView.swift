@@ -82,6 +82,6 @@ struct PieChartView: View {
 
 #Preview {
     PieChartView(grouping: .constant(.banks))
-        .modelContainer(ModelContainer.getSharedContainer())
+        .modelContainer(ModelContainer.shared)
 }
 

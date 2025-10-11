@@ -9,6 +9,6 @@ struct PatfiApp: App {
         WindowGroup {
             HomeView()
         }
-        .modelContainer(ModelContainer.getSharedContainer())
+        .modelContainer(ModelContainer.shared)
     }
 }

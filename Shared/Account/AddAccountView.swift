@@ -23,9 +23,9 @@ struct AddAccountView: View {
         Form {
             Section("Account") {
                 TextField("Name", text: $name)
-                #if !os(macOS)
+#if !os(macOS)
                     .textInputAutocapitalization(.words)
-                #endif
+#endif
                     .autocorrectionDisabled()
                 HStack {
                     Circle().fill(category.color).frame(width: 10, height: 10)
@@ -52,6 +52,14 @@ struct AddAccountView: View {
             }
             
             Section("Initial balance") {
+                
+#if os(watchOS)
+                NavigationLink {
+                    NumericalKeyboardView(text: $initialBalanceText)
+                } label: {
+                    Text(initialBalanceText.isEmpty ? String(localized:"Balance") : initialBalanceText)
+                }
+#else
                 TextField("Balance", text: $initialBalanceText)
 #if os(iOS) || os(tvOS) || os(visionOS)
                     .keyboardType(.decimalPad)
@@ -63,6 +71,7 @@ struct AddAccountView: View {
                             initialBalanceText = cleaned
                         }
                     }
+#endif
             }
         }
         .navigationTitle("Add account")
@@ -83,5 +92,7 @@ struct AddAccountView: View {
 }
 
 #Preview {
-    AddAccountView()
+    NavigationStack {
+        AddAccountView()
+    }
 }

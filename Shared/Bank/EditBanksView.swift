@@ -125,6 +125,6 @@ struct EditBanksView: View {
 #Preview {
     NavigationStack {
         EditBanksView(selectedBank: .constant(nil))
-            .modelContainer(ModelContainer.getSharedContainer())
+            .modelContainer(ModelContainer.shared)
     }
 }

@@ -336,5 +336,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
-        .modelContainer(ModelContainer.getSharedContainer())
+        .modelContainer(ModelContainer.shared)
 }

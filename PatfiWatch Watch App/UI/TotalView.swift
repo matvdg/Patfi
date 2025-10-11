@@ -21,5 +21,5 @@ struct TotalView: View {
 
 #Preview {
     TotalView()
-        .modelContainer(ModelContainer.getSharedContainer())
+        .modelContainer(ModelContainer.shared)
 }

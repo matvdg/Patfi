@@ -91,5 +91,5 @@ struct BanksView: View {
 
 #Preview {
     BanksView()
-        .modelContainer(ModelContainer.getSharedContainer())
+        .modelContainer(ModelContainer.shared)
 }
