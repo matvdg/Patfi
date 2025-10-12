@@ -43,14 +43,16 @@ struct HomeView: View {
                     }
                 }
                 .confirmationDialog("Add", isPresented: $showActions) {
-                    if !accounts.isEmpty {
-                        NavigationLink("Expense") { AddExpenseView() }
-                        NavigationLink("Income") { AddIncomeView() }
-                        NavigationLink("Internal transfer") { AddInternalTransferView() }
-                        NavigationLink("Balance") { AddBalanceView() }
+                    ForEach(QuickAction.allCases, id: \.self) { action in
+                        // If there are no accounts, skip actions that require an account
+                        if accounts.isEmpty && action.requiresAccount {
+                            // Skip
+                        } else {
+                            NavigationLink(action.localizedTitle) {
+                                action.destinationView
+                            }
+                        }
                     }
-                    NavigationLink("Account") { AddAccountView() }
-                    NavigationLink("Bank") { EditBankView() }
                 }
             }
             

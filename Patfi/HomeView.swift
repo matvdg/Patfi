@@ -74,200 +74,199 @@ struct HomeView: View {
     
     var body: some View {
         
-        NavigationStack {
-            VStack(alignment: .center) {
-                if accounts.isEmpty {
-                    ContentUnavailableView {
-                        Image(systemName: "creditcard")
-                    } description: {
-                        Text("No accounts")
-                    } actions: {
-                        Button {
-                            showAddAccount = true
-                        } label: {
-                            Label("Create your first account", systemImage: "plus")
-                                .padding()
-                        }
+        VStack(alignment: .center) {
+            if accounts.isEmpty {
+                ContentUnavailableView {
+                    Image(systemName: "creditcard")
+                } description: {
+                    Text("No accounts")
+                } actions: {
+                    Button {
+                        showAddAccount = true
+                    } label: {
+                        Label("Create your first account", systemImage: "plus")
+                            .padding()
+                    }
 #if os(visionOS)
-                        .buttonStyle(.borderedProminent)
+                    .buttonStyle(.borderedProminent)
 #else
-                        .buttonStyle(.glassProminent)
+                    .buttonStyle(.glassProminent)
+#endif
+                }
+            } else {
+                if !isLandscape {
+                    Picker("", selection: $selectedChart) {
+#if os(macOS)
+                        Text(selectedChart == 0 ? "􀜋 \(String(localized: "Distribution"))" : "􀑀 \(String(localized: "Distribution"))").tag(0)
+                        Text(selectedChart == 1 ? "􀐿 \(String(localized: "Monitoring"))" : "􀐾 \(String(localized: "Monitoring"))").tag(1)
+#else
+                        Image(systemName: selectedChart == 0 ? "chart.pie.fill" : "chart.pie").tag(0)
+                        Image(systemName: selectedChart == 1 ? "chart.bar.fill" : "chart.bar").tag(1)
 #endif
                     }
-                } else {
-                    if !isLandscape {
-                        Picker("", selection: $selectedChart) {
-#if os(macOS)
-                            Text(selectedChart == 0 ? "􀜋 \(String(localized: "Distribution"))" : "􀑀 \(String(localized: "Distribution"))").tag(0)
-                            Text(selectedChart == 1 ? "􀐿 \(String(localized: "Monitoring"))" : "􀐾 \(String(localized: "Monitoring"))").tag(1)
-#else
-                            Image(systemName: selectedChart == 0 ? "chart.pie.fill" : "chart.pie").tag(0)
-                            Image(systemName: selectedChart == 1 ? "chart.bar.fill" : "chart.bar").tag(1)
-#endif
+                    .pickerStyle(.segmented)
+                    .controlSize(.extraLarge)
+                    .frame(width: 100)
+                }
+                Group {
+                    if selectedChart == 0 {
+                        Picker("", selection: $mode) {
+                            ForEach(Mode.allCases) { mode in
+                                Text(mode.localized).tag(mode)
+                            }
                         }
                         .pickerStyle(.segmented)
-                        .controlSize(.extraLarge)
-                        .frame(width: 100)
-                    }
-                    Group {
-                        if selectedChart == 0 {
-                            Picker("", selection: $mode) {
-                                ForEach(Mode.allCases) { mode in
-                                    Text(mode.localized).tag(mode)
-                                }
-                            }
-                            .pickerStyle(.segmented)
-                            .padding()
-                        } else {
-                            Picker("", selection: $period) {
-                                ForEach(Period.allCases) { period in
-                                    Text(period.localized).tag(period)
-                                }
-                            }
-                            .pickerStyle(.segmented)
-                            .padding()
-                        }
-                    }
-                    Group {
-                        if selectedChart == 0 {
-                            PieChartView(grouping: $mode)
-                        } else {
-                            TotalChartView(snapshots: snapshots, period: $period)
-                                .frame(maxHeight: .infinity)
-                        }
-                    }
-                    .frame(height: isGraphHidden ? 0 : nil)
-                    .opacity(isGraphHidden ? 0 : 1)
-                    if !isLandscape {
-                        ZStack {
-                            ArrowButton(isUp: $isGraphHidden)
-                            if selectedChart == 0 {
-                                HStack {
-                                    Spacer()
-                                    CollapseButton(isCollapsed: allCollapsedBinding).padding(.trailing, 12)
-                                }
-                            }
-                        }
-                        List {
-                            if selectedChart == 0 {
-                                switch mode {
-                                case .categories:
-                                    ForEach(accountsByCategory, id: \.key) { (category, items) in
-                                        let isCollapsed = collapsedSections.contains(category.localized)
-                                        Section {
-                                            if !isCollapsed {
-                                                ForEach(items) { account in
-                                                    NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
-                                                }
-                                            }
-                                        } header: {
-                                            ArrowRightButton(isRight: Binding(
-                                                get: { isCollapsed },
-                                                set: { isCollapsed in
-                                                    if isCollapsed {
-                                                        collapsedSections.insert(category.localized)
-                                                    } else {
-                                                        collapsedSections.remove(category.localized)
-                                                    }
-                                                }
-                                            )) {
-                                                HStack(spacing: 8) {
-                                                    Circle().fill(category.color).frame(width: 10, height: 10)
-                                                    Text(category.localized)
-                                                    Spacer()
-                                                    Text(balanceRepository.balance(for: items).toString)
-                                                }
-                                            }
-                                            .frame(height: isCollapsed ? 5 : 30)
-                                            .padding(.top, isCollapsed ? 12 : 0)
-#if os(macOS)
-                                            .padding(.vertical, 8)
-                                            .frame(height: 50)
-#endif
-                                        }
-                                    }
-                                case .banks:
-                                    ForEach(accountsByBank, id: \.key) { (bank, items) in
-                                        let isCollapsed = collapsedSections.contains(bank.normalizedName)
-                                        Section {
-                                            if !isCollapsed {
-                                                ForEach(items) { account in
-                                                    NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account, displayBankLogo: false) }
-                                                }
-                                            } else {
-                                                EmptyView().frame(height: 100)
-                                            }
-                                        } header: {
-                                            ArrowRightButton(isRight: Binding(
-                                                get: { isCollapsed },
-                                                set: { isCollapsed in
-                                                    if isCollapsed {
-                                                        collapsedSections.insert(bank.normalizedName)
-                                                    } else {
-                                                        collapsedSections.remove(bank.normalizedName)
-                                                    }
-                                                }
-                                            )) {
-                                                HStack {
-                                                    BankRow(bank: bank)
-                                                    Spacer()
-                                                    Text(balanceRepository.balance(for: items).toString)
-                                                }
-                                            }
-                                            .frame(height: isCollapsed ? 22 : 30)
-                                            .padding(.top, isCollapsed ? 4 : 0)
-#if os(macOS)
-                                            .padding(.vertical, 8)
-                                            .frame(height: 50)
-#endif
-                                        }
-                                    }
-                                }
-                            } else {
-                                ForEach(balancesByPeriod.enumerated(), id: \.element.id) { index, point in
-                                    HStack {
-                                        if index == 0 {
-                                            Text("Now")
-                                        } else {
-                                            switch period {
-                                            case .days:
-                                                Text(point.date.toString)
-                                            case .weeks:
-                                                let weekOfYear = Calendar.current.component(.weekOfYear, from: point.date)
-                                                HStack {
-                                                    Text("W\(weekOfYear)")
-                                                    Text("•  \(point.date.toString)")
-                                                }
-                                            case .months:
-                                                let month = Calendar.current.component(.month, from: point.date)
-                                                HStack {
-                                                    Text("\(month)")
-                                                    Text("•  \(point.date.toString)")
-                                                }
-                                            case .years:
-                                                let year = Calendar.current.component(.year, from: point.date)
-                                                HStack {
-                                                    Text(String(format: "%02d", year % 100))
-                                                    Text("•  \(point.date.toString)")
-                                                }
-                                            }
-                                        }
-                                        Spacer()
-                                        Text(point.total.toString)
-                                    }
-                                }
-                            }
-                        }
-                        .scrollIndicators(.hidden)
-#if os(macOS)
-                        .listStyle(.plain)
                         .padding()
-#else
-                        .listStyle(.insetGrouped)
-#endif
+                    } else {
+                        Picker("", selection: $period) {
+                            ForEach(Period.allCases) { period in
+                                Text(period.localized).tag(period)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .padding()
                     }
                 }
+                Group {
+                    if selectedChart == 0 {
+                        PieChartView(grouping: $mode)
+                    } else {
+                        TotalChartView(snapshots: snapshots, period: $period)
+                            .frame(maxHeight: .infinity)
+                    }
+                }
+                .frame(height: isGraphHidden ? 0 : nil)
+                .opacity(isGraphHidden ? 0 : 1)
+                if !isLandscape {
+                    ZStack {
+                        ArrowButton(isUp: $isGraphHidden)
+                        if selectedChart == 0 {
+                            HStack {
+                                Spacer()
+                                CollapseButton(isCollapsed: allCollapsedBinding).padding(.trailing, 12)
+                            }
+                        }
+                    }
+                    List {
+                        if selectedChart == 0 {
+                            switch mode {
+                            case .categories:
+                                ForEach(accountsByCategory, id: \.key) { (category, items) in
+                                    let isCollapsed = collapsedSections.contains(category.localized)
+                                    Section {
+                                        if !isCollapsed {
+                                            ForEach(items) { account in
+                                                NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
+                                            }
+                                        }
+                                    } header: {
+                                        ArrowRightButton(isRight: Binding(
+                                            get: { isCollapsed },
+                                            set: { isCollapsed in
+                                                if isCollapsed {
+                                                    collapsedSections.insert(category.localized)
+                                                } else {
+                                                    collapsedSections.remove(category.localized)
+                                                }
+                                            }
+                                        )) {
+                                            HStack(spacing: 8) {
+                                                Circle().fill(category.color).frame(width: 10, height: 10)
+                                                Text(category.localized)
+                                                Spacer()
+                                                Text(balanceRepository.balance(for: items).toString)
+                                            }
+                                        }
+                                        .frame(height: isCollapsed ? 5 : 30)
+                                        .padding(.top, isCollapsed ? 12 : 0)
+#if os(macOS)
+                                        .padding(.vertical, 8)
+                                        .frame(height: 50)
+#endif
+                                    }
+                                }
+                            case .banks:
+                                ForEach(accountsByBank, id: \.key) { (bank, items) in
+                                    let isCollapsed = collapsedSections.contains(bank.normalizedName)
+                                    Section {
+                                        if !isCollapsed {
+                                            ForEach(items) { account in
+                                                NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account, displayBankLogo: false) }
+                                            }
+                                        } else {
+                                            EmptyView().frame(height: 100)
+                                        }
+                                    } header: {
+                                        ArrowRightButton(isRight: Binding(
+                                            get: { isCollapsed },
+                                            set: { isCollapsed in
+                                                if isCollapsed {
+                                                    collapsedSections.insert(bank.normalizedName)
+                                                } else {
+                                                    collapsedSections.remove(bank.normalizedName)
+                                                }
+                                            }
+                                        )) {
+                                            HStack {
+                                                BankRow(bank: bank)
+                                                Spacer()
+                                                Text(balanceRepository.balance(for: items).toString)
+                                            }
+                                        }
+                                        .frame(height: isCollapsed ? 22 : 30)
+                                        .padding(.top, isCollapsed ? 4 : 0)
+#if os(macOS)
+                                        .padding(.vertical, 8)
+                                        .frame(height: 50)
+#endif
+                                    }
+                                }
+                            }
+                        } else {
+                            ForEach(balancesByPeriod.enumerated(), id: \.element.id) { index, point in
+                                HStack {
+                                    if index == 0 {
+                                        Text("Now")
+                                    } else {
+                                        switch period {
+                                        case .days:
+                                            Text(point.date.toString)
+                                        case .weeks:
+                                            let weekOfYear = Calendar.current.component(.weekOfYear, from: point.date)
+                                            HStack {
+                                                Text("W\(weekOfYear)")
+                                                Text("•  \(point.date.toString)")
+                                            }
+                                        case .months:
+                                            let month = Calendar.current.component(.month, from: point.date)
+                                            HStack {
+                                                Text("\(month)")
+                                                Text("•  \(point.date.toString)")
+                                            }
+                                        case .years:
+                                            let year = Calendar.current.component(.year, from: point.date)
+                                            HStack {
+                                                Text(String(format: "%02d", year % 100))
+                                                Text("•  \(point.date.toString)")
+                                            }
+                                        }
+                                    }
+                                    Spacer()
+                                    Text(point.total.toString)
+                                }
+                            }
+                        }
+                    }
+                    .scrollIndicators(.hidden)
+#if os(macOS)
+                    .listStyle(.plain)
+                    .padding()
+#else
+                    .listStyle(.insetGrouped)
+#endif
+                }
             }
+        }
         .onChange(of: scenePhase) { old, newPhase in
             print("ℹ️ \(scenePhase)")
             balanceRepository.update(accounts: accounts)
@@ -279,58 +278,37 @@ struct HomeView: View {
             collapsedSections = []
         }
 #if os(macOS)
-            .padding()
+        .padding()
 #endif
-            .ignoresSafeArea(edges: .bottom)
-            .toolbar {
-                ToolbarItem(placement: .automatic) {
-                    Menu {
-                        if !accounts.isEmpty {
+        .ignoresSafeArea(edges: .bottom)
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                Menu {
+                    ForEach(QuickAction.allCases, id: \.self) { action in
+                        // If there are no accounts, skip actions that require an account
+                        if accounts.isEmpty && action.requiresAccount {
+                            // Skip
+                        } else {
                             NavigationLink {
-                                AddExpenseView()
+                                action.destinationView
                             } label: {
-                                Label("Add expense", systemImage: "minus.circle")
-                            }
-                            NavigationLink {
-                                AddIncomeView()
-                            } label: {
-                                Label("Add income", systemImage: "plus.circle")
-                            }
-                            NavigationLink {
-                                AddInternalTransferView()
-                            } label: {
-                                Label("Add internal transfer", systemImage: "arrow.left.arrow.right.circle")
-                            }
-                            NavigationLink {
-                                AddBalanceView()
-                            } label: {
-                                Label("Add balance", systemImage: "dollarsign.circle")
+                                Label(action.localizedTitle, systemImage: action.iconName)
                             }
                         }
-                        NavigationLink {
-                            AddAccountView()
-                        } label: {
-                            Label("Add account", systemImage: "person.crop.circle.badge.plus")
-                        }
-                        NavigationLink {
-                            EditBankView()
-                        } label: {
-                            Label("Add bank", systemImage: "building.columns")
-                        }
-                    } label: {
-                        Image(systemName: "plus")
                     }
+                } label: {
+                    Image(systemName: "plus")
                 }
             }
-            .navigationDestination(isPresented: $showAddAccount) {
-                AddAccountView()
-            }
-            .navigationTitle("Patfi")
-            
-#if !os(macOS)
-            .navigationBarTitleDisplayMode(.inline)
-#endif
         }
+        .navigationDestination(isPresented: $showAddAccount) {
+            AddAccountView()
+        }
+        .navigationTitle("Patfi")
+        
+#if !os(macOS)
+        .navigationBarTitleDisplayMode(.inline)
+#endif
     }
 }
 

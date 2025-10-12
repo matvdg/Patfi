@@ -107,6 +107,7 @@
 				Transaction/AddInternalTransferView.swift,
 				Transaction/TransactionRepository.swift,
 				Utils/CustomButtons.swift,
+				Utils/QuickActions.swift,
 			);
 			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
 		};
