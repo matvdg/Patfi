@@ -290,7 +290,7 @@ struct HomeView: View {
                             // Skip
                         } else {
                             NavigationLink {
-                                action.destinationView
+                                action.destinationView()
                             } label: {
                                 Label(action.localizedTitle, systemImage: action.iconName)
                             }

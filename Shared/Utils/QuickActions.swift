@@ -6,12 +6,12 @@ import UIKit
 
 enum QuickAction: String, Identifiable, CaseIterable {
     
-    case bank     = "com.patfi.bank"
-    case account  = "com.patfi.account"
-    case income   = "com.patfi.income"
     case expense  = "com.patfi.expense"
+    case income   = "com.patfi.income"
     case transfer = "com.patfi.transfer"
     case balance  = "com.patfi.balance"
+    case bank     = "com.patfi.bank"
+    case account  = "com.patfi.account"
     
     var id: String { rawValue }
     
@@ -105,20 +105,20 @@ enum QuickAction: String, Identifiable, CaseIterable {
     }
     
     @ViewBuilder
-    var destinationView: some View {
+    func destinationView(account: Account? = nil) -> some View {
         switch self {
         case .bank:
             EditBankView()
         case .account:
             AddAccountView()
         case .income:
-            AddIncomeView()
+            AddIncomeView(account: account)
         case .expense:
-            AddExpenseView()
+            AddExpenseView(account: account)
         case .transfer:
-            AddInternalTransferView()
+            AddInternalTransferView(sourceAccount: account)
         case .balance:
-            AddBalanceView()
+            AddBalanceView(account: account)
         }
     }
     

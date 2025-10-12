@@ -11,6 +11,7 @@ struct AccountDetailView: View {
     @State private var showAddSnapshot = false
     @State private var showDeleteAccountConfirm = false
     @State private var period: Period = .months
+    @State private var showActions = false
     
     private let balanceRepository = BalanceRepository()
     private let accountRepository = AccountRepository()
@@ -149,14 +150,39 @@ struct AccountDetailView: View {
         })
         .navigationTitle(account.name.isEmpty ? String(localized: "Account") : account.name)
         .toolbar {
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button {
-                                showAddSnapshot = true
+            ToolbarItem(placement: .confirmationAction) {
+                #if os(watchOS)
+                Button {
+                    showActions = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+                #else
+                Menu {
+                    ForEach(QuickAction.allCases, id: \.self) { action in
+                        if action.requiresAccount {
+                            NavigationLink {
+                                action.destinationView(account: account)
                             } label: {
-                                Image(systemName: "plus")
+                                Label(action.localizedTitle, systemImage: action.iconName)
                             }
                         }
                     }
+                } label: {
+                    Image(systemName: "plus")
+                }
+                #endif
+            }
+        }
+        .confirmationDialog("Add", isPresented: $showActions) {
+            ForEach(QuickAction.allCases, id: \.self) { action in
+                if action.requiresAccount {
+                    NavigationLink(action.localizedTitle) {
+                        action.destinationView(account: account)
+                    }
+                }
+            }
+        }
     }
 }
 

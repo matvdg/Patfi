@@ -3,15 +3,23 @@ import SwiftData
 
 struct AddInternalTransferView: View {
     
+    init(sourceAccount: Account? = nil) {
+        _sourceAccountID = State(initialValue: sourceAccount?.persistentModelID)
+    }
+    
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     
     @State private var amountText: String = ""
-    @State private var sourceAccount: Account? = nil
     @State private var destinationAccount: Account? = nil
     @FocusState private var focused: Bool
+    @State private var sourceAccountID: PersistentIdentifier?
+
+    private var sourceAccount: Account? {
+        accounts.first(where: { $0.persistentModelID == sourceAccountID })
+    }
     
     let transactionRepository =  TransactionRepository()
     
@@ -45,16 +53,15 @@ struct AddInternalTransferView: View {
                     BankLogo(bank: bank)
                         .id(bank.id)
                 }
-                Picker("Source Account", selection: $sourceAccount) {
-                    ForEach(accounts) { account in
-                        if let name = account.bank?.name {
-                            Text("\(name ) • \(account.name)")
-                                .tag(account)
+                Picker("Source account", selection: $sourceAccountID) {
+                    ForEach(accounts) { acc in
+                        if let name = acc.bank?.name {
+                            Text("\(name ) • \(acc.name)")
+                                .tag(acc.persistentModelID)
                         } else {
-                            Text(account.name)
-                                .tag(account)
+                            Text(acc.name)
+                                .tag(acc.persistentModelID)
                         }
-                        
                     }
                 }
             }
@@ -63,7 +70,7 @@ struct AddInternalTransferView: View {
                     BankLogo(bank: bank)
                         .id(bank.id)
                 }
-                Picker("Destination Account", selection: $destinationAccount) {
+                Picker("Destination account", selection: $destinationAccount) {
                     ForEach(accounts) { account in
                         if let name = account.bank?.name {
                             Text("\(name ) • \(account.name)")
@@ -92,6 +99,12 @@ struct AddInternalTransferView: View {
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }
         .formStyle(.grouped)
+        .onChange(of: accounts, initial: true) { _, newAccounts in
+            if sourceAccountID == nil,
+               let defaultAccount = newAccounts.first(where: { $0.isDefault }) {
+                sourceAccountID = defaultAccount.persistentModelID
+            }
+        }
     }
 }
 

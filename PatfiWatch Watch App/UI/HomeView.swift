@@ -49,7 +49,7 @@ struct HomeView: View {
                             // Skip
                         } else {
                             NavigationLink(action.localizedTitle) {
-                                action.destinationView
+                                action.destinationView()
                             }
                         }
                     }

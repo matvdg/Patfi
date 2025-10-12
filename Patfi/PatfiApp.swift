@@ -56,7 +56,7 @@ struct PatfiApp: App {
             NavigationStack {
                 HomeView()
                     .navigationDestination(item: $quickActionCoordinator.launchedQuickAction) { shortcut in
-                        shortcut.destinationView
+                        shortcut.destinationView()
                     }
             }
             .onChange(of: scenePhase) {
