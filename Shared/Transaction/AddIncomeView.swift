@@ -15,7 +15,6 @@ struct AddIncomeView: View {
     
     @State private var title: String = ""
     @State private var amountText: String = ""
-    @State private var account: Account? = nil
     @FocusState private var focused: Bool
     @State private var selectedAccountID: PersistentIdentifier?
 
@@ -77,12 +76,12 @@ struct AddIncomeView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {
-                    guard let amount, let account else { return }
-                    transactionRepository.addIncome(title: title, amount: amount, account: account, context: context)
+                    guard let amount, let selectedAccount else { return }
+                    transactionRepository.addIncome(title: title, amount: amount, account: selectedAccount, context: context)
                     dismiss()
                     
                 })
-                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || account == nil || amount == nil)
+                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedAccount == nil || amount == nil)
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }

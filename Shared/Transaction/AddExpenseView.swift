@@ -16,7 +16,6 @@ struct AddExpenseView: View {
     @State private var paymentMethod: Transaction.PaymentMethod = .applePay
     @State private var expenseCategory: Transaction.ExpenseCategory?
     @State private var amountText: String = ""
-    @State private var account: Account? = nil
     @FocusState private var focused: Bool
     @State private var selectedAccountID: PersistentIdentifier?
 
@@ -98,12 +97,12 @@ struct AddExpenseView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {
-                    guard let amount, let account, let expenseCategory else { return }
-                    transactionRepository.addExpense(title: title, amount: amount, account: account, paymentMethod: paymentMethod, expenseCategory: expenseCategory, context: context)
+                    guard let amount, let selectedAccount, let expenseCategory else { return }
+                    transactionRepository.addExpense(title: title, amount: amount, account: selectedAccount, paymentMethod: paymentMethod, expenseCategory: expenseCategory, context: context)
                     dismiss()
                     
                 })
-                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || account == nil || amount == nil || expenseCategory == nil)
+                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedAccount == nil || amount == nil || expenseCategory == nil)
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }
