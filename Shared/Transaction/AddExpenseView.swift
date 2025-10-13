@@ -57,15 +57,6 @@ struct AddExpenseView: View {
 #endif
                     .autocorrectionDisabled()
                 HStack {
-                    Image(systemName: paymentMethod.iconName)
-                    Picker("PaymentMethod", selection: $paymentMethod) {
-                        ForEach(Transaction.PaymentMethod.allCases) { p in
-                            Text(p.localized)
-                                .tag(p)
-                        }
-                    }
-                }
-                HStack {
                     if let bank = selectedAccount?.bank {
                         BankLogo(bank: bank)
                             .id(bank.id)
@@ -83,12 +74,17 @@ struct AddExpenseView: View {
                     }
                 }
                 HStack {
-                    if let icon = expenseCategory?.iconName {
-                        Image(systemName: icon)
+                    Picker("PaymentMethod", selection: $paymentMethod) {
+                        ForEach(Transaction.PaymentMethod.allCases) { p in
+                            Label(p.localized, systemImage: p.iconName)
+                                .tag(p)
+                        }
                     }
+                }
+                HStack {
                     Picker("ExpenseCategory", selection: $expenseCategory) {
                         ForEach(Transaction.ExpenseCategory.allCases) { cat in
-                            Text(cat.localized)
+                            Label(cat.localized, systemImage: cat.iconName)
                                 .tag(cat)
                         }
                     }
@@ -137,4 +133,15 @@ struct AddExpenseView: View {
         AddExpenseView()
     }
     .modelContainer(ModelContainer.shared)
+}
+
+
+struct SmallIconLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            configuration.icon
+                .frame(width: 24, height: 24) // 👈 appliqué partout
+            configuration.title
+        }
+    }
 }

@@ -660,13 +660,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Destination account"
+            "value" : "Destination"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compte destination"
+            "state" : "needs_review",
+            "value" : "Destination"
           }
         }
       }
@@ -1415,13 +1415,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Before: %1$@ • After: %2$@"
+            "value" : "Before: %1$@ , after: %2$@"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Avant : %1$@ • Après : %2$@"
+            "state" : "translated",
+            "value" : "Avant : %1$@, après : %2$@"
           }
         }
       }
@@ -1487,13 +1487,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Source account"
+            "value" : "Source"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Compte source"
+            "value" : "Source"
           }
         }
       }
