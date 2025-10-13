@@ -17,7 +17,7 @@ struct AddIncomeView: View {
     @State private var amountText: String = ""
     @FocusState private var focused: Bool
     @State private var selectedAccountID: PersistentIdentifier?
-
+    
     private var selectedAccount: Account? {
         accounts.first(where: { $0.persistentModelID == selectedAccountID })
     }
@@ -30,44 +30,60 @@ struct AddIncomeView: View {
     
     var body: some View {
         Form {
+            Section {
 #if os(watchOS)
-            NavigationLink {
-                NumericalKeyboardView(text: $amountText)
-            } label: {
-                Text(amountText.isEmpty ? String(localized:"Amount") : amountText)
-            }
+                NavigationLink {
+                    NumericalKeyboardView(text: $amountText)
+                } label: {
+                    Text(amountText.isEmpty ? String(localized:"Amount") : amountText)
+                }
 #else
-            TextField("Amount", text: $amountText)
+                TextField("Amount", text: $amountText)
 #if os(iOS) || os(tvOS) || os(visionOS)
-                .keyboardType(.decimalPad)
+                    .keyboardType(.decimalPad)
 #endif
-                .focused($focused)
-                .onChange(of: amountText) { _, newValue in
-                    let cleaned = newValue.filter { !$0.isWhitespace }
-                    if cleaned != newValue {
-                        amountText = cleaned
+                    .focused($focused)
+                    .onChange(of: amountText) { _, newValue in
+                        let cleaned = newValue.filter { !$0.isWhitespace }
+                        if cleaned != newValue {
+                            amountText = cleaned
+                        }
+                    }
+#endif
+                TextField("Name", text: $title)
+#if !os(macOS)
+                    .textInputAutocapitalization(.words)
+#endif
+                    .autocorrectionDisabled()
+                HStack {
+                    if let bank = selectedAccount?.bank {
+                        BankLogo(bank: bank)
+                            .id(bank.id)
+                    }
+                    Picker("Account", selection: $selectedAccountID) {
+                        ForEach(accounts) { acc in
+                            if let name = acc.bank?.name {
+                                Text("\(name ) • \(acc.name)")
+                                    .tag(acc.persistentModelID)
+                            } else {
+                                Text(acc.name)
+                                    .tag(acc.persistentModelID)
+                            }
+                        }
                     }
                 }
-#endif
-            TextField("Name", text: $title)
-#if !os(macOS)
-                .textInputAutocapitalization(.words)
-#endif
-                .autocorrectionDisabled()
-            HStack {
-                if let bank = selectedAccount?.bank {
-                    BankLogo(bank: bank)
-                        .id(bank.id)
-                }
-                Picker("Account", selection: $selectedAccountID) {
-                    ForEach(accounts) { acc in
-                        if let name = acc.bank?.name {
-                            Text("\(name ) • \(acc.name)")
-                                .tag(acc.persistentModelID)
-                        } else {
-                            Text(acc.name)
-                                .tag(acc.persistentModelID)
-                        }
+            } footer: {
+                if let balance = selectedAccount?.latestBalance?.balance {
+                    if let amount {
+                        Text("Previous balance: \(balance.toString), new balance: \((balance + amount).toString)")
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
+                            .italic()
+                    } else {
+                        Text("Balance: \(balance.toString)")
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
+                            .italic()
                     }
                 }
             }
@@ -92,7 +108,7 @@ struct AddIncomeView: View {
                 selectedAccountID = defaultAccount.persistentModelID
             }
         }
-    }
+}
 }
 
 #Preview {

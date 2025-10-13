@@ -16,7 +16,7 @@ struct AddInternalTransferView: View {
     @State private var destinationAccount: Account? = nil
     @FocusState private var focused: Bool
     @State private var sourceAccountID: PersistentIdentifier?
-
+    
     private var sourceAccount: Account? {
         accounts.first(where: { $0.persistentModelID == sourceAccountID })
     }
@@ -29,59 +29,97 @@ struct AddInternalTransferView: View {
     
     var body: some View {
         Form {
+            Section {
 #if os(watchOS)
-            NavigationLink {
-                NumericalKeyboardView(text: $amountText)
-            } label: {
-                Text(amountText.isEmpty ? String(localized:"Amount") : amountText)
-            }
+                NavigationLink {
+                    NumericalKeyboardView(text: $amountText)
+                } label: {
+                    Text(amountText.isEmpty ? String(localized:"Amount") : amountText)
+                }
 #else
-            TextField("Amount", text: $amountText)
+                TextField("Amount", text: $amountText)
 #if os(iOS) || os(tvOS) || os(visionOS)
-                .keyboardType(.decimalPad)
+                    .keyboardType(.decimalPad)
 #endif
-                .focused($focused)
-                .onChange(of: amountText) { _, newValue in
-                    let cleaned = newValue.filter { !$0.isWhitespace }
-                    if cleaned != newValue {
-                        amountText = cleaned
+                    .focused($focused)
+                    .onChange(of: amountText) { _, newValue in
+                        let cleaned = newValue.filter { !$0.isWhitespace }
+                        if cleaned != newValue {
+                            amountText = cleaned
+                        }
                     }
-                }
 #endif
-            HStack {
-                if let bank = sourceAccount?.bank {
-                    BankLogo(bank: bank)
-                        .id(bank.id)
-                }
-                Picker("Source account", selection: $sourceAccountID) {
-                    ForEach(accounts) { acc in
-                        if let name = acc.bank?.name {
-                            Text("\(name ) • \(acc.name)")
-                                .tag(acc.persistentModelID)
-                        } else {
-                            Text(acc.name)
-                                .tag(acc.persistentModelID)
+                HStack {
+                    if let bank = sourceAccount?.bank {
+                        BankLogo(bank: bank)
+                            .id(bank.id)
+                    }
+                    Picker("Source account", selection: $sourceAccountID) {
+                        ForEach(accounts) { acc in
+                            if let name = acc.bank?.name {
+                                Text("\(name ) • \(acc.name)")
+                                    .tag(acc.persistentModelID)
+                            } else {
+                                Text(acc.name)
+                                    .tag(acc.persistentModelID)
+                            }
                         }
                     }
                 }
-            }
-            HStack {
-                if let bank = destinationAccount?.bank {
-                    BankLogo(bank: bank)
-                        .id(bank.id)
-                }
-                Picker("Destination account", selection: $destinationAccount) {
-                    ForEach(accounts) { account in
-                        if let name = account.bank?.name {
-                            Text("\(name ) • \(account.name)")
-                                .tag(account)
-                        } else {
-                            Text(account.name)
-                                .tag(account)
+                HStack {
+                    if let bank = destinationAccount?.bank {
+                        BankLogo(bank: bank)
+                            .id(bank.id)
+                    }
+                    Picker("Destination account", selection: $destinationAccount) {
+                        ForEach(accounts) { account in
+                            if let name = account.bank?.name {
+                                Text("\(name ) • \(account.name)")
+                                    .tag(account)
+                            } else {
+                                Text(account.name)
+                                    .tag(account)
+                            }
+                            
                         }
-                        
                     }
                 }
+            } footer: {
+                VStack(alignment: .leading, spacing: 8) {
+                    if let sourceAccount, let balance = sourceAccount.latestBalance?.balance {
+                        if let amount {
+                            HStack {
+                                Text(sourceAccount.name)
+                                Text(" • ")
+                                Text("Previous balance: \(balance.toString), new balance: \((balance - amount).toString)")
+                            }
+                        } else {
+                            HStack {
+                                Text(sourceAccount.name)
+                                Text(" • ")
+                                Text("Balance: \(balance.toString)")
+                            }
+                        }
+                    }
+                    if let destinationAccount, let balance = destinationAccount.latestBalance?.balance {
+                        if let amount {
+                            HStack {
+                                Text(destinationAccount.name)
+                                Text(" • ")
+                                Text("Previous balance: \(balance.toString), new balance: \((balance + amount).toString)")
+                            }
+                        } else {
+                            HStack {
+                                Text(destinationAccount.name)
+                                Text(" • ")
+                                Text("Balance: \(balance.toString)")
+                            }
+                        }
+                    }
+                }
+                .font(.footnote)
+                .foregroundColor(.secondary)
+                .italic()
             }
         }
         .navigationTitle("Internal transfer")
@@ -105,7 +143,7 @@ struct AddInternalTransferView: View {
                 sourceAccountID = defaultAccount.persistentModelID
             }
         }
-    }
+}
 }
 
 #Preview {

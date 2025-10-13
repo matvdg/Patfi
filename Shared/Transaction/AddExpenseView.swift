@@ -31,64 +31,80 @@ struct AddExpenseView: View {
     
     var body: some View {
         Form {
+            Section {
 #if os(watchOS)
-            NavigationLink {
-                NumericalKeyboardView(text: $amountText)
-            } label: {
-                Text(amountText.isEmpty ? String(localized:"Amount") : amountText)
-            }
+                NavigationLink {
+                    NumericalKeyboardView(text: $amountText)
+                } label: {
+                    Text(amountText.isEmpty ? String(localized:"Amount") : amountText)
+                }
 #else
-            TextField("Amount", text: $amountText)
+                TextField("Amount", text: $amountText)
 #if os(iOS) || os(tvOS) || os(visionOS)
-                .keyboardType(.decimalPad)
+                    .keyboardType(.decimalPad)
 #endif
-                .focused($focused)
-                .onChange(of: amountText) { _, newValue in
-                    let cleaned = newValue.filter { !$0.isWhitespace }
-                    if cleaned != newValue {
-                        amountText = cleaned
+                    .focused($focused)
+                    .onChange(of: amountText) { _, newValue in
+                        let cleaned = newValue.filter { !$0.isWhitespace }
+                        if cleaned != newValue {
+                            amountText = cleaned
+                        }
                     }
-                }
 #endif
-            TextField("Name", text: $title)
+                TextField("Name", text: $title)
 #if !os(macOS)
-                .textInputAutocapitalization(.words)
+                    .textInputAutocapitalization(.words)
 #endif
-                .autocorrectionDisabled()
-            HStack {
-                Image(systemName: paymentMethod.iconName)
-                Picker("PaymentMethod", selection: $paymentMethod) {
-                    ForEach(Transaction.PaymentMethod.allCases) { p in
-                        Text(p.localized)
-                            .tag(p)
-                    }
-                }
-            }
-            HStack {
-                if let bank = selectedAccount?.bank {
-                    BankLogo(bank: bank)
-                        .id(bank.id)
-                }
-                Picker("Account", selection: $selectedAccountID) {
-                    ForEach(accounts) { acc in
-                        if let name = acc.bank?.name {
-                            Text("\(name ) • \(acc.name)")
-                                .tag(acc.persistentModelID)
-                        } else {
-                            Text(acc.name)
-                                .tag(acc.persistentModelID)
+                    .autocorrectionDisabled()
+                HStack {
+                    Image(systemName: paymentMethod.iconName)
+                    Picker("PaymentMethod", selection: $paymentMethod) {
+                        ForEach(Transaction.PaymentMethod.allCases) { p in
+                            Text(p.localized)
+                                .tag(p)
                         }
                     }
                 }
-            }
-            HStack {
-                if let icon = expenseCategory?.iconName {
-                    Image(systemName: icon)
+                HStack {
+                    if let bank = selectedAccount?.bank {
+                        BankLogo(bank: bank)
+                            .id(bank.id)
+                    }
+                    Picker("Account", selection: $selectedAccountID) {
+                        ForEach(accounts) { acc in
+                            if let name = acc.bank?.name {
+                                Text("\(name ) • \(acc.name)")
+                                    .tag(acc.persistentModelID)
+                            } else {
+                                Text(acc.name)
+                                    .tag(acc.persistentModelID)
+                            }
+                        }
+                    }
                 }
-                Picker("ExpenseCategory", selection: $expenseCategory) {
-                    ForEach(Transaction.ExpenseCategory.allCases) { cat in
-                        Text(cat.localized)
-                            .tag(cat)
+                HStack {
+                    if let icon = expenseCategory?.iconName {
+                        Image(systemName: icon)
+                    }
+                    Picker("ExpenseCategory", selection: $expenseCategory) {
+                        ForEach(Transaction.ExpenseCategory.allCases) { cat in
+                            Text(cat.localized)
+                                .tag(cat)
+                        }
+                    }
+                }
+            } footer: {
+                if let balance = selectedAccount?.latestBalance?.balance {
+                    if let amount {
+                        Text("Previous balance: \(balance.toString), new balance: \((balance - amount).toString)")
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
+                            .italic()
+                    } else {
+                        Text("Balance: \(balance.toString)")
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
+                            .italic()
                     }
                 }
             }
