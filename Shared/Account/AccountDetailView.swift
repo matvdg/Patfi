@@ -19,10 +19,10 @@ struct AccountDetailView: View {
     var body: some View {
         Form {
             // MARK: - Account info & editing
-            Section("Account") {
-                TextField("Name", text: $account.name)
+            Section("account") {
+                TextField("name", text: $account.name)
                     .disableAutocorrection(true)
-                Picker("Category", selection: $account.category) {
+                Picker("category", selection: $account.category) {
                     ForEach(Category.allCases) { c in
                         HStack {
                             Circle().fill(c.color).frame(width: 10, height: 10)
@@ -31,47 +31,49 @@ struct AccountDetailView: View {
                         .tag(c)
                     }
                 }
+#if !os(macOS)
                 .pickerStyle(.navigationLink)
+#endif
                 if account.isDefault {
                     Button(role: .confirm) {
                         accountRepository.unsetAsDefault(account: account, context: context)
                     } label: {
-                        Label("Unset as default", systemImage: "star.slash")
+                        Label("unsetAsDefault", systemImage: "star.slash")
                     }
                 } else {
                     Button(role: .confirm) {
                         accountRepository.setAsDefault(account: account, context: context)
                     } label: {
-                        Label("Set as default", systemImage: "star")
+                        Label("setAsDefault", systemImage: "star")
                     }
                 }
                 
                 Button(role: .destructive) {
                     showDeleteAccountConfirm = true
                 } label: {
-                    Label("Delete account", systemImage: "trash")
+                    Label("deleteAccount", systemImage: "trash")
                         .foregroundStyle(.red)
                 }
-                .confirmationDialog("Delete this account?", isPresented: $showDeleteAccountConfirm, titleVisibility: .visible) {
-                    Button("Delete", role: .destructive) {
+                .confirmationDialog("deleteAccount", isPresented: $showDeleteAccountConfirm, titleVisibility: .visible) {
+                    Button("delete", role: .destructive) {
                         accountRepository.delete(account: account, context: context)
                         dismiss()
                     }
                     Button(role: .cancel, action: { dismiss() })
                 } message: {
-                    Text("This will also delete all its balances")
+                    Text("deleteAccountDescription")
                 }
             }
             
             // MARK: - Bank
-            Section("Bank") {
+            Section("bank") {
                 NavigationLink {
                     EditBanksView(selectedBank: $account.bank)
                 } label: {
                     if let bank = account.bank {
                         BankRow(bank: bank).id(bank.id)
                     } else {
-                        Text("Select/create/modify a bank")
+                        Text("selectBank")
                             .foregroundColor(.primary)
                     }
                 }
@@ -112,7 +114,7 @@ struct AccountDetailView: View {
                     Button(action: { showAddSnapshot = true }) {
                         HStack(alignment: .center, spacing: 8) {
                             Image(systemName: "plus")
-                            Text("Add balance")
+                            Text("addBalance")
                         }
                     }
                     .buttonStyle(.plain)
@@ -126,21 +128,21 @@ struct AccountDetailView: View {
                         .swipeActions(edge: .trailing) {
                             Button(role: .destructive) {
                                 balanceRepository.delete(snap, context: context)
-                            } label: { Label("Delete", systemImage: "trash") }
+                            } label: { Label("delete", systemImage: "trash") }
                         }
 #if !os(watchOS)
                         .contextMenu {
                             Button(role: .destructive) {
                                 balanceRepository.delete(snap, context: context)
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                Label("delete", systemImage: "trash")
                             }
                         }
 #endif
                     }
                     Text("tipBalance").foregroundStyle(.tertiary).italic()
                 } else {
-                    ContentUnavailableView("No snapshots", systemImage: "clock.arrow.circlepath", description: Text("Add balance"))
+                    ContentUnavailableView("noSnapshots", systemImage: "clock.arrow.circlepath", description: Text("addBalance"))
                 }
             }
             .padding(.all)
@@ -149,7 +151,7 @@ struct AccountDetailView: View {
         .navigationDestination(isPresented: $showAddSnapshot, destination: {
             AddBalanceView(account: account)
         })
-        .navigationTitle(account.name.isEmpty ? String(localized: "Account") : account.name)
+        .navigationTitle(account.name.isEmpty ? String(localized: "account") : account.name)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 #if os(watchOS)
@@ -175,7 +177,7 @@ struct AccountDetailView: View {
                 #endif
             }
         }
-        .confirmationDialog("Add", isPresented: $showActions) {
+        .confirmationDialog("add", isPresented: $showActions) {
             ForEach(QuickAction.allCases, id: \.self) { action in
                 if action.requiresAccount {
                     NavigationLink(action.localizedTitle) {

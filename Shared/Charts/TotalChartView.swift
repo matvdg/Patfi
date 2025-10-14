@@ -21,12 +21,12 @@ struct TotalChartView: View {
             let yMax = minValue == maxValue ? maxValue + 1 : maxValue + padding
             Chart(series) { point in
                 BarMark(
-                    x: .value("Date", point.date),
+                    x: .value("date", point.date),
                     yStart: .value("Min", yMin),
-                    yEnd: .value("Total", point.total),
+                    yEnd: .value("total", point.total),
                     width: .fixed(geo.size.width / 20)
                 )
-                .foregroundStyle(by: .value("Change", point.change))
+                .foregroundStyle(by: .value("", point.change))
             }
             .chartForegroundStyleScale([
                 "equal": .blue,
@@ -49,7 +49,7 @@ struct TotalChartView: View {
                         case .weeks:
                             let weekOfYear = Calendar.current.component(.weekOfYear, from: d)
                             AxisValueLabel {
-                                Text("W\(weekOfYear)").minimumScaleFactor(0.2)
+                                Text("w\(weekOfYear)").minimumScaleFactor(0.2)
                             }
                         case .months:
                             let month = Calendar.current.component(.month, from: d)

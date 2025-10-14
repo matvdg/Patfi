@@ -31,12 +31,12 @@ struct AccountsView: View {
                 ContentUnavailableView {
                     Image(systemName: "creditcard")
                 } description: {
-                    Text("No accounts")
+                    Text("noAccounts")
                 } actions: {
                     Button {
                         showAddAccount = true
                     } label: {
-                        Label("Create your first account", systemImage: "plus")
+                        Label("createAccount", systemImage: "plus")
                             .padding()
                     }
 #if os(visionOS)
@@ -138,7 +138,7 @@ struct AccountsView: View {
                 }
             }
         }
-        .navigationTitle("Accounts")
+        .navigationTitle("accounts")
     }
 }
 

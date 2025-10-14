@@ -38,10 +38,10 @@ struct AddInternalTransferView: View {
                 NavigationLink {
                     NumericalKeyboardView(text: $amountText)
                 } label: {
-                    Text(amountText.isEmpty ? String(localized:"Amount") : amountText)
+                    Text(amountText.isEmpty ? String(localized:"amount") : amountText)
                 }
 #else
-                TextField("Amount", text: $amountText)
+                TextField("amount", text: $amountText)
 #if os(iOS) || os(tvOS) || os(visionOS)
                     .keyboardType(.decimalPad)
 #endif
@@ -53,8 +53,8 @@ struct AddInternalTransferView: View {
                         }
                     }
 #endif
-                AccountPicker(id: $sourceAccountID, title: String(localized: "Source account"))
-                AccountPicker(id: $destinationAccountID, title: String(localized: "Destination account"))
+                AccountPicker(id: $sourceAccountID, title: String(localized: "sourceAccount"))
+                AccountPicker(id: $destinationAccountID, title: String(localized: "destinationAccount"))
             } footer: {
                 VStack(alignment: .leading, spacing: 8) {
                     if let sourceAccount, let balance = sourceAccount.latestBalance?.balance {
@@ -66,9 +66,9 @@ struct AddInternalTransferView: View {
                             Text(sourceAccount.name)
                             Text(" • ")
                             if let amount {
-                                Text("Previous balance: \(balance.toString), new balance: \((balance - amount).toString)")
+                                Text("previousBalance \(balance.toString) newBalance \((balance - amount).toString)")
                             } else {
-                                Text("Balance: \(balance.toString)")
+                                Text("balance: \(balance.toString)")
                             }
                         }
                     }
@@ -81,9 +81,9 @@ struct AddInternalTransferView: View {
                             Text(destinationAccount.name)
                             Text(" • ")
                             if let amount {
-                                Text("Previous balance: \(balance.toString), new balance: \((balance + amount).toString)")
+                                Text("previousBalance \(balance.toString) newBalance \((balance + amount).toString)")
                             } else {
-                                Text("Balance: \(balance.toString)")
+                                Text("balance: \(balance.toString)")
                             }
                         }
                     }
@@ -93,13 +93,12 @@ struct AddInternalTransferView: View {
                 .italic()
             }
         }
-        .navigationTitle("Internal transfer")
+        .navigationTitle("internalTransfer")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {
                     guard let amount, let sourceAccount, let destinationAccount else { return }
-                    let internalTransfer = String(localized: "Internal transfer")
-                    transactionRepository.addInternalTransfer(title: internalTransfer, amount: amount, sourceAccount: sourceAccount, destinationAccount: destinationAccount, context: context)
+                    transactionRepository.addInternalTransfer(amount: amount, sourceAccount: sourceAccount, destinationAccount: destinationAccount, context: context)
                     dismiss()
                     
                 })

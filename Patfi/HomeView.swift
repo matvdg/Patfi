@@ -19,6 +19,9 @@ struct HomeView: View {
     
     private var allKeys: [String] {
         switch mode {
+            // TODO
+        case .expenses:
+            accountsByCategory.map { $0.key.localized }
         case .categories:
             accountsByCategory.map { $0.key.localized }
         case .banks:
@@ -79,12 +82,12 @@ struct HomeView: View {
                 ContentUnavailableView {
                     Image(systemName: "creditcard")
                 } description: {
-                    Text("No accounts")
+                    Text("noAccounts")
                 } actions: {
                     Button {
                         showAddAccount = true
                     } label: {
-                        Label("Create your first account", systemImage: "plus")
+                        Label("createAccount", systemImage: "plus")
                             .padding()
                     }
 #if os(visionOS)
@@ -97,16 +100,18 @@ struct HomeView: View {
                 if !isLandscape {
                     Picker("", selection: $selectedChart) {
 #if os(macOS)
-                        Text(selectedChart == 0 ? "􀜋 \(String(localized: "Distribution"))" : "􀑀 \(String(localized: "Distribution"))").tag(0)
-                        Text(selectedChart == 1 ? "􀐿 \(String(localized: "Monitoring"))" : "􀐾 \(String(localized: "Monitoring"))").tag(1)
+                        Text(selectedChart == 0 ? "transactions" : "transactions").tag(0)
+                        Text(selectedChart == 1 ? "􀐿 \(String(localized: "monitoring"))" : "􀐾 \(String(localized: "monitoring"))").tag(1)
+                        Text(selectedChart == 2 ? "􂷽 \(String(localized: "transactions"))" : "􂷼 \(String(localized: "transactions"))").tag(2)
 #else
                         Image(systemName: selectedChart == 0 ? "chart.pie.fill" : "chart.pie").tag(0)
                         Image(systemName: selectedChart == 1 ? "chart.bar.fill" : "chart.bar").tag(1)
+                        Image(systemName: selectedChart == 2 ? "receipt.fill" : "receipt").tag(2)
 #endif
                     }
                     .pickerStyle(.segmented)
                     .controlSize(.extraLarge)
-                    .frame(width: 100)
+                    .frame(width: 150)
                 }
                 Group {
                     if selectedChart == 0 {
@@ -150,6 +155,42 @@ struct HomeView: View {
                     List {
                         if selectedChart == 0 {
                             switch mode {
+                                // TODO
+                            case .expenses:
+                                ForEach(accountsByCategory, id: \.key) { (category, items) in
+                                    let isCollapsed = collapsedSections.contains(category.localized)
+                                    Section {
+                                        if !isCollapsed {
+                                            ForEach(items) { account in
+                                                NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
+                                            }
+                                        }
+                                    } header: {
+                                        ArrowRightButton(isRight: Binding(
+                                            get: { isCollapsed },
+                                            set: { isCollapsed in
+                                                if isCollapsed {
+                                                    collapsedSections.insert(category.localized)
+                                                } else {
+                                                    collapsedSections.remove(category.localized)
+                                                }
+                                            }
+                                        )) {
+                                            HStack(spacing: 8) {
+                                                Circle().fill(category.color).frame(width: 10, height: 10)
+                                                Text(category.localized)
+                                                Spacer()
+                                                Text(balanceRepository.balance(for: items).toString)
+                                            }
+                                        }
+                                        .frame(height: isCollapsed ? 5 : 30)
+                                        .padding(.top, isCollapsed ? 12 : 0)
+#if os(macOS)
+                                        .padding(.vertical, 8)
+                                        .frame(height: 50)
+#endif
+                                    }
+                                }
                             case .categories:
                                 ForEach(accountsByCategory, id: \.key) { (category, items) in
                                     let isCollapsed = collapsedSections.contains(category.localized)
@@ -226,7 +267,7 @@ struct HomeView: View {
                             ForEach(balancesByPeriod.enumerated(), id: \.element.id) { index, point in
                                 HStack {
                                     if index == 0 {
-                                        Text("Now")
+                                        Text("now")
                                     } else {
                                         switch period {
                                         case .days:
@@ -234,7 +275,7 @@ struct HomeView: View {
                                         case .weeks:
                                             let weekOfYear = Calendar.current.component(.weekOfYear, from: point.date)
                                             HStack {
-                                                Text("W\(weekOfYear)")
+                                                Text("w\(weekOfYear)")
                                                 Text("•  \(point.date.toString)")
                                             }
                                         case .months:
@@ -304,7 +345,7 @@ struct HomeView: View {
         .navigationDestination(isPresented: $showAddAccount) {
             AddAccountView()
         }
-        .navigationTitle("Patfi")
+        .navigationTitle("patfi")
         
 #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)

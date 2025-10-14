@@ -19,7 +19,9 @@ struct AccountPicker: View {
                     .tag(acc.persistentModelID)
             }
         }
+#if !os(macOS)
         .pickerStyle(.navigationLink)
+#endif
     }
 }
 

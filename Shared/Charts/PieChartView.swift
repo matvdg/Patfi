@@ -13,6 +13,14 @@ struct PieChartView: View {
     
     private var allSlices: [Slice] {
         switch grouping {
+        case .expenses: // TODO
+            return balanceRepository.groupByCategory(accounts)
+                .map { cat, accounts in
+                    Slice(label: cat.localized, color: cat.color, total: balanceRepository.balance(for: accounts))
+                }
+                .sorted {
+                    $0.total > $1.total
+                }
         case .categories:
             return balanceRepository.groupByCategory(accounts)
                 .map { cat, accounts in
@@ -40,7 +48,7 @@ struct PieChartView: View {
             ZStack {
                 Chart(slices) { slice in
                     SectorMark(
-                        angle: .value("Total", slice.total),
+                        angle: .value("total", slice.total),
                         innerRadius: .ratio(0.6),
                         angularInset: 1.0
                     )
@@ -57,7 +65,7 @@ struct PieChartView: View {
                 
                 // Center label (total)
                 VStack {
-                    Text("Total")
+                    Text("total")
                         .font(.caption)
                     Text(total.toString)
                         .font(.headline)

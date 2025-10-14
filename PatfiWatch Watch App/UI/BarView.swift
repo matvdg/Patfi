@@ -11,9 +11,9 @@ struct BarView: View {
         Group {
             if snapshots.isEmpty {
                 ContentUnavailableView(
-                    "No data",
+                    "noData",
                     systemImage: "chart.bar",
-                    description: Text("Add balances to see the graph")
+                    description: Text("barChartEmptyDescription")
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
@@ -32,7 +32,7 @@ struct BarView: View {
                     }
             }
         }
-        .navigationTitle("Monitoring")
+        .navigationTitle("monitoring")
     }
     
 }

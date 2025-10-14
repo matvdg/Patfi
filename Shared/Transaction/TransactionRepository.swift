@@ -34,23 +34,23 @@ class TransactionRepository {
                        context: context)
     }
     
-    func addInternalTransfer(title: String,
-                             amount: Double,
+    func addInternalTransfer(amount: Double,
                              sourceAccount: Account,
                              destinationAccount: Account,
                              context: ModelContext) {
+        let title = String(localized: "internalTransfer")
         addTransaction(type: .expense,
                        title: title,
                        amount: amount,
                        account: sourceAccount,
-                       paymentMethod: nil,
+                       paymentMethod: .bankTransfer,
                        isInternalTransfer: true,
                        context: context)
         addTransaction(type: .income,
                        title: title,
                        amount: amount,
                        account: destinationAccount,
-                       paymentMethod: nil,
+                       paymentMethod: .bankTransfer,
                        isInternalTransfer: true,
                        context: context)
     }

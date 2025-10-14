@@ -19,13 +19,13 @@ struct EditBanksView: View {
                 ContentUnavailableView {
                     Image(systemName: Bank.sfSymbol)
                 } description: {
-                    Text("No bank")
+                    Text("noBank")
                 } actions: {
                     Button {
                         bankToModify = nil
                         showingAddBank = true
                     } label: {
-                        Label("Create your first bank", systemImage: "plus")
+                        Label("createBank", systemImage: "plus")
                             .padding()
                     }
                     #if os(visionOS)
@@ -57,12 +57,12 @@ struct EditBanksView: View {
                             Button(role: .destructive) {
                                 bankRepository.delete(bank, context: context)
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                Label("delete", systemImage: "trash")
                             }
                             Button(role: .confirm) {
                                 bankToModify = bank
                             } label: {
-                                Label("Edit", systemImage: "pencil")
+                                Label("edit", systemImage: "pencil")
                             }
                         }
                         #if !os(watchOS)
@@ -70,12 +70,12 @@ struct EditBanksView: View {
                             Button(role: .destructive) {
                                 bankRepository.delete(bank, context: context)
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                Label("delete", systemImage: "trash")
                             }
                             Button(role: .confirm) {
                                 bankToModify = bank
                             } label: {
-                                Label("Edit", systemImage: "pencil")
+                                Label("edit", systemImage: "pencil")
                             }
                         }
                         #endif
@@ -104,7 +104,7 @@ struct EditBanksView: View {
                 }
             }
         }
-        .navigationTitle("Banks")
+        .navigationTitle("banks")
         .navigationDestination(isPresented: $showingAddBank, destination: {
             EditBankView()
         })

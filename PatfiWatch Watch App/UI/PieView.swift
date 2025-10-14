@@ -12,14 +12,38 @@ struct PieView: View {
         Group {
             if accounts.isEmpty {
                 ContentUnavailableView(
-                    "No data",
+                    "noData",
                     systemImage: "chart.pie",
-                    description: Text("Add balances to see distribution")
+                    description: Text("pieChartEmptyDescription")
                 )
             } else {
                 List {
                     PieChartView(grouping: $mode)
                     switch mode {
+                        // TODO
+                    case .expenses:
+                        let sorted = balanceRepository.groupByBank(accounts)
+                            .map {
+                                ($0.key, balanceRepository.balance(for: $0.value))
+                            }
+                            .sorted { $0.1 > $1.1 }
+                        
+                        ForEach(sorted, id: \.0) { bank, total in
+                            NavigationLink {
+                                ColorView(bank: bank)
+                            } label: {
+                                HStack {
+                                    HStack(spacing: 8) {
+                                        Circle().fill(bank.swiftUIColor).frame(width: 10, height: 10)
+                                        Text(bank.name)
+                                    }
+                                    Spacer()
+                                    Text(total.toString)
+                                }
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.1)
+                            }
+                        }
                     case .banks:
                         let sorted = balanceRepository.groupByBank(accounts)
                             .map {
@@ -78,7 +102,7 @@ struct PieView: View {
                 }
             }
         }
-        .navigationTitle("Distribution")
+        .navigationTitle("distribution")
     }
 }
 

@@ -35,10 +35,10 @@ struct AddIncomeView: View {
                 NavigationLink {
                     NumericalKeyboardView(text: $amountText)
                 } label: {
-                    Text(amountText.isEmpty ? String(localized:"Amount") : amountText)
+                    Text(amountText.isEmpty ? String(localized:"amount") : amountText)
                 }
 #else
-                TextField("Amount", text: $amountText)
+                TextField("amount", text: $amountText)
 #if os(iOS) || os(tvOS) || os(visionOS)
                     .keyboardType(.decimalPad)
 #endif
@@ -50,12 +50,12 @@ struct AddIncomeView: View {
                         }
                     }
 #endif
-                TextField("Name", text: $title)
+                TextField("description", text: $title)
 #if !os(macOS)
                     .textInputAutocapitalization(.words)
 #endif
                     .autocorrectionDisabled()
-                AccountPicker(id: $selectedAccountID, title: String(localized: "Account"))
+                AccountPicker(id: $selectedAccountID, title: String(localized: "account"))
             } footer: {
                 if let account = selectedAccount, let balance = account.latestBalance?.balance {
                     HStack {
@@ -66,15 +66,15 @@ struct AddIncomeView: View {
                         Text(account.name)
                         Text(" • ")
                         if let amount {
-                            Text("Previous balance: \(balance.toString), new balance: \((balance + amount).toString)")
+                            Text("previousBalance \(balance.toString) newBalance \((balance + amount).toString)")
                         } else {
-                            Text("Balance: \(balance.toString)")
+                            Text("balance: \(balance.toString)")
                         }
                     }
                 }
             }
         }
-        .navigationTitle("Add income")
+        .navigationTitle("addIncome")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {

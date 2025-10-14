@@ -65,7 +65,7 @@ struct TotalBalanceWidgetEntryView : View {
             VStack(alignment: .center, spacing: 10) {
                 HStack(alignment: .center, spacing: 8) {
                     Image(systemName: Bank.sfSymbol)
-                    Text("Patfi")
+                    Text("patfi")
                         .font(.headline)
                 }
                 Text(entry.balance)
@@ -111,7 +111,7 @@ struct TotalBalanceWidgetEntryView : View {
                 }
                 Spacer()
                 HStack {
-                    Text("Balance")
+                    Text("balance")
                         .font(.headline)
                     Spacer()
                     Text(entry.balance)
@@ -127,7 +127,7 @@ struct TotalBalanceWidgetEntryView : View {
                         ForEach(entry.balancesByCategory.sorted(by: { $0.value > $1.value }), id: \.key) { categoryKey, total in
                             let category = Category(rawValue: categoryKey) ?? .other
                             SectorMark(
-                                angle: .value("Total", total),
+                                angle: .value("total", total),
                                 innerRadius: .ratio(0.6),
                                 angularInset: 1.0
                             )
@@ -139,7 +139,7 @@ struct TotalBalanceWidgetEntryView : View {
                     .frame(maxWidth: .infinity)
                     
                     VStack {
-                        Text("Total")
+                        Text("total")
                             .font(.caption)
                         Text(entry.balance)
                             .font(.headline)
@@ -200,7 +200,7 @@ struct TotalBalanceWidgetEntryView : View {
                     }
                     Spacer()
                     HStack {
-                        Text("Balance")
+                        Text("balance")
                             .font(.headline)
                         Spacer()
                         Text(entry.balance)
@@ -226,7 +226,7 @@ struct TotalBalanceWidgetEntryView : View {
                     }
                     Spacer()
                     HStack {
-                        Text("Balance")
+                        Text("balance")
                             .font(.headline)
                         Spacer()
                         Text(entry.balance)
@@ -258,7 +258,7 @@ struct TotalBalanceWidget: Widget {
                     for: .widget
                 )
         }
-        .configurationDisplayName("Total Balance")
-        .description("Total balance of my accounts")
+        .configurationDisplayName("totalBalance")
+        .description("totalBalanceDescription")
     }
 }

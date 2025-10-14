@@ -21,13 +21,13 @@ struct AddAccountView: View {
     
     var body: some View {
         Form {
-            Section("Account") {
-                TextField("Name", text: $name)
+            Section("account") {
+                TextField("name", text: $name)
 #if !os(macOS)
                     .textInputAutocapitalization(.words)
 #endif
                     .autocorrectionDisabled()
-                Picker("Category", selection: $category) {
+                Picker("category", selection: $category) {
                     ForEach(Category.allCases) { c in
                         HStack {
                             Circle().fill(c.color).frame(width: 10, height: 10)
@@ -36,32 +36,34 @@ struct AddAccountView: View {
                         .tag(c)
                     }
                 }
+#if !os(macOS)
                 .pickerStyle(.navigationLink)
+#endif
             }
             
-            Section("Bank") {
+            Section("bank") {
                 NavigationLink {
                     EditBanksView(selectedBank: $bank)
                 } label: {
                     if let bank {
                         BankRow(bank: bank)
                     } else {
-                        Text("Select/create/modify a bank")
+                        Text("selectBank")
                             .foregroundColor(.primary)
                     }
                 }
             }
             
-            Section("Initial balance") {
+            Section("initialBalance") {
                 
 #if os(watchOS)
                 NavigationLink {
                     NumericalKeyboardView(text: $initialBalanceText)
                 } label: {
-                    Text(initialBalanceText.isEmpty ? String(localized:"Balance") : initialBalanceText)
+                    Text(initialBalanceText.isEmpty ? String(localized:"balance") : initialBalanceText)
                 }
 #else
-                TextField("Balance", text: $initialBalanceText)
+                TextField("balance", text: $initialBalanceText)
 #if os(iOS) || os(tvOS) || os(visionOS)
                     .keyboardType(.decimalPad)
 #endif
@@ -75,7 +77,7 @@ struct AddAccountView: View {
 #endif
             }
         }
-        .navigationTitle("Add account")
+        .navigationTitle("addAccount")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {

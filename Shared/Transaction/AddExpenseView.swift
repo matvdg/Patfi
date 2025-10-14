@@ -36,10 +36,10 @@ struct AddExpenseView: View {
                 NavigationLink {
                     NumericalKeyboardView(text: $amountText)
                 } label: {
-                    Text(amountText.isEmpty ? String(localized:"Amount") : amountText)
+                    Text(amountText.isEmpty ? String(localized:"amount") : amountText)
                 }
 #else
-                TextField("Amount", text: $amountText)
+                TextField("amount", text: $amountText)
 #if os(iOS) || os(tvOS) || os(visionOS)
                     .keyboardType(.decimalPad)
 #endif
@@ -51,12 +51,12 @@ struct AddExpenseView: View {
                         }
                     }
 #endif
-                TextField("Name", text: $title)
+                TextField("description", text: $title)
 #if !os(macOS)
                     .textInputAutocapitalization(.words)
 #endif
                     .autocorrectionDisabled()
-                AccountPicker(id: $selectedAccountID, title: String(localized: "Account"))
+                AccountPicker(id: $selectedAccountID, title: String(localized: "account"))
                 PaymentMethodPicker(paymentMethod: $paymentMethod)
                 ExpenseCategoryPicker(expenseCategory: $expenseCategory)
             } footer: {
@@ -69,15 +69,15 @@ struct AddExpenseView: View {
                         Text(account.name)
                         Text(" • ")
                         if let amount {
-                            Text("Previous balance: \(balance.toString), new balance: \((balance - amount).toString)")
+                            Text("previousBalance \(balance.toString) newBalance \((balance - amount).toString)")
                         } else {
-                            Text("Balance: \(balance.toString)")
+                            Text("balance: \(balance.toString)")
                         }
                     }
                 }
             }
         }
-        .navigationTitle("Add expense")
+        .navigationTitle("addExpense")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {
@@ -106,14 +106,16 @@ struct PaymentMethodPicker: View {
     
     var body: some View {
         
-        Picker("PaymentMethod", selection: $paymentMethod) {
+        Picker("paymentMethod", selection: $paymentMethod) {
             ForEach(Transaction.PaymentMethod.allCases) { p in
                 Label(p.localized, systemImage: p.iconName)
                     .foregroundStyle(.primary)
                     .tag(p)
             }
         }
+#if !os(macOS)
         .pickerStyle(.navigationLink)
+#endif
         .foregroundStyle(.primary)
     }
 }
@@ -125,14 +127,16 @@ struct ExpenseCategoryPicker: View {
     
     var body: some View {
         
-        Picker("ExpenseCategory", selection: $expenseCategory) {
+        Picker("expenseCategory", selection: $expenseCategory) {
             ForEach(Transaction.ExpenseCategory.allCases) { cat in
                 Label(cat.localized, systemImage: cat.iconName)
                     .foregroundStyle(.primary)
                     .tag(cat)
             }
         }
+#if !os(macOS)
         .pickerStyle(.navigationLink)
+#endif
         .foregroundStyle(.primary)
     }
 }

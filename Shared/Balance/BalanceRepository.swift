@@ -197,21 +197,22 @@ enum Period: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var localized: LocalizedStringResource {
         switch self {
-        case .days: return "Days"
-        case .weeks: return "Weeks"
-        case .months: return "Months"
-        case .years: return "Years"
+        case .days: return "days"
+        case .weeks: return "weeks"
+        case .months: return "months"
+        case .years: return "years"
         }
     }
 }
 
 enum Mode: String, CaseIterable, Identifiable {
-    case categories, banks
+    case categories, banks, expenses
     var id: String { rawValue }
     var localized: LocalizedStringResource {
         switch self {
-        case .categories: return "Categories"
-        case .banks: return "Banks"
+        case .categories: return "categories"
+        case .banks: return "banks"
+        case .expenses: return "expenses"
         }
     }
 }

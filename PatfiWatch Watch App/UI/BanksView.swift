@@ -18,13 +18,13 @@ struct BanksView: View {
                 ContentUnavailableView {
                     Image(systemName: Bank.sfSymbol)
                 } description: {
-                    Text("No bank")
+                    Text("noBank")
                 } actions: {
                     Button {
                         bankToModify = nil
                         showingAddBank = true
                     } label: {
-                        Label("Create your first bank", systemImage: "plus")
+                        Label("createBank", systemImage: "plus")
                             .padding()
                     }
 #if os(visionOS)
@@ -55,12 +55,12 @@ struct BanksView: View {
                             Button(role: .destructive) {
                                 bankRepository.delete(bank, context: context)
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                Label("delete", systemImage: "trash")
                             }
                             Button(role: .confirm) {
                                 bankToModify = bank
                             } label: {
-                                Label("Edit", systemImage: "pencil")
+                                Label("edit", systemImage: "pencil")
                             }
                         }
                     }
@@ -79,7 +79,7 @@ struct BanksView: View {
                 }
             }
         }
-        .navigationTitle("Banks")
+        .navigationTitle("banks")
         .sheet(item: $bankToModify, onDismiss: { refreshID = UUID() }) { bank in
             EditBankView(bank: bank)
         }

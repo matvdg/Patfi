@@ -26,7 +26,7 @@ struct EditBankView: View {
                     } else {
                         BankLogo(bank: Bank(name: name, color: palette, logoAvaibility: .optedOut))
                     }
-                    TextField("Bank", text: $name)
+                    TextField("bank", text: $name)
 #if os(iOS) || os(tvOS) || os(visionOS)
                         .textInputAutocapitalization(.words)
 #endif
@@ -66,7 +66,7 @@ struct EditBankView: View {
             // Logo toggle section
             if logoImage != nil {
                 Section {
-                    Toggle("Display logo", isOn: $displayLogo)
+                    Toggle("displayLogo", isOn: $displayLogo)
                         .onChange(of: displayLogo) { oldValue, newValue in
                             if !newValue {
                                 logoAvailability = .optedOut
@@ -77,7 +77,7 @@ struct EditBankView: View {
                 }
             }
             
-            Section("Color") {
+            Section("color") {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
                         ForEach(Bank.Palette.allCases) { p in
@@ -112,7 +112,7 @@ struct EditBankView: View {
 #if os(macOS)
         .padding()
 #endif
-        .navigationTitle(bank == nil ? "Add bank" : "Edit bank")
+        .navigationTitle(bank == nil ? "addBank" : "editBank")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {

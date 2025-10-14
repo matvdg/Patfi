@@ -33,10 +33,10 @@ struct AddBalanceView: View {
                 NavigationLink {
                     NumericalKeyboardView(text: $amountText)
                 } label: {
-                    Text(amountText.isEmpty ? String(localized:"Balance") : amountText)
+                    Text(amountText.isEmpty ? String(localized:"balance") : amountText)
                 }
 #else
-                TextField("Balance", text: $amountText)
+                TextField("balance", text: $amountText)
 #if os(iOS) || os(tvOS) || os(visionOS)
                     .keyboardType(.decimalPad)
 #endif
@@ -48,8 +48,8 @@ struct AddBalanceView: View {
                         }
                     }
 #endif
-                DatePicker("Date", selection: $date, displayedComponents: [.date])
-                AccountPicker(id: $selectedAccountID, title: String(localized: "Account"))
+                DatePicker("date", selection: $date, displayedComponents: [.date])
+                AccountPicker(id: $selectedAccountID, title: String(localized: "account"))
             }
             footer: {
                 if let account = selectedAccount, let previousBalance = account.latestBalance?.balance {
@@ -61,15 +61,15 @@ struct AddBalanceView: View {
                         Text(account.name)
                         Text(" • ")
                         if let newBalance {
-                            Text("Previous balance: \(previousBalance.toString), new balance: \(newBalance.toString)")
+                            Text("previousBalance \(previousBalance.toString) newBalance \(newBalance.toString)")
                         } else {
-                            Text("Balance: \(previousBalance.toString)")
+                            Text("balance: \(previousBalance.toString)")
                         }
                     }
                 }
             }
         }
-        .navigationTitle(String(localized: "Add balance"))
+        .navigationTitle(String(localized: "addBalance"))
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm) {

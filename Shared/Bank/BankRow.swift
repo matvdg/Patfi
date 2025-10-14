@@ -7,7 +7,7 @@ struct BankRow: View {
     var body: some View {
         HStack(alignment: .center, spacing: 8) {
             BankLogo(bank: bank)
-            let name = bank.name == "?" ? String(localized: "No bank") : bank.name
+            let name = bank.name == "?" ? String(localized: "noBank") : bank.name
             Text(name)
                 .foregroundColor(.primary)
                 .lineLimit(1)

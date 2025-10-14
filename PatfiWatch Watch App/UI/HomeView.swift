@@ -42,7 +42,7 @@ struct HomeView: View {
                         }
                     }
                 }
-                .confirmationDialog("Add", isPresented: $showActions) {
+                .confirmationDialog("add", isPresented: $showActions) {
                     ForEach(QuickAction.allCases, id: \.self) { action in
                         // If there are no accounts, skip actions that require an account
                         if accounts.isEmpty && action.requiresAccount {

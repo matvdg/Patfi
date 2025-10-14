@@ -5,10 +5,10 @@ enum Sorting: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var localized: LocalizedStringResource {
             switch self {
-            case .name:      "Name"
-            case .bank:      "Bank"
-            case .category:  "Category"
-            case .amount:    "Balance"
+            case .name:      "name"
+            case .bank:      "bank"
+            case .category:  "category"
+            case .amount:    "balance"
             }
         }
 }
@@ -37,7 +37,7 @@ struct SortView: View {
                     }
                 }
             }
-            .navigationTitle("Sort by")
+            .navigationTitle("sortBy")
         }
     }
 }

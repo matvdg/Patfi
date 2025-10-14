@@ -57,6 +57,7 @@ final class Transaction {
         case cheque
         case cashWithdrawal
         case bankTransfer
+        case directDebit
 
         var id: String { rawValue }
 
@@ -69,19 +70,22 @@ final class Transaction {
             case .cheque:
                 return String(localized: "payment.cheque")
             case .cashWithdrawal:
-                return String(localized: "payment.cashWithdrawal") // Retrait
+                return String(localized: "payment.cashWithdrawal")
             case .bankTransfer:
                 return String(localized: "payment.bankTransfer")
+            case .directDebit:
+                return String(localized: "payment.directDebit")
             }
         }
 
         var iconName: String {
             switch self {
             case .applePay: return "apple.logo"
-            case .creditCard: return "creditcard"
-            case .cheque: return "doc.text"
-            case .cashWithdrawal: return "banknote"
-            case .bankTransfer: return "arrow.left.arrow.right"
+            case .creditCard: return "creditcard.fill"
+            case .cheque: return "doc.text.fill"
+            case .cashWithdrawal: return "banknote.fill"
+            case .bankTransfer: return "arrow.left.arrow.right.circle.fill"
+            case .directDebit: return "arrow.down.circle.fill"
             }
         }
         
@@ -92,6 +96,7 @@ final class Transaction {
             case .cheque: return .orange
             case .cashWithdrawal: return .yellow
             case .bankTransfer: return .red
+            case .directDebit: return .purple
             }
         }
     }
