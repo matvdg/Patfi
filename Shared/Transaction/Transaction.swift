@@ -111,6 +111,7 @@ final class Transaction {
         case personalCare
         case subscriptions
         case taxes
+        case debtPayment
         case giftsDonations
         case savingsInvestments
         case other
@@ -133,6 +134,7 @@ final class Transaction {
             case .personalCare: return String(localized: "expense.personalCare") // Personal care
             case .subscriptions: return String(localized: "expense.subscriptions") // Subscriptions
             case .taxes: return String(localized: "expense.taxes") // Taxes
+            case .debtPayment: return String(localized: "expense.debtPayment") // Debt & loan payments
             case .giftsDonations: return String(localized: "expense.giftsDonations") // Gifts & donations
             case .savingsInvestments: return String(localized: "expense.savingsInvestments") // Savings & investments
             case .other: return String(localized: "expense.other") // Other
@@ -155,6 +157,7 @@ final class Transaction {
             case .personalCare: return "figure.wave"
             case .subscriptions: return "play.rectangle.fill"
             case .taxes: return "banknote.fill"
+            case .debtPayment: return "creditcard.fill"
             case .giftsDonations: return "gift.fill"
             case .savingsInvestments: return "chart.line.uptrend.xyaxis"
             case .other: return "ellipsis.circle.fill"
@@ -175,10 +178,11 @@ final class Transaction {
             case .education: return .teal
             case .travel: return .indigo
             case .personalCare: return .cyan
-            case .subscriptions: return .gray
-            case .taxes: return .black
-            case .giftsDonations: return .red
-            case .savingsInvestments: return .green
+            case .subscriptions: return Color(red: 0.8, green: 1.0, blue: 0.0)
+            case .taxes: return Color(red: 1.0, green: 0.84, blue: 0.0)
+            case .debtPayment: return Color(red: 0.0, green: 0.5, blue: 0.0)
+            case .giftsDonations: return Color(red: 1.0, green: 0.0, blue: 1.0)
+            case .savingsInvestments: return Color(red: 0.6, green: 0.9, blue: 0.6)
             case .other: return .secondary
             }
         }
