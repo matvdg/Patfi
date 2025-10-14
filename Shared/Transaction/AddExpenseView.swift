@@ -18,7 +18,7 @@ struct AddExpenseView: View {
     @State private var amountText: String = ""
     @FocusState private var focused: Bool
     @State private var selectedAccountID: PersistentIdentifier?
-
+    
     private var selectedAccount: Account? {
         accounts.first(where: { $0.persistentModelID == selectedAccountID })
     }
@@ -56,51 +56,23 @@ struct AddExpenseView: View {
                     .textInputAutocapitalization(.words)
 #endif
                     .autocorrectionDisabled()
-                HStack {
-                    if let bank = selectedAccount?.bank {
-                        BankLogo(bank: bank)
-                            .id(bank.id)
-                    }
-                    Picker("Account", selection: $selectedAccountID) {
-                        ForEach(accounts) { acc in
-                            if let name = acc.bank?.name {
-                                Text("\(name ) • \(acc.name)")
-                                    .tag(acc.persistentModelID)
-                            } else {
-                                Text(acc.name)
-                                    .tag(acc.persistentModelID)
-                            }
-                        }
-                    }
-                }
-                HStack {
-                    Picker("PaymentMethod", selection: $paymentMethod) {
-                        ForEach(Transaction.PaymentMethod.allCases) { p in
-                            Label(p.localized, systemImage: p.iconName)
-                                .tag(p)
-                        }
-                    }
-                }
-                HStack {
-                    Picker("ExpenseCategory", selection: $expenseCategory) {
-                        ForEach(Transaction.ExpenseCategory.allCases) { cat in
-                            Label(cat.localized, systemImage: cat.iconName)
-                                .tag(cat)
-                        }
-                    }
-                }
+                AccountPicker(id: $selectedAccountID, title: String(localized: "Account"))
+                PaymentMethodPicker(paymentMethod: $paymentMethod)
+                ExpenseCategoryPicker(expenseCategory: $expenseCategory)
             } footer: {
-                if let balance = selectedAccount?.latestBalance?.balance {
-                    if let amount {
-                        Text("Previous balance: \(balance.toString), new balance: \((balance - amount).toString)")
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
-                            .italic()
-                    } else {
-                        Text("Balance: \(balance.toString)")
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
-                            .italic()
+                if let account = selectedAccount, let balance = account.latestBalance?.balance {
+                    HStack {
+                        if let bank = account.bank {
+                            Text(bank.name)
+                            Text(" • ")
+                        }
+                        Text(account.name)
+                        Text(" • ")
+                        if let amount {
+                            Text("Previous balance: \(balance.toString), new balance: \((balance - amount).toString)")
+                        } else {
+                            Text("Balance: \(balance.toString)")
+                        }
                     }
                 }
             }
@@ -128,20 +100,46 @@ struct AddExpenseView: View {
     }
 }
 
+struct PaymentMethodPicker: View {
+    
+    @Binding var paymentMethod: Transaction.PaymentMethod
+    
+    var body: some View {
+        
+        Picker("PaymentMethod", selection: $paymentMethod) {
+            ForEach(Transaction.PaymentMethod.allCases) { p in
+                Label(p.localized, systemImage: p.iconName)
+                    .foregroundStyle(.primary)
+                    .tag(p)
+            }
+        }
+        .pickerStyle(.navigationLink)
+        .foregroundStyle(.primary)
+    }
+}
+
+
+struct ExpenseCategoryPicker: View {
+    
+    @Binding var expenseCategory: Transaction.ExpenseCategory?
+    
+    var body: some View {
+        
+        Picker("ExpenseCategory", selection: $expenseCategory) {
+            ForEach(Transaction.ExpenseCategory.allCases) { cat in
+                Label(cat.localized, systemImage: cat.iconName)
+                    .foregroundStyle(.primary)
+                    .tag(cat)
+            }
+        }
+        .pickerStyle(.navigationLink)
+        .foregroundStyle(.primary)
+    }
+}
+
 #Preview {
     NavigationStack{
         AddExpenseView()
     }
     .modelContainer(ModelContainer.shared)
-}
-
-
-struct SmallIconLabelStyle: LabelStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        HStack {
-            configuration.icon
-                .frame(width: 24, height: 24) // 👈 appliqué partout
-            configuration.title
-        }
-    }
 }

@@ -13,12 +13,16 @@ struct AddInternalTransferView: View {
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     
     @State private var amountText: String = ""
-    @State private var destinationAccount: Account? = nil
     @FocusState private var focused: Bool
     @State private var sourceAccountID: PersistentIdentifier?
+    @State private var destinationAccountID: PersistentIdentifier?
     
     private var sourceAccount: Account? {
         accounts.first(where: { $0.persistentModelID == sourceAccountID })
+    }
+    
+    private var destinationAccount: Account? {
+        accounts.first(where: { $0.persistentModelID == destinationAccountID })
     }
     
     let transactionRepository =  TransactionRepository()
@@ -49,69 +53,36 @@ struct AddInternalTransferView: View {
                         }
                     }
 #endif
-                HStack {
-                    if let bank = sourceAccount?.bank {
-                        BankLogo(bank: bank)
-                            .id(bank.id)
-                    }
-                    Picker("Source account", selection: $sourceAccountID) {
-                        ForEach(accounts) { acc in
-                            if let name = acc.bank?.name {
-                                Text("\(name ) • \(acc.name)")
-                                    .tag(acc.persistentModelID)
-                            } else {
-                                Text(acc.name)
-                                    .tag(acc.persistentModelID)
-                            }
-                        }
-                    }
-                }
-                HStack {
-                    if let bank = destinationAccount?.bank {
-                        BankLogo(bank: bank)
-                            .id(bank.id)
-                    }
-                    Picker("Destination account", selection: $destinationAccount) {
-                        ForEach(accounts) { account in
-                            if let name = account.bank?.name {
-                                Text("\(name ) • \(account.name)")
-                                    .tag(account)
-                            } else {
-                                Text(account.name)
-                                    .tag(account)
-                            }
-                            
-                        }
-                    }
-                }
+                AccountPicker(id: $sourceAccountID, title: String(localized: "Source account"))
+                AccountPicker(id: $destinationAccountID, title: String(localized: "Destination account"))
             } footer: {
                 VStack(alignment: .leading, spacing: 8) {
                     if let sourceAccount, let balance = sourceAccount.latestBalance?.balance {
-                        if let amount {
-                            HStack {
-                                Text(sourceAccount.name)
+                        HStack {
+                            if let bank = sourceAccount.bank {
+                                Text(bank.name)
                                 Text(" • ")
-                                Text("Previous balance: \(balance.toString), new balance: \((balance - amount).toString)")
                             }
-                        } else {
-                            HStack {
-                                Text(sourceAccount.name)
-                                Text(" • ")
+                            Text(sourceAccount.name)
+                            Text(" • ")
+                            if let amount {
+                                Text("Previous balance: \(balance.toString), new balance: \((balance - amount).toString)")
+                            } else {
                                 Text("Balance: \(balance.toString)")
                             }
                         }
                     }
                     if let destinationAccount, let balance = destinationAccount.latestBalance?.balance {
-                        if let amount {
-                            HStack {
-                                Text(destinationAccount.name)
+                        HStack {
+                            if let bank = destinationAccount.bank {
+                                Text(bank.name)
                                 Text(" • ")
-                                Text("Previous balance: \(balance.toString), new balance: \((balance + amount).toString)")
                             }
-                        } else {
-                            HStack {
-                                Text(destinationAccount.name)
-                                Text(" • ")
+                            Text(destinationAccount.name)
+                            Text(" • ")
+                            if let amount {
+                                Text("Previous balance: \(balance.toString), new balance: \((balance + amount).toString)")
+                            } else {
                                 Text("Balance: \(balance.toString)")
                             }
                         }

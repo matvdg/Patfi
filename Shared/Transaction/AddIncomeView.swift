@@ -55,35 +55,21 @@ struct AddIncomeView: View {
                     .textInputAutocapitalization(.words)
 #endif
                     .autocorrectionDisabled()
-                HStack {
-                    if let bank = selectedAccount?.bank {
-                        BankLogo(bank: bank)
-                            .id(bank.id)
-                    }
-                    Picker("Account", selection: $selectedAccountID) {
-                        ForEach(accounts) { acc in
-                            if let name = acc.bank?.name {
-                                Text("\(name ) • \(acc.name)")
-                                    .tag(acc.persistentModelID)
-                            } else {
-                                Text(acc.name)
-                                    .tag(acc.persistentModelID)
-                            }
-                        }
-                    }
-                }
+                AccountPicker(id: $selectedAccountID, title: String(localized: "Account"))
             } footer: {
-                if let balance = selectedAccount?.latestBalance?.balance {
-                    if let amount {
-                        Text("Previous balance: \(balance.toString), new balance: \((balance + amount).toString)")
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
-                            .italic()
-                    } else {
-                        Text("Balance: \(balance.toString)")
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
-                            .italic()
+                if let account = selectedAccount, let balance = account.latestBalance?.balance {
+                    HStack {
+                        if let bank = account.bank {
+                            Text(bank.name)
+                            Text(" • ")
+                        }
+                        Text(account.name)
+                        Text(" • ")
+                        if let amount {
+                            Text("Previous balance: \(balance.toString), new balance: \((balance + amount).toString)")
+                        } else {
+                            Text("Balance: \(balance.toString)")
+                        }
                     }
                 }
             }

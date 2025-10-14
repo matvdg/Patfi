@@ -4,6 +4,7 @@ struct AccountRow: View {
     
     var account: Account
     var displayBankLogo: Bool = true
+    var displayBalance: Bool = false
     
     var body: some View {
         
@@ -18,10 +19,12 @@ struct AccountRow: View {
             Text(account.name)
                 .font(.headline)
                 .foregroundColor(.primary)
-            Spacer()
-            Text((account.latestBalance?.balance ?? 0).toString)
-                .font(.body)
-                .bold()
+            if displayBalance {
+                Spacer()
+                Text((account.latestBalance?.balance ?? 0).toString)
+                    .font(.body)
+                    .bold()
+            }
         }
         .lineLimit(1)
         .minimumScaleFactor(0.1)

@@ -11,7 +11,7 @@ struct AddBalanceView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     @State private var selectedAccountID: PersistentIdentifier?
-
+    
     private var selectedAccount: Account? {
         accounts.first(where: { $0.persistentModelID == selectedAccountID })
     }
@@ -21,45 +21,49 @@ struct AddBalanceView: View {
     @FocusState private var focused: Bool
     let balanceRepository = BalanceRepository()
     
+    var newBalance: Double? {
+        Double(amountText.replacingOccurrences(of: ",", with: "."))
+    }
+    
     var body: some View {
         
-        
-        
-        
         Form {
+            Section {
 #if os(watchOS)
-            NavigationLink {
-                NumericalKeyboardView(text: $amountText)
-            } label: {
-                Text(amountText.isEmpty ? String(localized:"Balance") : amountText)
-            }
+                NavigationLink {
+                    NumericalKeyboardView(text: $amountText)
+                } label: {
+                    Text(amountText.isEmpty ? String(localized:"Balance") : amountText)
+                }
 #else
-            TextField("Balance", text: $amountText)
+                TextField("Balance", text: $amountText)
 #if os(iOS) || os(tvOS) || os(visionOS)
-                .keyboardType(.decimalPad)
+                    .keyboardType(.decimalPad)
 #endif
-                .focused($focused)
-                .onChange(of: amountText) { _, newValue in
-                    let cleaned = newValue.filter { !$0.isWhitespace }
-                    if cleaned != newValue {
-                        amountText = cleaned
+                    .focused($focused)
+                    .onChange(of: amountText) { _, newValue in
+                        let cleaned = newValue.filter { !$0.isWhitespace }
+                        if cleaned != newValue {
+                            amountText = cleaned
+                        }
                     }
-                }
 #endif
-            DatePicker("Date", selection: $date, displayedComponents: [.date])
-            HStack {
-                if let bank = selectedAccount?.bank {
-                    BankLogo(bank: bank)
-                        .id(bank.id)
-                }
-                Picker("Account", selection: $selectedAccountID) {
-                    ForEach(accounts) { acc in
-                        if let name = acc.bank?.name {
-                            Text("\(name ) • \(acc.name)")
-                                .tag(acc.persistentModelID)
+                DatePicker("Date", selection: $date, displayedComponents: [.date])
+                AccountPicker(id: $selectedAccountID, title: String(localized: "Account"))
+            }
+            footer: {
+                if let account = selectedAccount, let previousBalance = account.latestBalance?.balance {
+                    HStack {
+                        if let bank = account.bank {
+                            Text(bank.name)
+                            Text(" • ")
+                        }
+                        Text(account.name)
+                        Text(" • ")
+                        if let newBalance {
+                            Text("Previous balance: \(previousBalance.toString), new balance: \(newBalance.toString)")
                         } else {
-                            Text(acc.name)
-                                .tag(acc.persistentModelID)
+                            Text("Balance: \(previousBalance.toString)")
                         }
                     }
                 }
@@ -69,8 +73,8 @@ struct AddBalanceView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm) {
-                    guard let amount = Double(amountText.replacingOccurrences(of: ",", with: ".")), let selected = selectedAccount else { return }
-                    balanceRepository.add(amount: amount, date: date, account: selected, context: context)
+                    guard let newBalance, let selectedAccount else { return }
+                    balanceRepository.add(amount: newBalance, date: date, account: selectedAccount, context: context)
                     dismiss()
                 }
                 .disabled(Double(amountText.replacingOccurrences(of: ",", with: ".")) == nil || selectedAccount == nil)

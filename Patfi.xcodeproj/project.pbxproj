@@ -91,6 +91,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Account/AccountDetailView.swift,
+				Account/AccountPicker.swift,
 				Account/AccountRepository.swift,
 				Account/AccountRow.swift,
 				Account/AddAccountView.swift,
