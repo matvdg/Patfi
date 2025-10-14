@@ -22,15 +22,16 @@ struct AccountDetailView: View {
             Section("Account") {
                 TextField("Name", text: $account.name)
                     .disableAutocorrection(true)
-                HStack {
-                    Circle().fill(account.category.color).frame(width: 10, height: 10)
-                    Picker("Category", selection: $account.category) {
-                        ForEach(Category.allCases) { c in
+                Picker("Category", selection: $account.category) {
+                    ForEach(Category.allCases) { c in
+                        HStack {
+                            Circle().fill(c.color).frame(width: 10, height: 10)
                             Text(c.localized)
-                                .tag(c)
                         }
+                        .tag(c)
                     }
                 }
+                .pickerStyle(.navigationLink)
                 if account.isDefault {
                     Button(role: .confirm) {
                         accountRepository.unsetAsDefault(account: account, context: context)

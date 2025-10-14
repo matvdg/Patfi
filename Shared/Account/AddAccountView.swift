@@ -27,15 +27,16 @@ struct AddAccountView: View {
                     .textInputAutocapitalization(.words)
 #endif
                     .autocorrectionDisabled()
-                HStack {
-                    Circle().fill(category.color).frame(width: 10, height: 10)
-                    Picker("Category", selection: $category) {
-                        ForEach(Category.allCases) { c in
+                Picker("Category", selection: $category) {
+                    ForEach(Category.allCases) { c in
+                        HStack {
+                            Circle().fill(c.color).frame(width: 10, height: 10)
                             Text(c.localized)
-                                .tag(c)
                         }
+                        .tag(c)
                     }
                 }
+                .pickerStyle(.navigationLink)
             }
             
             Section("Bank") {
