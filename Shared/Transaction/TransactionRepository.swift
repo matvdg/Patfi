@@ -1,6 +1,9 @@
 import Foundation
 import SwiftData
 
+typealias TransactionsPerCategory = [Transaction.ExpenseCategory: [Transaction]]
+typealias TransactionsPerPaymentMethod = [Transaction.PaymentMethod: [Transaction]]
+
 class TransactionRepository {
     
     let balanceRepository = BalanceRepository()
@@ -63,12 +66,21 @@ class TransactionRepository {
                        context: context)
     }
     
-    func groupByCategory(_ transactions: [Transaction]) -> [Transaction.ExpenseCategory: [Transaction]] {
+    func groupByCategory(_ transactions: [Transaction]) -> TransactionsPerCategory {
         Dictionary(grouping: transactions, by: { $0.expenseCategory ?? .other })
+    }
+    
+    func groupByPaymentMethod(_ transactions: [Transaction]) -> TransactionsPerPaymentMethod {
+        Dictionary(grouping: transactions, by: { $0.paymentMethod })
     }
     
     func total(for transactions: [Transaction]) -> Double {
         transactions.reduce(0) { $0 + $1.amount }
+    }
+    
+    func delete(_ transaction: Transaction, context: ModelContext) {
+        context.delete(transaction)
+        try? context.save()
     }
     
     private func addTransaction(type: Transaction.TransactionType,

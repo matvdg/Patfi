@@ -154,44 +154,12 @@ struct HomeView: View {
                         }
                     }
                     List {
-                        if selectedChart == 0 {
+                        switch selectedChart {
+                        case 0:
                             switch mode {
                                 // TODO
                             case .expenses:
-                                ForEach(accountsByCategory, id: \.key) { (category, items) in
-                                    let isCollapsed = collapsedSections.contains(category.localized)
-                                    Section {
-                                        if !isCollapsed {
-                                            ForEach(items) { account in
-                                                NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
-                                            }
-                                        }
-                                    } header: {
-                                        ArrowRightButton(isRight: Binding(
-                                            get: { isCollapsed },
-                                            set: { isCollapsed in
-                                                if isCollapsed {
-                                                    collapsedSections.insert(category.localized)
-                                                } else {
-                                                    collapsedSections.remove(category.localized)
-                                                }
-                                            }
-                                        )) {
-                                            HStack(spacing: 8) {
-                                                Circle().fill(category.color).frame(width: 10, height: 10)
-                                                Text(category.localized)
-                                                Spacer()
-                                                Text(balanceRepository.balance(for: items).toString)
-                                            }
-                                        }
-                                        .frame(height: isCollapsed ? 5 : 30)
-                                        .padding(.top, isCollapsed ? 12 : 0)
-#if os(macOS)
-                                        .padding(.vertical, 8)
-                                        .frame(height: 50)
-#endif
-                                    }
-                                }
+                                FilteredTransactionsView()
                             case .categories:
                                 ForEach(accountsByCategory, id: \.key) { (category, items) in
                                     let isCollapsed = collapsedSections.contains(category.localized)
@@ -264,7 +232,7 @@ struct HomeView: View {
                                     }
                                 }
                             }
-                        } else {
+                        case 1:
                             ForEach(balancesByPeriod.enumerated(), id: \.element.id) { index, point in
                                 HStack {
                                     if index == 0 {
@@ -297,6 +265,8 @@ struct HomeView: View {
                                     Text(point.total.toString)
                                 }
                             }
+                        default:
+                            FilteredTransactionsView()
                         }
                     }
                     .scrollIndicators(.hidden)

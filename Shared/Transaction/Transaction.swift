@@ -52,3 +52,14 @@ final class Transaction {
     }
 
 }
+
+extension Transaction {
+    static func predicate(forMonth month: Date, hideInternalTransfers: Bool) -> Predicate<Transaction> {
+        let calendar = Calendar.current
+        let start = calendar.date(from: calendar.dateComponents([.year, .month], from: month))!
+        let end = calendar.date(byAdding: .month, value: 1, to: start)!
+        return #Predicate { transaction in
+            (transaction.date >= start && transaction.date < end) && !(hideInternalTransfers && transaction.isInternalTransfer)
+        }
+    }
+}
