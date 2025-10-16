@@ -2,7 +2,7 @@ import SwiftUI
 
 struct BankRow: View {
     
-    @Bindable var bank: Bank
+    var bank: Bank
 
     var body: some View {
         HStack(alignment: .center, spacing: 8) {

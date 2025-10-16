@@ -48,8 +48,8 @@ struct AddBalanceView: View {
                         }
                     }
 #endif
-                DatePicker("date", selection: $date, displayedComponents: [.date])
                 AccountPicker(id: $selectedAccountID, title: String(localized: "account"))
+                DatePicker("date", selection: $date, displayedComponents: [.date])
             }
             footer: {
                 if let account = selectedAccount, let previousBalance = account.latestBalance?.balance {

@@ -106,7 +106,10 @@
 				Transaction/AddExpenseView.swift,
 				Transaction/AddIncomeView.swift,
 				Transaction/AddInternalTransferView.swift,
+				Transaction/ExpenseCategoryLogo.swift,
+				Transaction/PaymentMethodLogo.swift,
 				Transaction/TransactionRepository.swift,
+				Transaction/TransactionRow.swift,
 				Utils/CustomButtons.swift,
 				Utils/QuickActions.swift,
 			);

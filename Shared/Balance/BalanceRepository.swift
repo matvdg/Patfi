@@ -126,14 +126,7 @@ class BalanceRepository {
     }
     
     func balance(for accounts: [Account]) -> Double {
-        let total = accounts.reduce(0) { $0 + ($1.latestBalance?.balance ?? 0) }
-        return total
-    }
-    
-    /// Returns all BalanceSnapshot from the given accounts, sorted by date ascending.
-    func snapshots(for accounts: [Account]) -> [BalanceSnapshot] {
-        let allSnapshots = accounts.flatMap { $0.balances ?? [] }
-        return allSnapshots.sorted(by: { $0.date < $1.date })
+        accounts.reduce(0) { $0 + ($1.latestBalance?.balance ?? 0) }
     }
 
     /// Persists balance information (total, per-account, per-category, per-bank) to AppGroup.defaults and reloads widget timelines.

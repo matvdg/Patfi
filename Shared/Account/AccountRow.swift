@@ -4,7 +4,7 @@ struct AccountRow: View {
     
     var account: Account
     var displayBankLogo: Bool = true
-    var displayBalance: Bool = false
+    var displayBalance: Bool = true
     
     var body: some View {
         

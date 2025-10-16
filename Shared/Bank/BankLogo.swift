@@ -2,7 +2,7 @@ import SwiftUI
 
 struct BankLogo: View {
     
-    @Bindable var bank: Bank
+    var bank: Bank
     @State private var logoImage: Image? = nil
     
     var body: some View {

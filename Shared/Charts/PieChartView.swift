@@ -6,17 +6,23 @@ struct PieChartView: View {
     
     @Query(sort: [SortDescriptor(\Account.name, order: .forward)])
     private var accounts: [Account]
+        
+    @Query(
+        sort: [SortDescriptor(\Transaction.date, order: .reverse)]
+    )
+    private var transactions: [Transaction]
     
     private let balanceRepository = BalanceRepository()
+    private let transactionRepository = TransactionRepository()
     
     @Binding var grouping: Mode
     
     private var allSlices: [Slice] {
         switch grouping {
         case .expenses: // TODO
-            return balanceRepository.groupByCategory(accounts)
+            return transactionRepository.groupByCategory(transactions)
                 .map { cat, accounts in
-                    Slice(label: cat.localized, color: cat.color, total: balanceRepository.balance(for: accounts))
+                    Slice(label: cat.localized, color: cat.color, total: transactionRepository.total(for: transactions))
                 }
                 .sorted {
                     $0.total > $1.total
@@ -92,4 +98,3 @@ struct PieChartView: View {
     PieChartView(grouping: .constant(.banks))
         .modelContainer(ModelContainer.shared)
 }
-

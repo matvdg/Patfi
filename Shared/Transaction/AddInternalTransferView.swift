@@ -16,6 +16,7 @@ struct AddInternalTransferView: View {
     @FocusState private var focused: Bool
     @State private var sourceAccountID: PersistentIdentifier?
     @State private var destinationAccountID: PersistentIdentifier?
+    @State private var date: Date = .now
     
     private var sourceAccount: Account? {
         accounts.first(where: { $0.persistentModelID == sourceAccountID })
@@ -55,6 +56,7 @@ struct AddInternalTransferView: View {
 #endif
                 AccountPicker(id: $sourceAccountID, title: String(localized: "sourceAccount"))
                 AccountPicker(id: $destinationAccountID, title: String(localized: "destinationAccount"))
+                DatePicker("date", selection: $date, displayedComponents: [.date])
             } footer: {
                 VStack(alignment: .leading, spacing: 8) {
                     if let sourceAccount, let balance = sourceAccount.latestBalance?.balance {
@@ -98,7 +100,7 @@ struct AddInternalTransferView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {
                     guard let amount, let sourceAccount, let destinationAccount else { return }
-                    transactionRepository.addInternalTransfer(amount: amount, sourceAccount: sourceAccount, destinationAccount: destinationAccount, context: context)
+                    transactionRepository.addInternalTransfer(amount: amount, sourceAccount: sourceAccount, destinationAccount: destinationAccount, date: date, context: context)
                     dismiss()
                     
                 })

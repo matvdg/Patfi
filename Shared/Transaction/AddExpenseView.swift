@@ -18,6 +18,7 @@ struct AddExpenseView: View {
     @State private var amountText: String = ""
     @FocusState private var focused: Bool
     @State private var selectedAccountID: PersistentIdentifier?
+    @State private var date: Date = .now
     
     private var selectedAccount: Account? {
         accounts.first(where: { $0.persistentModelID == selectedAccountID })
@@ -59,6 +60,7 @@ struct AddExpenseView: View {
                 AccountPicker(id: $selectedAccountID, title: String(localized: "account"))
                 PaymentMethodPicker(paymentMethod: $paymentMethod)
                 ExpenseCategoryPicker(expenseCategory: $expenseCategory)
+                DatePicker("date", selection: $date, displayedComponents: [.date])
             } footer: {
                 if let account = selectedAccount, let balance = account.latestBalance?.balance {
                     HStack {
@@ -82,7 +84,7 @@ struct AddExpenseView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {
                     guard let amount, let selectedAccount, let expenseCategory else { return }
-                    transactionRepository.addExpense(title: title, amount: amount, account: selectedAccount, paymentMethod: paymentMethod, expenseCategory: expenseCategory, context: context)
+                    transactionRepository.addExpense(title: title, amount: amount, account: selectedAccount, paymentMethod: paymentMethod, expenseCategory: expenseCategory, date: date, context: context)
                     dismiss()
                     
                 })

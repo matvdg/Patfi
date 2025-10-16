@@ -137,17 +137,17 @@ extension ModelContainer {
             for i in 0...36 {
                 let t = TimeInterval(-60*60*24*31*i)
                 let day = TimeInterval(-60*60*24)
-                let t0 = Transaction(title: "Supermarket", transactionType: .expense, paymentMethod: .applePay, expenseCategory: .foodGroceries, date: Date().addingTimeInterval(t), amount: Double.random(in: 100...500), account: a3, isInternalTransfer: false)
-                let t1 = Transaction(title: "Travel", transactionType: .expense, paymentMethod: .applePay, expenseCategory: .travel, date: Date().addingTimeInterval(t-day), amount: Double.random(in: 1000...5000), account: a3, isInternalTransfer: false)
-                let t2 = Transaction(title: "Car fuel", transactionType: .expense, paymentMethod: .creditCard, expenseCategory: .transportation, date: Date().addingTimeInterval(t-day*2), amount: Double.random(in: 100...300), account: a3, isInternalTransfer: false)
-                let t3 = Transaction(title: "Rent", transactionType: .expense, paymentMethod: .bankTransfer, expenseCategory: .housing, date: Date().addingTimeInterval(t-day*4), amount: 800, account: a3, isInternalTransfer: false)
-                let t4 = Transaction(title: "Wage", transactionType: .income, paymentMethod: nil, expenseCategory: nil, date: Date().addingTimeInterval(t-day*28), amount: 3000, account: a3, isInternalTransfer: false)
-                let t5 = Transaction(title: "Savings transfer", transactionType: .expense, paymentMethod: .bankTransfer, expenseCategory: nil, date: Date().addingTimeInterval(t-day*15), amount: 1000, account: a3, isInternalTransfer: true)
-                let t6 = Transaction(title: "Savings transfer", transactionType: .income, paymentMethod: .bankTransfer, expenseCategory: nil, date: Date().addingTimeInterval(t-day*15), amount: 1000, account: a1, isInternalTransfer: true)
-                let t7 = Transaction(title: "Bills", transactionType: .expense, paymentMethod: .directDebit, expenseCategory: .subscriptions, date: Date().addingTimeInterval(t-day*10), amount: Double.random(in: 100...200), account: a3, isInternalTransfer: false)
-                let t8 = Transaction(title: "Shopping", transactionType: .expense, paymentMethod: .cashWithdrawal, expenseCategory: .shopping, date: Date().addingTimeInterval(t-day*17), amount: Double.random(in: 100...500), account: a3, isInternalTransfer: false)
-                let t9 = Transaction(title: "Restaurants & bars", transactionType: .expense, paymentMethod: .creditCard, expenseCategory: .diningOut, date: Date().addingTimeInterval(t-day*22), amount: Double.random(in: 100...500), account: a3, isInternalTransfer: false)
-                let t10 = Transaction(title: "Doctor's visit", transactionType: .expense, paymentMethod: .cheque, expenseCategory: .healthcare, date: Date().addingTimeInterval(t-day*7), amount: Double.random(in: 20...200), account: a3, isInternalTransfer: false)
+                let t0 = Transaction(title: "Supermarket", transactionType: .expense, paymentMethod: .applePay, expenseCategory: .foodGroceries, date: Date().addingTimeInterval(t), amount: Double.random(in: 100...500), account: a3)
+                let t1 = Transaction(title: "Travel", transactionType: .expense, paymentMethod: .applePay, expenseCategory: .travel, date: Date().addingTimeInterval(t-day), amount: Double.random(in: 1000...5000), account: a3)
+                let t2 = Transaction(title: "Car fuel", transactionType: .expense, paymentMethod: .creditCard, expenseCategory: .transportation, date: Date().addingTimeInterval(t-day*2), amount: Double.random(in: 100...300), account: a3)
+                let t3 = Transaction(title: "Rent", transactionType: .expense, paymentMethod: .bankTransfer, expenseCategory: .housing, date: Date().addingTimeInterval(t-day*4), amount: 800, account: a3)
+                let t4 = Transaction(title: "Wage", transactionType: .income, paymentMethod: .bankTransfer, date: Date().addingTimeInterval(t-day*28), amount: 3000, account: a3)
+                let t5 = Transaction(title: String(localized: "internalTransfer"), transactionType: .expense, paymentMethod: .bankTransfer, expenseCategory: nil, date: Date().addingTimeInterval(t-day*15), amount: 1000, account: a3, isInternalTransfer: true)
+                let t6 = Transaction(title: String(localized: "internalTransfer"), transactionType: .income, paymentMethod: .bankTransfer, expenseCategory: nil, date: Date().addingTimeInterval(t-day*15), amount: 1000, account: a1, isInternalTransfer: true)
+                let t7 = Transaction(title: "Bills", transactionType: .expense, paymentMethod: .directDebit, expenseCategory: .subscriptions, date: Date().addingTimeInterval(t-day*10), amount: Double.random(in: 100...200), account: a3)
+                let t8 = Transaction(title: "Shopping", transactionType: .expense, paymentMethod: .cashWithdrawal, expenseCategory: .shopping, date: Date().addingTimeInterval(t-day*17), amount: Double.random(in: 100...500), account: a3)
+                let t9 = Transaction(title: "Restaurants & bars", transactionType: .expense, paymentMethod: .creditCard, expenseCategory: .diningOut, date: Date().addingTimeInterval(t-day*22), amount: Double.random(in: 100...500), account: a3)
+                let t10 = Transaction(title: "Doctor's visit", transactionType: .expense, paymentMethod: .cheque, expenseCategory: .healthcare, date: Date().addingTimeInterval(t-day*7), amount: Double.random(in: 20...200), account: a3)
                 
                 let transactions: [Transaction] = [t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10]
                 transactions.forEach { t in

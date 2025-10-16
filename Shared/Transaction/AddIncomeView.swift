@@ -17,6 +17,8 @@ struct AddIncomeView: View {
     @State private var amountText: String = ""
     @FocusState private var focused: Bool
     @State private var selectedAccountID: PersistentIdentifier?
+    @State private var paymentMethod: Transaction.PaymentMethod = .bankTransfer
+    @State private var date: Date = .now
     
     private var selectedAccount: Account? {
         accounts.first(where: { $0.persistentModelID == selectedAccountID })
@@ -56,6 +58,8 @@ struct AddIncomeView: View {
 #endif
                     .autocorrectionDisabled()
                 AccountPicker(id: $selectedAccountID, title: String(localized: "account"))
+                PaymentMethodPicker(paymentMethod: $paymentMethod)
+                DatePicker("date", selection: $date, displayedComponents: [.date])
             } footer: {
                 if let account = selectedAccount, let balance = account.latestBalance?.balance {
                     HStack {
@@ -79,7 +83,7 @@ struct AddIncomeView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {
                     guard let amount, let selectedAccount else { return }
-                    transactionRepository.addIncome(title: title, amount: amount, account: selectedAccount, context: context)
+                    transactionRepository.addIncome(title: title, amount: amount, account: selectedAccount, paymentMethod: paymentMethod, date: date, context: context)
                     dismiss()
                     
                 })

@@ -48,6 +48,7 @@ struct HomeView: View {
     }
     
     private let balanceRepository = BalanceRepository()
+    private let transactionRepository = TransactionRepository()
     
     private var accountsByCategory: [Dictionary<Category, [Account]>.Element] {
         Array(balanceRepository.groupByCategory(accounts).sorted { $0.key.localized < $1.key.localized })
