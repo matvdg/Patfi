@@ -11,9 +11,9 @@ struct PieChartView: View {
     private let accountRepository = AccountRepository()
     private let transactionRepository = TransactionRepository()
     
-    var sortByPaymentMethod: Bool? = nil
-    
     var grouping: Mode
+    var sortByPaymentMethod: Bool? = nil
+    var sortByBank: Bool? = nil
     
     private var allSlices: [Slice] {
         switch grouping {
@@ -35,28 +35,30 @@ struct PieChartView: View {
                         $0.total > $1.total
                     }
             }
-        case .categories:
-            return accountRepository.groupByCategory(accounts)
-                .map { cat, accounts in
-                    Slice(label: cat.localized, color: cat.color, total: balanceRepository.balance(for: accounts))
-                }
-                .sorted {
-                    $0.total > $1.total
-                }
-        case .banks:
-            return accountRepository.groupByBank(accounts)
-                .map { bank, accounts in
-                    Slice(label: bank.name, color: bank.swiftUIColor, total: balanceRepository.balance(for: accounts))
-                }
-                .sorted {
-                    $0.total > $1.total
-                }
+        case .accounts:
+            if let sortByBank, sortByBank {
+                return accountRepository.groupByBank(accounts)
+                    .map { bank, accounts in
+                        Slice(label: bank.name, color: bank.swiftUIColor, total: balanceRepository.balance(for: accounts))
+                    }
+                    .sorted {
+                        $0.total > $1.total
+                    }
+            } else {
+                return accountRepository.groupByCategory(accounts)
+                    .map { cat, accounts in
+                        Slice(label: cat.localized, color: cat.color, total: balanceRepository.balance(for: accounts))
+                    }
+                    .sorted {
+                        $0.total > $1.total
+                    }
+            }
         }
     }
     
     var body: some View {
-        let slices = allSlices.filter { grouping != .categories || $0.label != Category.loan.localized }
-        let total: Double = grouping == .expenses ? transactionRepository.total(for: transactions) : balanceRepository.balance(for: accounts)        
+        let slices = allSlices.filter { sortByBank != true || $0.label != Category.loan.localized }
+        let total: Double = grouping == .expenses ? transactionRepository.total(for: transactions) : balanceRepository.balance(for: accounts)
         
         VStack(alignment: .center, spacing: 20) {
             ZStack {
@@ -103,5 +105,5 @@ struct PieChartView: View {
 }
 
 #Preview {
-    PieChartView(accounts: [], transactions: [Transaction(title: "Carrefour", transactionType: .expense, paymentMethod: .applePay, expenseCategory: .foodGroceries, date: Date(), amount: 130.00, account: nil, isInternalTransfer: false), Transaction(title: "Travel", transactionType: .expense, paymentMethod: .creditCard, expenseCategory: .travel, date: Date(), amount: 1300.00, account: nil, isInternalTransfer: false), Transaction(title: "Transport", transactionType: .expense, paymentMethod: .directDebit, expenseCategory: .transportation, date: Date(), amount: 544, account: nil, isInternalTransfer: false)], grouping: .expenses)
+    PieChartView(accounts: [], transactions: [Transaction(title: "Carrefour", transactionType: .expense, paymentMethod: .applePay, expenseCategory: .foodGroceries, date: Date(), amount: 130.00, account: nil, isInternalTransfer: false), Transaction(title: "Travel", transactionType: .expense, paymentMethod: .creditCard, expenseCategory: .travel, date: Date(), amount: 1300.00, account: nil, isInternalTransfer: false), Transaction(title: "Transport", transactionType: .expense, paymentMethod: .directDebit, expenseCategory: .transportation, date: Date(), amount: 544, account: nil, isInternalTransfer: false)], grouping: .accounts)
 }

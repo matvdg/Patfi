@@ -10,7 +10,7 @@ struct HomeView: View {
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     @State private var showAddAccount = false
     @State private var selectedChart = 0
-    @State var mode: Mode = .categories
+    @State var mode: Mode = .accounts
     @State var period: Period = .months
     
     private let accountRepository = AccountRepository()
@@ -85,8 +85,7 @@ struct HomeView: View {
                 switch selectedChart {
                 case 0: // Distribution
                     switch mode {
-                    case .banks: HomeAccountsByBankView()
-                    case .categories: HomeAccountsByCategoryView()
+                    case .accounts: HomeAccountsView()
                     case .expenses: HomeExpensesView()
                     }
                 case 1: // Monitoring

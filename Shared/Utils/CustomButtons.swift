@@ -78,6 +78,21 @@ struct PaymentMethodButton: View {
     }
 }
 
+struct BankButton: View {
+    
+    @Binding var sortByBank: Bool
+
+    var body: some View {
+        Button(action: {
+            sortByBank.toggle()
+        }) {
+            Image(systemName: sortByBank ? "building.columns.fill" : "building.columns")
+                .foregroundColor(.primary)
+                .padding(4)
+        }
+    }
+}
+
 #Preview {
     ArrowButton(isUp: .constant(false))
     ArrowRightButton(isRight: .constant(false)) {
@@ -86,4 +101,5 @@ struct PaymentMethodButton: View {
     }
     CollapseButton(isCollapsed: .constant(false))
     PaymentMethodButton(sortByPaymentMethod: .constant(false))
+    BankButton(sortByBank: .constant(false))
 }

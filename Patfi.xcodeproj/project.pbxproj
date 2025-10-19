@@ -101,11 +101,7 @@
 				Transaction/UI/AddInternalTransferView.swift,
 				Transaction/UI/EditTransactionView.swift,
 				Transaction/UI/ExpenseCategoryLogo.swift,
-				Transaction/UI/ExpensesView.swift,
-				Transaction/UI/FilteredTransactionsView.swift,
 				Transaction/UI/PaymentMethodLogo.swift,
-				Transaction/UI/TransactionRow.swift,
-				Transaction/UI/TransactionsView.swift,
 				Utils/CustomButtons.swift,
 				Utils/QuickActions.swift,
 			);

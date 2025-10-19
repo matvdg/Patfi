@@ -4,21 +4,31 @@ import SwiftUI
 struct TransactionsView: View {
     
     private var selectedMonth: Date
-    private var hideInternalTransfers: Bool
+    
     @Query private var transactions: [Transaction]
     @Environment(\.modelContext) private var context
+    @State private var hideInternalTransfers = false
 
     private let transactionRepository = TransactionRepository()
 
-    init(month: Date, hideInternalTransfers: Bool) {
+    init(month: Date) {
         self.selectedMonth = month
-        self.hideInternalTransfers = hideInternalTransfers
-        _transactions = Query(filter: Transaction.predicate(forMonth: month, hideInternalTransfers: hideInternalTransfers), sort: \.date, order: .reverse)
+        _transactions = Query(filter: Transaction.predicate(forMonth: month), sort: \.date, order: .reverse)
+    }
+    
+    private var filteredTransactions: [Transaction] {
+        if hideInternalTransfers {
+            return transactions.filter { !$0.isInternalTransfer }
+        } else {
+            return transactions
+        }
     }
 
     var body: some View {
         VStack {
-            List(transactions) { transaction in
+            Toggle("hideInternalTransfers", isOn: $hideInternalTransfers)
+                    .padding(.horizontal)
+            List(filteredTransactions) { transaction in
                 NavigationLink {
                     EditTransactionView(transaction: transaction)
                 } label: {
@@ -44,9 +54,21 @@ struct TransactionsView: View {
     }
 }
 
+struct FilteredTransactionsView: View {
+    
+    @State private var selectedMonth: Date = .now
+    
+    var body: some View {
+        VStack {
+            MonthPicker(selectedMonth: $selectedMonth)
+            TransactionsView(month: selectedMonth)
+        }
+    }
+}
+
 #Preview {
     NavigationStack {
-        TransactionsView(month: Date(), hideInternalTransfers: false)
+        FilteredTransactionsView()
             .modelContainer(ModelContainer.shared)
     }
 }

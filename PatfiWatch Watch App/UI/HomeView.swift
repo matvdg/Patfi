@@ -23,6 +23,11 @@ struct HomeView: View {
                         Image(systemName: Bank.sfSymbol)
                     }
                     NavigationLink {
+                        FilteredTransactionsView()
+                    } label: {
+                        Image(systemName: "receipt")
+                    }
+                    NavigationLink {
                         PieView()
                     } label: {
                         Image(systemName: "chart.pie")
