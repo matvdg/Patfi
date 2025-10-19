@@ -27,24 +27,23 @@ struct HomeView: View {
                     } label: {
                         Image(systemName: "receipt")
                     }
+                }
+                HStack(alignment: .center, spacing: 8) {
                     NavigationLink {
                         PieView()
                     } label: {
                         Image(systemName: "chart.pie")
                     }
+                    Button {
+                        showActions = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .buttonStyle(.glassProminent)
                     NavigationLink {
                         BarView()
                     } label: {
                         Image(systemName: "chart.bar")
-                    }
-                }
-                .toolbar {
-                    ToolbarItem(placement: .bottomBar) {
-                        Button {
-                            showActions = true
-                        } label: {
-                            Image(systemName: "plus")
-                        }
                     }
                 }
                 .confirmationDialog("add", isPresented: $showActions) {
