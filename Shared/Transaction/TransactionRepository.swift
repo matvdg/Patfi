@@ -46,6 +46,7 @@ class TransactionRepository {
                              sourceAccount: Account,
                              destinationAccount: Account,
                              date: Date,
+                             markAsDavingsInvestments: Bool,
                              context: ModelContext) {
         let title = String(localized: "internalTransfer")
         addTransaction(type: .expense,
@@ -62,6 +63,7 @@ class TransactionRepository {
                        account: destinationAccount,
                        paymentMethod: .bankTransfer,
                        isInternalTransfer: true,
+                       expenseCategory: markAsDavingsInvestments ? .savingsInvestments : nil,
                        date: date,
                        context: context)
     }

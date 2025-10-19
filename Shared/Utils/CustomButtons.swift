@@ -63,6 +63,21 @@ struct CollapseButton: View {
     }
 }
 
+struct PaymentMethodButton: View {
+    
+    @Binding var sortByPaymentMethod: Bool
+
+    var body: some View {
+        Button(action: {
+            sortByPaymentMethod.toggle()
+        }) {
+            Image(systemName: sortByPaymentMethod ? "creditcard.fill" : "creditcard")
+                .foregroundColor(.primary)
+                .padding(4)
+        }
+    }
+}
+
 #Preview {
     ArrowButton(isUp: .constant(false))
     ArrowRightButton(isRight: .constant(false)) {
@@ -70,4 +85,5 @@ struct CollapseButton: View {
             .padding(.leading, 8)
     }
     CollapseButton(isCollapsed: .constant(false))
+    PaymentMethodButton(sortByPaymentMethod: .constant(false))
 }

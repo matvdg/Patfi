@@ -100,7 +100,7 @@ extension Transaction {
             case .taxes: return Color(red: 1, green: 0.6, blue: 0.0)
             case .debtPayment: return Color(red: 1, green: 0.8, blue: 0.0)
             case .giftsDonations: return Color(red: 1.0, green: 0.0, blue: 1.0)
-            case .savingsInvestments: return Color(red: 0.6, green: 0.9, blue: 0.6)
+            case .savingsInvestments: return .green
             case .other: return .secondary
             }
         }

@@ -1,7 +1,18 @@
 import Foundation
 import SwiftData
 
+typealias AccountsPerCategory = [Category: [Account]]
+typealias AccountsPerBank = [Bank: [Account]]
+
 class AccountRepository {
+    
+    func groupByCategory(_ accounts: [Account]) -> AccountsPerCategory {
+        Dictionary(grouping: accounts, by: { $0.category })
+    }
+    
+    func groupByBank(_ accounts: [Account]) -> AccountsPerBank {
+        Dictionary(grouping: accounts, by: { $0.bank ?? Bank(name: "?", color: .gray, logoAvaibility: .optedOut) })
+    }
     
     func delete(account: Account, context: ModelContext) {
         context.delete(account)

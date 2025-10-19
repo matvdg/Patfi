@@ -17,7 +17,7 @@ struct BarView: View {
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                TotalChartView(snapshots: snapshots, period: $period)
+                TotalChartView(snapshots: snapshots, period: period)
                     .toolbar {
                         ToolbarItem(placement: .bottomBar) {
                             Button {

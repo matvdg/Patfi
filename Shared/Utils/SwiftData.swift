@@ -4,18 +4,15 @@ import SwiftData
 extension ModelContainer {
     
     @MainActor
-    static var shared: ModelContainer {
+    static let shared: ModelContainer = {
         let schema = Schema([Account.self, BalanceSnapshot.self, Bank.self, Transaction.self])
-        #if targetEnvironment(simulator)
+        #if targetEnvironment(simulator) || DEBUG
         return ModelContainer.getSimulatorSharedContainer(schema: schema)
         #else
-            // Check for iCloud availability
             let config: ModelConfiguration
             if FileManager.default.ubiquityIdentityToken != nil {
-                // iCloud available → use CloudKit
                 config = ModelConfiguration(schema: schema, cloudKitDatabase: .private(AppIDs.iCloudID))
             } else {
-                // No iCloud → fallback to local store
                 config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
             }
             do {
@@ -24,15 +21,15 @@ extension ModelContainer {
                 fatalError("Failed to load SwiftData ModelContainer: \(error)")
             }
         #endif
-    }
+    }()
     
     @MainActor
     static func getSimulatorSharedContainer(schema: Schema) -> ModelContainer {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
-        let container = try! ModelContainer(for: schema, configurations: [config])
-        
         /// Quick access to mock/empty data
         let mockDataEnabled = true
+        
+        let config = ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
+        let container = try! ModelContainer(for: schema, configurations: [config])
         
         if mockDataEnabled {
             let boursoBank = Bank(name: "BoursoBank", color: .purple)
@@ -142,7 +139,7 @@ extension ModelContainer {
                 let t2 = Transaction(title: "Car fuel", transactionType: .expense, paymentMethod: .creditCard, expenseCategory: .transportation, date: Date().addingTimeInterval(t-day*2), amount: Double.random(in: 100...300), account: a3)
                 let t3 = Transaction(title: "Rent", transactionType: .expense, paymentMethod: .bankTransfer, expenseCategory: .housing, date: Date().addingTimeInterval(t-day*4), amount: 800, account: a3)
                 let t4 = Transaction(title: "Wage", transactionType: .income, paymentMethod: .bankTransfer, date: Date().addingTimeInterval(t-day*28), amount: 3000, account: a3)
-                let t5 = Transaction(title: String(localized: "internalTransfer"), transactionType: .expense, paymentMethod: .bankTransfer, expenseCategory: nil, date: Date().addingTimeInterval(t-day*15), amount: 1000, account: a3, isInternalTransfer: true)
+                let t5 = Transaction(title: String(localized: "internalTransfer"), transactionType: .expense, paymentMethod: .bankTransfer, expenseCategory: .savingsInvestments, date: Date().addingTimeInterval(t-day*15), amount: 1000, account: a3, isInternalTransfer: true)
                 let t6 = Transaction(title: String(localized: "internalTransfer"), transactionType: .income, paymentMethod: .bankTransfer, expenseCategory: nil, date: Date().addingTimeInterval(t-day*15), amount: 1000, account: a1, isInternalTransfer: true)
                 let t7 = Transaction(title: "Bills", transactionType: .expense, paymentMethod: .directDebit, expenseCategory: .subscriptions, date: Date().addingTimeInterval(t-day*10), amount: Double.random(in: 100...200), account: a3)
                 let t8 = Transaction(title: "Shopping", transactionType: .expense, paymentMethod: .cashWithdrawal, expenseCategory: .shopping, date: Date().addingTimeInterval(t-day*17), amount: Double.random(in: 100...500), account: a3)
@@ -161,6 +158,5 @@ extension ModelContainer {
 
         return container
     }
-    
     
 }

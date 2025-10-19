@@ -4,6 +4,8 @@ import SwiftData
 
 class BalanceRepository {
     
+    let accountRepository = AccountRepository()
+    
     // MARK: - Series computation
     struct TotalPoint: Identifiable {
         let date: Date
@@ -117,20 +119,12 @@ class BalanceRepository {
         return result
     }
     
-    func groupByCategory(_ accounts: [Account]) -> [Category: [Account]] {
-        Dictionary(grouping: accounts, by: { $0.category })
-    }
-
-    func groupByBank(_ accounts: [Account]) -> [Bank: [Account]] {
-        Dictionary(grouping: accounts, by: { $0.bank ?? Bank(name: "?", color: .gray, logoAvaibility: .optedOut) })
-    }
-    
     func balance(for accounts: [Account]) -> Double {
         accounts.reduce(0) { $0 + ($1.latestBalance?.balance ?? 0) }
     }
 
     /// Persists balance information (total, per-account, per-category, per-bank) to AppGroup.defaults and reloads widget timelines.
-    func update(accounts: [Account]) {
+    func updateWidgets(accounts: [Account]) {
         let total = balance(for: accounts)
         print("ℹ️ Updated balances in AppGroup, total = \(total.toString)")
         
@@ -163,7 +157,7 @@ class BalanceRepository {
     
     private func balancesPerCategory(accounts: [Account]) -> [String: Double] {
         var result: [String: Double] = [:]
-        let grouped = groupByCategory(accounts)
+        let grouped = accountRepository.groupByCategory(accounts)
         for (category, catAccounts) in grouped {
             result[category.rawValue] = balance(for: catAccounts)
         }
@@ -171,7 +165,7 @@ class BalanceRepository {
     }
 
     private func balancesPerBank(accounts: [Account]) -> [[String: Any]] {
-        let grouped = groupByBank(accounts)
+        let grouped = accountRepository.groupByBank(accounts)
         let result: [[String: Any]] = grouped.map { (bank, bankAccounts) in
             return [
                 "bankName": bank.name,
@@ -182,30 +176,4 @@ class BalanceRepository {
         return result
     }
     
-}
-
-
-enum Period: String, CaseIterable, Identifiable {
-    case days, weeks, months, years
-    var id: String { rawValue }
-    var localized: LocalizedStringResource {
-        switch self {
-        case .days: return "days"
-        case .weeks: return "weeks"
-        case .months: return "months"
-        case .years: return "years"
-        }
-    }
-}
-
-enum Mode: String, CaseIterable, Identifiable {
-    case categories, banks, expenses
-    var id: String { rawValue }
-    var localized: LocalizedStringResource {
-        switch self {
-        case .categories: return "categories"
-        case .banks: return "banks"
-        case .expenses: return "expenses"
-        }
-    }
 }

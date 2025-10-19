@@ -3,7 +3,7 @@ import SwiftData
 import SwiftUI
 
 @Model
-final class Bank: Hashable {
+final class Bank: Hashable, Identifiable {
     
     var name: String = ""
     var normalizedName: String {

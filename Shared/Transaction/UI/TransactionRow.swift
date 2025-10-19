@@ -3,20 +3,22 @@ import SwiftUI
 struct TransactionRow: View {
     
     var transaction: Transaction
-    var onlyAmount: Bool = false
+    var showPaymentMethodLogo: Bool = false
     
     var body: some View {
         
         HStack(alignment: .center, spacing: 8) {
-            ExpenseCategoryLogo(cat: transaction.expenseCategory)
-            if !onlyAmount {
-                HStack(alignment: .center, spacing: 3) {
-                    Text(transaction.date.toShortString)
-                    Text("•")
-                    Text(transaction.title)
-                }
-                .font(.footnote)
+            if showPaymentMethodLogo {
+                PaymentMethodLogo(paymentMethod: transaction.paymentMethod)
+            } else {
+                ExpenseCategoryLogo(cat: transaction.expenseCategory, isInternalTransfer: transaction.isInternalTransfer)
             }
+            HStack(alignment: .center, spacing: 3) {
+                Text(transaction.date.toShortString)
+                Text("•")
+                Text(transaction.title)
+            }
+            .font(.footnote)
             Spacer()
             Text(transaction.transactionType == .income ? "+\(transaction.amount.toString)" : "-\(transaction.amount.toString)")
                 .font(.body)
@@ -32,6 +34,7 @@ struct TransactionRow: View {
 #Preview {
     NavigationStack {
         List {
+            TransactionRow(transaction: Transaction(title: "Carrefour", transactionType: .expense, paymentMethod: .applePay, expenseCategory: .foodGroceries, date: Date(), amount: 34.67), showPaymentMethodLogo: true)
             TransactionRow(transaction: Transaction(title: "Carrefour", transactionType: .expense, paymentMethod: .applePay, expenseCategory: .foodGroceries, date: Date(), amount: 34.67))
             TransactionRow(transaction: Transaction(title: "McDo", transactionType: .expense, paymentMethod: .creditCard, expenseCategory: .diningOut, date: Date(), amount: Double.random(in: 1...100)))
             TransactionRow(transaction: Transaction(title: "Rent", transactionType: .expense, paymentMethod: .creditCard, expenseCategory: .housing, date: Date(), amount: 800))

@@ -13,7 +13,7 @@ struct TransactionsView: View {
     init(month: Date, hideInternalTransfers: Bool) {
         self.selectedMonth = month
         self.hideInternalTransfers = hideInternalTransfers
-//        _transactions = Query(filter: Transaction.predicate(forMonth: month, hideInternalTransfers: hideInternalTransfers), sort: \.date, order: .reverse)
+        _transactions = Query(filter: Transaction.predicate(forMonth: month, hideInternalTransfers: hideInternalTransfers), sort: \.date, order: .reverse)
     }
 
     var body: some View {
@@ -40,16 +40,13 @@ struct TransactionsView: View {
 #endif
             }
         }
-        .navigationTitle(Text(selectedMonth, format: Date.FormatStyle().month().year()))
-        .onChange(of: transactions) { old, new in
-            print(old.count, new.count)
-        }
+        .navigationTitle("transactions")
     }
 }
 
 #Preview {
     NavigationStack {
-        TransactionsView(month: Date(), hideInternalTransfers: true)
+        TransactionsView(month: Date(), hideInternalTransfers: false)
             .modelContainer(ModelContainer.shared)
     }
 }

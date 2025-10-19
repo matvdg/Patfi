@@ -93,7 +93,7 @@ struct AccountDetailView: View {
                             .pickerStyle(.segmented)
 #endif
                             .padding()
-                            TotalChartView(snapshots: snaps, period: $period)
+                            TotalChartView(snapshots: snaps, period: period)
                             Spacer()
                         }
                     } label: {
@@ -106,7 +106,7 @@ struct AccountDetailView: View {
 #if !os(watchOS)
                             .pickerStyle(.segmented)
 #endif
-                            TotalChartView(snapshots: snaps, period: $period)
+                            TotalChartView(snapshots: snaps, period: period)
                                 .frame(height: 150)
                         }
                         

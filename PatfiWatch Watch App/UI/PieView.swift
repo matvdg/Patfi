@@ -7,6 +7,7 @@ struct PieView: View {
     @State private var mode: Mode = .categories
     @State private var showModeSheet = false
     private let balanceRepository = BalanceRepository()
+    private let accountRepository = AccountRepository()
     
     var body: some View {
         Group {
@@ -18,11 +19,11 @@ struct PieView: View {
                 )
             } else {
                 List {
-                    PieChartView(grouping: $mode)
+                    PieChartView(accounts: accounts, transactions: [], grouping: mode)
                     switch mode {
                         // TODO
                     case .expenses:
-                        let sorted = balanceRepository.groupByBank(accounts)
+                        let sorted = accountRepository.groupByBank(accounts)
                             .map {
                                 ($0.key, balanceRepository.balance(for: $0.value))
                             }
@@ -45,7 +46,7 @@ struct PieView: View {
                             }
                         }
                     case .banks:
-                        let sorted = balanceRepository.groupByBank(accounts)
+                        let sorted = accountRepository.groupByBank(accounts)
                             .map {
                                 ($0.key, balanceRepository.balance(for: $0.value))
                             }
@@ -68,7 +69,7 @@ struct PieView: View {
                             }
                         }
                     case .categories:
-                        let sorted = balanceRepository.groupByCategory(accounts)
+                        let sorted = accountRepository.groupByCategory(accounts)
                             .map {
                                 ($0.key, balanceRepository.balance(for: $0.value))
                             }

@@ -6,7 +6,7 @@ struct TotalChartView: View {
     
     let snapshots: [BalanceSnapshot]
     
-    @Binding var period: Period
+    var period: Period
     private let balanceRepository = BalanceRepository()
     
     var body: some View {
@@ -93,5 +93,5 @@ struct TotalChartView: View {
     let b7 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*7), balance: Double.random(in: 10000...30000), account: account)
     let b8 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*6), balance: Double.random(in: 10000...30000), account: account)
     let b9 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*5), balance: Double.random(in: 10000...30000), account: account)
-    TotalChartView(snapshots: [b1, b2, b3, b4, b5, b6, b7, b8, b9], period: .constant(.months))
+    TotalChartView(snapshots: [b1, b2, b3, b4, b5, b6, b7, b8, b9], period: .months)
 }

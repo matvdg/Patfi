@@ -66,13 +66,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		F61F9A112E95715E0009BDE3 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Utils/CustomButtons.swift,
-			);
-			target = F6B833912E8EA57C00B2AB0C /* PatfiWatch Watch App */;
-		};
 		F63DB5B82E799D1100688CC7 /* Exceptions for "TotalBalanceWidget" folder in "TotalBalanceWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -90,29 +83,29 @@
 		F69CAE972E7F053F00627394 /* Exceptions for "Shared" folder in "TotalBalanceWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Account/AccountDetailView.swift,
-				Account/AccountPicker.swift,
-				Account/AccountRepository.swift,
-				Account/AccountRow.swift,
-				Account/AddAccountView.swift,
-				Balance/AddBalanceView.swift,
-				Bank/BankLogo.swift,
+				Account/UI/AccountDetailView.swift,
+				Account/UI/AccountPicker.swift,
+				Account/UI/AccountRow.swift,
+				Account/UI/AddAccountView.swift,
+				Balance/UI/AddBalanceView.swift,
 				Bank/BankRepository.swift,
-				Bank/BankRow.swift,
-				Bank/EditBanksView.swift,
-				Bank/EditBankView.swift,
+				Bank/UI/BankLogo.swift,
+				Bank/UI/BankRow.swift,
+				Bank/UI/EditBanksView.swift,
+				Bank/UI/EditBankView.swift,
 				Charts/PieChartView.swift,
 				Charts/TotalChartView.swift,
-				Transaction/AddExpenseView.swift,
-				Transaction/AddIncomeView.swift,
-				Transaction/AddInternalTransferView.swift,
-				Transaction/EditTransactionView.swift,
-				Transaction/ExpenseCategoryLogo.swift,
-				Transaction/FilteredTransactionsView.swift,
-				Transaction/PaymentMethodLogo.swift,
 				Transaction/TransactionRepository.swift,
-				Transaction/TransactionRow.swift,
-				Transaction/TransactionsView.swift,
+				Transaction/UI/AddExpenseView.swift,
+				Transaction/UI/AddIncomeView.swift,
+				Transaction/UI/AddInternalTransferView.swift,
+				Transaction/UI/EditTransactionView.swift,
+				Transaction/UI/ExpenseCategoryLogo.swift,
+				Transaction/UI/ExpensesView.swift,
+				Transaction/UI/FilteredTransactionsView.swift,
+				Transaction/UI/PaymentMethodLogo.swift,
+				Transaction/UI/TransactionRow.swift,
+				Transaction/UI/TransactionsView.swift,
 				Utils/CustomButtons.swift,
 				Utils/QuickActions.swift,
 			);
@@ -141,7 +134,6 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				F69CAE972E7F053F00627394 /* Exceptions for "Shared" folder in "TotalBalanceWidgetExtension" target */,
-				F61F9A112E95715E0009BDE3 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */,
 			);
 			path = Shared;
 			sourceTree = "<group>";

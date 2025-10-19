@@ -4,69 +4,17 @@ import Playgrounds
 
 struct HomeView: View {
     
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
-    @Query(sort: \BalanceSnapshot.date, order: .forward) private var snapshots: [BalanceSnapshot]
     @State private var showAddAccount = false
     @State private var selectedChart = 0
     @State var mode: Mode = .categories
     @State var period: Period = .months
-    @State private var isGraphHidden = false
-    @State private var collapsedSections: Set<String> = []
     
-    private var allKeys: [String] {
-        switch mode {
-            // TODO
-        case .expenses:
-            accountsByCategory.map { $0.key.localized }
-        case .categories:
-            accountsByCategory.map { $0.key.localized }
-        case .banks:
-            accountsByBank.map { $0.key.normalizedName }
-        }
-    }
-    
-    private var allCollapsed: Bool {
-        collapsedSections.count == allKeys.count
-    }
-    
-    private var allCollapsedBinding: Binding<Bool> {
-        Binding(
-            get: {
-                allCollapsed },
-            set: { newValue in
-                if newValue {
-                    collapsedSections = Set(allKeys)
-                } else {
-                    collapsedSections.removeAll()
-                }
-            }
-        )
-    }
-    
+    private let accountRepository = AccountRepository()
     private let balanceRepository = BalanceRepository()
-    private let transactionRepository = TransactionRepository()
-    
-    private var accountsByCategory: [Dictionary<Category, [Account]>.Element] {
-        Array(balanceRepository.groupByCategory(accounts).sorted { $0.key.localized < $1.key.localized })
-            .sorted {
-                balanceRepository.balance(for: $0.value) > balanceRepository.balance(for: $1.value)
-            }
-    }
-    
-    private var accountsByBank: [Dictionary<Bank, [Account]>.Element] {
-        Array(balanceRepository.groupByBank(accounts).sorted { $0.key.normalizedName < $1.key.normalizedName })
-            .sorted {
-                balanceRepository.balance(for: $0.value) > balanceRepository.balance(for: $1.value)
-            }
-    }
-    
-    private var balancesByPeriod: [BalanceRepository.TotalPoint] {
-        balanceRepository.generateSeries(for: period, from: snapshots).sorted { $0.date > $1.date }
-    }
     
     private var isLandscape: Bool {
 #if os(iOS)
@@ -101,7 +49,7 @@ struct HomeView: View {
                 if !isLandscape {
                     Picker("", selection: $selectedChart) {
 #if os(macOS)
-                        Text(selectedChart == 0 ? "transactions" : "transactions").tag(0)
+                        Text(selectedChart == 0 ? "􀜋 \(String(localized: "distribution"))" : "􀑀 \(String(localized: "distribution"))").tag(0)
                         Text(selectedChart == 1 ? "􀐿 \(String(localized: "monitoring"))" : "􀐾 \(String(localized: "monitoring"))").tag(1)
                         Text(selectedChart == 2 ? "􂷽 \(String(localized: "transactions"))" : "􂷼 \(String(localized: "transactions"))").tag(2)
 #else
@@ -133,166 +81,30 @@ struct HomeView: View {
                         .padding()
                     }
                 }
-                Group {
-                    if selectedChart == 0 {
-                        PieChartView(grouping: $mode)
-                    } else {
-                        TotalChartView(snapshots: snapshots, period: $period)
-                            .frame(maxHeight: .infinity)
+                
+                switch selectedChart {
+                case 0: // Distribution
+                    switch mode {
+                    case .banks: HomeAccountsByBankView()
+                    case .categories: HomeAccountsByCategoryView()
+                    case .expenses: HomeExpensesView()
                     }
-                }
-                .frame(height: isGraphHidden ? 0 : nil)
-                .opacity(isGraphHidden ? 0 : 1)
-                if !isLandscape {
-                    ZStack {
-                        ArrowButton(isUp: $isGraphHidden)
-                        if selectedChart == 0 {
-                            HStack {
-                                Spacer()
-                                CollapseButton(isCollapsed: allCollapsedBinding).padding(.trailing, 12)
-                            }
-                        }
-                    }
-                    List {
-                        switch selectedChart {
-                        case 0:
-                            switch mode {
-                                // TODO
-                            case .expenses:
-                                FilteredTransactionsView()
-                            case .categories:
-                                ForEach(accountsByCategory, id: \.key) { (category, items) in
-                                    let isCollapsed = collapsedSections.contains(category.localized)
-                                    Section {
-                                        if !isCollapsed {
-                                            ForEach(items) { account in
-                                                NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
-                                            }
-                                        }
-                                    } header: {
-                                        ArrowRightButton(isRight: Binding(
-                                            get: { isCollapsed },
-                                            set: { isCollapsed in
-                                                if isCollapsed {
-                                                    collapsedSections.insert(category.localized)
-                                                } else {
-                                                    collapsedSections.remove(category.localized)
-                                                }
-                                            }
-                                        )) {
-                                            HStack(spacing: 8) {
-                                                Circle().fill(category.color).frame(width: 10, height: 10)
-                                                Text(category.localized)
-                                                Spacer()
-                                                Text(balanceRepository.balance(for: items).toString)
-                                            }
-                                        }
-                                        .frame(height: isCollapsed ? 5 : 30)
-                                        .padding(.top, isCollapsed ? 12 : 0)
-#if os(macOS)
-                                        .padding(.vertical, 8)
-                                        .frame(height: 50)
-#endif
-                                    }
-                                }
-                            case .banks:
-                                ForEach(accountsByBank, id: \.key) { (bank, items) in
-                                    let isCollapsed = collapsedSections.contains(bank.normalizedName)
-                                    Section {
-                                        if !isCollapsed {
-                                            ForEach(items) { account in
-                                                NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account, displayBankLogo: false) }
-                                            }
-                                        } else {
-                                            EmptyView().frame(height: 100)
-                                        }
-                                    } header: {
-                                        ArrowRightButton(isRight: Binding(
-                                            get: { isCollapsed },
-                                            set: { isCollapsed in
-                                                if isCollapsed {
-                                                    collapsedSections.insert(bank.normalizedName)
-                                                } else {
-                                                    collapsedSections.remove(bank.normalizedName)
-                                                }
-                                            }
-                                        )) {
-                                            HStack {
-                                                BankRow(bank: bank)
-                                                Spacer()
-                                                Text(balanceRepository.balance(for: items).toString)
-                                            }
-                                        }
-                                        .frame(height: isCollapsed ? 22 : 30)
-                                        .padding(.top, isCollapsed ? 4 : 0)
-#if os(macOS)
-                                        .padding(.vertical, 8)
-                                        .frame(height: 50)
-#endif
-                                    }
-                                }
-                            }
-                        case 1:
-                            ForEach(balancesByPeriod.enumerated(), id: \.element.id) { index, point in
-                                HStack {
-                                    if index == 0 {
-                                        Text("now")
-                                    } else {
-                                        switch period {
-                                        case .days:
-                                            Text(point.date.toString)
-                                        case .weeks:
-                                            let weekOfYear = Calendar.current.component(.weekOfYear, from: point.date)
-                                            HStack {
-                                                Text("w\(weekOfYear)")
-                                                Text("•  \(point.date.toString)")
-                                            }
-                                        case .months:
-                                            let month = Calendar.current.component(.month, from: point.date)
-                                            HStack {
-                                                Text("\(month)")
-                                                Text("•  \(point.date.toString)")
-                                            }
-                                        case .years:
-                                            let year = Calendar.current.component(.year, from: point.date)
-                                            HStack {
-                                                Text(String(format: "%02d", year % 100))
-                                                Text("•  \(point.date.toString)")
-                                            }
-                                        }
-                                    }
-                                    Spacer()
-                                    Text(point.total.toString)
-                                }
-                            }
-                        default:
-                            FilteredTransactionsView()
-                        }
-                    }
-                    .scrollIndicators(.hidden)
-#if os(macOS)
-                    .listStyle(.plain)
-                    .padding()
-#else
-                    .listStyle(.insetGrouped)
-#endif
+                case 1: // Monitoring
+                    HomeMonitoringView(period: period)
+                default: // Expenses
+                    FilteredTransactionsView()
                 }
             }
         }
         .onChange(of: scenePhase) { old, newPhase in
             print("ℹ️ \(scenePhase)")
-            balanceRepository.update(accounts: accounts)
-        }
-        .onChange(of: isLandscape, {
-            isGraphHidden = false
-        })
-        .onChange(of: mode) { _, _ in
-            collapsedSections = []
+            balanceRepository.updateWidgets(accounts: accounts)
         }
 #if os(macOS)
         .padding()
 #endif
         .ignoresSafeArea(edges: .bottom)
+        
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Menu {
@@ -316,8 +128,6 @@ struct HomeView: View {
         .navigationDestination(isPresented: $showAddAccount) {
             AddAccountView()
         }
-        .navigationTitle("patfi")
-        
 #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
 #endif

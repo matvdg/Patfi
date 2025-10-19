@@ -10,16 +10,17 @@ struct AccountsView: View {
     @Query private var accounts: [Account]
     
     private let balanceRepository = BalanceRepository()
+    private let accountRepository = AccountRepository()
     
-    private var accountsByCategory: [Dictionary<Category, [Account]>.Element] {
-        Array(balanceRepository.groupByCategory(accounts).sorted { $0.key.localized < $1.key.localized })
+    private var accountsByCategory: [AccountsPerCategory.Element] {
+        Array(accountRepository.groupByCategory(accounts))
             .sorted {
                 balanceRepository.balance(for: $0.value) > balanceRepository.balance(for: $1.value)
             }
     }
     
-    private var accountsByBank: [Dictionary<Bank, [Account]>.Element] {
-        Array(balanceRepository.groupByBank(accounts).sorted { $0.key.normalizedName < $1.key.normalizedName })
+    private var accountsByBank: [AccountsPerBank.Element] {
+        Array(accountRepository.groupByBank(accounts))
             .sorted {
                 balanceRepository.balance(for: $0.value) > balanceRepository.balance(for: $1.value)
             }
@@ -90,18 +91,21 @@ struct AccountsView: View {
                                         AccountDetailView(account: account)
                                             .toolbar(.hidden, for: .bottomBar)
                                     } label: {
-                                        AccountRow(account: account, displayBankLogo: false)
+                                        AccountRow(account: account)
                                     }
                                 }
                             } header: {
-                                HStack {
-                                    BankRow(bank: bank)
+                                VStack(alignment: .center, spacing: 8) {
                                     Spacer()
-                                    Text(balanceRepository.balance(for: items).toString)
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.1)
+                                    HStack(spacing: 8) {
+                                        Circle().fill(bank.swiftUIColor).frame(width: 10, height: 10)
+                                        Text(bank.name)
+                                        Spacer()
+                                        Text(balanceRepository.balance(for: items).toString)
+                                    }
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.1)
                                 }
-                                .padding(.bottom, 1)
                             }
                         }
                     default:
