@@ -92,7 +92,9 @@ struct EditTransactionView: View {
             EditTransactionView(transaction: Transaction(title: "Wage", transactionType: .income, paymentMethod: .bankTransfer, expenseCategory: nil, date: Date(), amount: 2000, account: Account(name: "CAV", category: .current, bank: Bank(name: "CIC", color: .green, logoAvaibility: .available)), isInternalTransfer: false))
         }
     }
+    #if !os(macOS)
     .tabViewStyle(.page)
+    #endif
     .ignoresSafeArea()
     .modelContainer(ModelContainer.shared)
 }

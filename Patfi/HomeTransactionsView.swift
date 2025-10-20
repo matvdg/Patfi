@@ -42,11 +42,14 @@ struct TransactionsView: View {
     var body: some View {
         Group {
             if transactions.isEmpty {
-                ContentUnavailableView(
-                    "noData",
-                    systemImage: "receipt",
-                    description: Text("transactionsEmptyDescription")
-                )
+                VStack {
+                    ContentUnavailableView(
+                        "noData",
+                        systemImage: "receipt",
+                        description: Text("transactionsEmptyDescription")
+                    )
+                    Spacer()
+                }
             } else {
                 VStack {
                     Toggle("hideInternalTransfers", isOn: $hideInternalTransfers)
