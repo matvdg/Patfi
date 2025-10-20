@@ -4,25 +4,39 @@ import Playgrounds
 
 struct HomeExpensesView: View {
     
-    @State private var selectedMonth: Date = .now
+    @State private var selectedDate: Date = .now
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @State var period: Period = .months
+    
+    private var isLandscape: Bool {
+#if os(iOS)
+        return UIDevice.current.userInterfaceIdiom == .phone && verticalSizeClass == .compact
+#else
+        return false
+#endif
+    }
     
     var body: some View {
         
         VStack(alignment: .center) {
-            MonthPicker(selectedMonth: $selectedMonth)
-            ExpensesView(selectedMonth: selectedMonth)
+            if !isLandscape {
+                PeriodPicker(selectedDate: $selectedDate, period: $period)
+            }
+            ExpensesView(for: period, containing: selectedDate)
         }
     }
 }
 
 struct ExpensesView: View {
     
-    init(selectedMonth: Date) {
-        self.selectedMonth = selectedMonth
-        _transactions = Query(filter: Transaction.predicate(forMonth: selectedMonth), sort: \.date, order: .reverse)
+    init(for period: Period, containing selectedDate: Date) {
+        self.selectedDate = selectedDate
+        self.period = period
+        _transactions = Query(filter: Transaction.predicate(for: period, containing: selectedDate), sort: \.date, order: .reverse)
     }
     
-    var selectedMonth: Date
+    var selectedDate: Date
+    var period: Period
     
     @Query private var transactions: [Transaction]
     @Environment(\.modelContext) private var context
@@ -222,8 +236,11 @@ struct ExpensesView: View {
             collapsedSections.removeAll()
             allCollapsedBinding.wrappedValue = true
         }
-        .onChange(of: selectedMonth, initial: true) { oldValue, newValue in
-            print(oldValue, newValue)
+        .onChange(of: selectedDate, initial: true) { oldValue, newValue in
+            collapsedSections.removeAll()
+            allCollapsedBinding.wrappedValue = true
+        }
+        .onChange(of: period) { oldValue, newValue in
             collapsedSections.removeAll()
             allCollapsedBinding.wrappedValue = true
         }

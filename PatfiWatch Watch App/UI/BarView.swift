@@ -14,7 +14,7 @@ struct BarView: View {
     }
     
     var body: some View {
-        List {
+        Group {
             if snapshots.isEmpty {
                 ContentUnavailableView(
                     "noData",
@@ -23,56 +23,58 @@ struct BarView: View {
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                TotalChartView(snapshots: snapshots, period: period)
-                    .toolbar {
-                        ToolbarItem(placement: .bottomBar) {
-                            Button {
-                                showPeriodSheet = true
-                            } label: {
-                                Image(systemName: "line.3.horizontal.decrease.circle")
-                            }
-                        }
-                    }
-                    .sheet(isPresented: $showPeriodSheet) {
-                        PeriodView(period: $period)
-                    }
-                    .frame(height: 100)
-                ForEach(balancesByPeriod.enumerated(), id: \.element.id) { index, point in
-                    HStack {
-                        if index == 0 {
-                            Text("now")
-                        } else {
-                            switch period {
-                            case .days:
-                                Text(point.date.toString)
-                            case .weeks:
-                                let weekOfYear = Calendar.current.component(.weekOfYear, from: point.date)
-                                HStack {
-                                    Text("w\(weekOfYear)").bold()
-                                    Divider()
-                                    Text(point.date.toString)
-                                }
-                            case .months:
-                                let month = Calendar.current.component(.month, from: point.date)
-                                HStack {
-                                    Text("\(month)").bold()
-                                    Divider()
-                                    Text(point.date.toString)
-                                }
-                            case .years:
-                                let year = Calendar.current.component(.year, from: point.date)
-                                HStack {
-                                    Text(String(format: "%02d", year % 100)).bold()
-                                    Divider()
-                                    Spacer()
-                                    Text(point.date.toString)
+                List {
+                    BalanceChartView(snapshots: snapshots, period: period)
+                        .toolbar {
+                            ToolbarItem(placement: .bottomBar) {
+                                Button {
+                                    showPeriodSheet = true
+                                } label: {
+                                    Image(systemName: "line.3.horizontal.decrease.circle")
                                 }
                             }
                         }
-                        Divider()
-                        Text(point.total.toString)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
+                        .sheet(isPresented: $showPeriodSheet) {
+                            PeriodView(period: $period)
+                        }
+                        .frame(height: 100)
+                    ForEach(balancesByPeriod.enumerated(), id: \.element.id) { index, point in
+                        HStack {
+                            if index == 0 {
+                                Text("now")
+                            } else {
+                                switch period {
+                                case .days:
+                                    Text(point.date.toString)
+                                case .weeks:
+                                    let weekOfYear = Calendar.current.component(.weekOfYear, from: point.date)
+                                    HStack {
+                                        Text("w\(weekOfYear)").bold()
+                                        Divider()
+                                        Text(point.date.toString)
+                                    }
+                                case .months:
+                                    let month = Calendar.current.component(.month, from: point.date)
+                                    HStack {
+                                        Text("\(month)").bold()
+                                        Divider()
+                                        Text(point.date.toString)
+                                    }
+                                case .years:
+                                    let year = Calendar.current.component(.year, from: point.date)
+                                    HStack {
+                                        Text(String(format: "%02d", year % 100)).bold()
+                                        Divider()
+                                        Spacer()
+                                        Text(point.date.toString)
+                                    }
+                                }
+                            }
+                            Divider()
+                            Text(point.total.toString)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                        }
                     }
                 }
             }

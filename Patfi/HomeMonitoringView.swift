@@ -6,11 +6,9 @@ struct HomeMonitoringView: View {
     
     @Environment(\.modelContext) private var context
     @Environment(\.verticalSizeClass) private var verticalSizeClass
-    
     @Query(sort: \BalanceSnapshot.date, order: .forward) private var snapshots: [BalanceSnapshot]
-
-    var period: Period
     @State private var isGraphHidden = false
+    var period: Period
     
     private let balanceRepository = BalanceRepository()
     
@@ -30,7 +28,7 @@ struct HomeMonitoringView: View {
         
         VStack(alignment: .center) {
             Group {
-                TotalChartView(snapshots: snapshots, period: period)
+                BalanceChartView(snapshots: snapshots, period: period)
                     .frame(maxHeight: .infinity)
             }
             .frame(height: isGraphHidden ? 0 : nil)
@@ -76,13 +74,6 @@ struct HomeMonitoringView: View {
                                 }
                             }
                     }
-                    .scrollIndicators(.hidden)
-#if os(macOS)
-                    .listStyle(.plain)
-                    .padding()
-#else
-                    .listStyle(.insetGrouped)
-#endif
                     .navigationTitle("monitoring")
                 }
                 

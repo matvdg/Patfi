@@ -70,102 +70,100 @@ struct HomeAccountsView: View {
             }
             .frame(height: isGraphHidden ? 0 : nil)
             .opacity(isGraphHidden ? 0 : 1)
-            if !isLandscape {
-                ZStack {
-                    ArrowButton(isUp: $isGraphHidden)
-                    HStack {
-                        BankButton(sortByBank: $sortByBank).padding(.leading, 12)
-                        Spacer()
-                        CollapseButton(isCollapsed: allCollapsedBinding).padding(.trailing, 12)
-                    }
+            ZStack {
+                ArrowButton(isUp: $isGraphHidden)
+                HStack {
+                    BankButton(sortByBank: $sortByBank).padding(.leading, 12)
+                    Spacer()
+                    CollapseButton(isCollapsed: allCollapsedBinding).padding(.trailing, 12)
                 }
-                if sortByBank {
-                    List {
-                        ForEach(accountsByBank, id: \.key) { (bank, items) in
-                            let isCollapsed = collapsedSections.contains(bank.normalizedName)
-                            Section {
-                                if !isCollapsed {
-                                    ForEach(items) { account in
-                                        NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
-                                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                                Button(role: .confirm) {
-                                                    editBankColor = bank
-                                                } label: {
-                                                    Label("editBank", systemImage: "paintpalette")
-                                                }
+            }
+            if sortByBank {
+                List {
+                    ForEach(accountsByBank, id: \.key) { (bank, items) in
+                        let isCollapsed = collapsedSections.contains(bank.normalizedName)
+                        Section {
+                            if !isCollapsed {
+                                ForEach(items) { account in
+                                    NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
+                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                            Button(role: .confirm) {
+                                                editBankColor = bank
+                                            } label: {
+                                                Label("editBank", systemImage: "paintpalette")
                                             }
-                                            .contextMenu {
-                                                Button(role: .confirm) {
-                                                    editBankColor = bank
-                                                } label: {
-                                                    Label("editBank", systemImage: "paintpalette")
-                                                }
-                                            }
-                                    }
-                                } else {
-                                    EmptyView().frame(height: 100)
-                                }
-                            } header: {
-                                ArrowRightButton(isRight: Binding(
-                                    get: { isCollapsed },
-                                    set: { isCollapsed in
-                                        if isCollapsed {
-                                            collapsedSections.insert(bank.normalizedName)
-                                        } else {
-                                            collapsedSections.remove(bank.normalizedName)
                                         }
+                                        .contextMenu {
+                                            Button(role: .confirm) {
+                                                editBankColor = bank
+                                            } label: {
+                                                Label("editBank", systemImage: "paintpalette")
+                                            }
+                                        }
+                                }
+                            } else {
+                                EmptyView().frame(height: 100)
+                            }
+                        } header: {
+                            ArrowRightButton(isRight: Binding(
+                                get: { isCollapsed },
+                                set: { isCollapsed in
+                                    if isCollapsed {
+                                        collapsedSections.insert(bank.normalizedName)
+                                    } else {
+                                        collapsedSections.remove(bank.normalizedName)
                                     }
-                                )) {
-                                    HStack {
-                                        Circle()
-                                            .fill(Color(bank.swiftUIColor))
-                                            .frame(width: 10, height: 10)
-                                        Text(bank.name)
-                                        Spacer()
-                                        Text(balanceRepository.balance(for: items).toString)
-                                    }
-                                    .onLongPressGesture {
-                                        editBankColor = bank
-                                    }
+                                }
+                            )) {
+                                HStack {
+                                    Circle()
+                                        .fill(Color(bank.swiftUIColor))
+                                        .frame(width: 10, height: 10)
+                                    Text(bank.name)
+                                    Spacer()
+                                    Text(balanceRepository.balance(for: items).toString)
+                                }
+                                .onLongPressGesture {
+                                    editBankColor = bank
                                 }
                             }
                         }
                     }
-                } else {
-                    List {
-                        ForEach(accountsByCategory, id: \.key) { (category, items) in
-                            let isCollapsed = collapsedSections.contains(category.rawValue)
-                            Section {
-                                if !isCollapsed {
-                                    ForEach(items) { account in
-                                        NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
-                                    }
+                }
+            } else {
+                List {
+                    ForEach(accountsByCategory, id: \.key) { (category, items) in
+                        let isCollapsed = collapsedSections.contains(category.rawValue)
+                        Section {
+                            if !isCollapsed {
+                                ForEach(items) { account in
+                                    NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
                                 }
-                            } header: {
-                                ArrowRightButton(isRight: Binding(
-                                    get: { isCollapsed },
-                                    set: { isCollapsed in
-                                        if isCollapsed {
-                                            collapsedSections.insert(category.rawValue)
-                                        } else {
-                                            collapsedSections.remove(category.rawValue)
-                                        }
-                                    }
-                                )) {
-                                    HStack(spacing: 8) {
-                                        Circle().fill(category.color).frame(width: 10, height: 10)
-                                        Text(category.localized)
-                                        Spacer()
-                                        Text(balanceRepository.balance(for: items).toString)
-                                    }
-                                }
-                                .frame(height: isCollapsed ? 5 : 30)
-                                .padding(.top, isCollapsed ? 12 : 0)
-#if os(macOS)
-                                .padding(.vertical, 8)
-                                .frame(height: 50)
-#endif
                             }
+                        } header: {
+                            ArrowRightButton(isRight: Binding(
+                                get: { isCollapsed },
+                                set: { isCollapsed in
+                                    if isCollapsed {
+                                        collapsedSections.insert(category.rawValue)
+                                    } else {
+                                        collapsedSections.remove(category.rawValue)
+                                    }
+                                }
+                            )) {
+                                HStack(spacing: 8) {
+                                    Circle().fill(category.color).frame(width: 10, height: 10)
+                                    Text(category.localized)
+                                    Spacer()
+                                    Text(balanceRepository.balance(for: items).toString)
+                                }
+                            }
+                            .frame(height: isCollapsed ? 5 : 30)
+                            .padding(.top, isCollapsed ? 12 : 0)
+#if os(macOS)
+                            .padding(.vertical, 8)
+                            .frame(height: 50)
+#endif
                         }
                     }
                 }
@@ -184,7 +182,7 @@ struct HomeAccountsView: View {
         .navigationDestination(item: $editBankColor, destination: { bank in
             EditBankView(bank: bank)
         })
-        .navigationTitle("accounts")
+        .navigationTitle(isLandscape ? "" : "accounts")
     }
 }
 

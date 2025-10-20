@@ -54,10 +54,29 @@ final class Transaction {
 }
 
 extension Transaction {
-    static func predicate(forMonth month: Date) -> Predicate<Transaction> {
+    static func predicate(for period: Period, containing date: Date) -> Predicate<Transaction> {
         let calendar = Calendar.current
-        let start = calendar.date(from: calendar.dateComponents([.year, .month], from: month))!
-        let end = calendar.date(byAdding: .month, value: 1, to: start)!
+        let start: Date
+        let end: Date
+
+        switch period {
+        case .days:
+            start = calendar.startOfDay(for: date)
+            end = calendar.date(byAdding: .day, value: 1, to: start)!
+        case .weeks:
+            let interval = calendar.dateInterval(of: .weekOfYear, for: date)!
+            start = interval.start
+            end = interval.end
+        case .months:
+            let interval = calendar.dateInterval(of: .month, for: date)!
+            start = interval.start
+            end = interval.end
+        case .years:
+            let interval = calendar.dateInterval(of: .year, for: date)!
+            start = interval.start
+            end = interval.end
+        }
+
         return #Predicate { $0.date >= start && $0.date < end }
     }
 }

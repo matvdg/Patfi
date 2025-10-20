@@ -3,6 +3,7 @@ import SwiftData
 
 typealias TransactionsPerCategory = [Transaction.ExpenseCategory: [Transaction]]
 typealias TransactionsPerPaymentMethod = [Transaction.PaymentMethod: [Transaction]]
+typealias TransactionsPerPeriod = [Date: [Transaction]]
 
 class TransactionRepository {
     

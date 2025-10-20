@@ -61,37 +61,37 @@ struct HomeView: View {
                     .pickerStyle(.segmented)
                     .controlSize(.extraLarge)
                     .frame(width: 150)
-                }
-                Group {
-                    if selectedChart == 0 {
-                        Picker("", selection: $mode) {
-                            ForEach(Mode.allCases) { mode in
-                                Text(mode.localized).tag(mode)
+                    Group {
+                        if selectedChart == 0 {
+                            Picker("", selection: $mode) {
+                                ForEach(Mode.allCases) { mode in
+                                    Text(mode.localized).tag(mode)
+                                }
                             }
-                        }
-                        .pickerStyle(.segmented)
-                        .padding()
-                    } else {
-                        Picker("", selection: $period) {
-                            ForEach(Period.allCases) { period in
-                                Text(period.localized).tag(period)
+                            .pickerStyle(.segmented)
+                            .padding()
+                        } else if selectedChart == 1 {
+                            Picker("", selection: $period) {
+                                ForEach(Period.allCases) { period in
+                                    Text(period.localized).tag(period)
+                                }
                             }
+                            .pickerStyle(.segmented)
+                            .padding()
                         }
-                        .pickerStyle(.segmented)
-                        .padding()
                     }
                 }
                 
                 switch selectedChart {
-                case 0: // Distribution
+                case 0: // Distribution (PieChart by Category/Bank for accounts and ExpenseCategory/PaymentMethod for expenses)
                     switch mode {
                     case .accounts: HomeAccountsView()
                     case .expenses: HomeExpensesView()
                     }
-                case 1: // Monitoring
+                case 1: // Monitoring (Balances BarChart)
                     HomeMonitoringView(period: period)
-                default: // Expenses
-                    FilteredTransactionsView()
+                default: // Transactions (Incomes/expenses BarChart)
+                    HomeTransactionsView()
                 }
             }
         }

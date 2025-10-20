@@ -6,7 +6,7 @@ struct ExpensesView: View {
     init(selectedMonth: Date, sortByPaymentMethod: Bool) {
         self.selectedMonth = selectedMonth
         self.sortByPaymentMethod = sortByPaymentMethod
-        _transactions = Query(filter: Transaction.predicate(forMonth: selectedMonth), sort: \.date, order: .reverse)
+        _transactions = Query(filter: Transaction.predicate(for: .months, containing: selectedMonth), sort: \.date, order: .reverse)
     }
     
     var selectedMonth: Date

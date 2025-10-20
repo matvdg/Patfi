@@ -85,7 +85,7 @@ struct PieView: View {
                             .minimumScaleFactor(0.1)
                         }
                     default:
-                        MonthPicker(selectedMonth: $selectedMonth)
+                        PeriodPicker(selectedDate: $selectedMonth, period: .constant(.months))
                             .toolbar {
                                 ToolbarItem(placement: .bottomBar) {
                                     Button {
