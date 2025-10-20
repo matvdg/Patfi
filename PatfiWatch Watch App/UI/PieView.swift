@@ -24,6 +24,15 @@ struct PieView: View {
                     switch mode {
                     case .banks:
                         PieChartView(accounts: accounts, transactions: [], grouping: .accounts, sortByBank: true)
+                            .toolbar {
+                                ToolbarItem(placement: .bottomBar) {
+                                    Button {
+                                        showModeSheet = true
+                                    } label: {
+                                        Image(systemName: "line.3.horizontal.decrease.circle")
+                                    }
+                                }
+                            }
                         let sorted = accountRepository.groupByBank(accounts)
                             .map {
                                 ($0.key, balanceRepository.balance(for: $0.value))
@@ -48,6 +57,15 @@ struct PieView: View {
                         }
                     case .categories:
                         PieChartView(accounts: accounts, transactions: [], grouping: .accounts, sortByBank: false)
+                            .toolbar {
+                                ToolbarItem(placement: .bottomBar) {
+                                    Button {
+                                        showModeSheet = true
+                                    } label: {
+                                        Image(systemName: "line.3.horizontal.decrease.circle")
+                                    }
+                                }
+                            }
                         let sorted = accountRepository.groupByCategory(accounts)
                             .map {
                                 ($0.key, balanceRepository.balance(for: $0.value))
@@ -68,23 +86,22 @@ struct PieView: View {
                         }
                     default:
                         MonthPicker(selectedMonth: $selectedMonth)
+                            .toolbar {
+                                ToolbarItem(placement: .bottomBar) {
+                                    Button {
+                                        showModeSheet = true
+                                    } label: {
+                                        Image(systemName: "line.3.horizontal.decrease.circle")
+                                    }
+                                }
+                            }
                         ExpensesView(selectedMonth: selectedMonth, sortByPaymentMethod: mode == .paymentMethod)
                     }
-                    
-                }
-                .toolbar {
-                    ToolbarItem(placement: .bottomBar) {
-                        Button {
-                            showModeSheet = true
-                        } label: {
-                            Image(systemName: "line.3.horizontal.decrease.circle")
-                        }
-                    }
-                }
-                .sheet(isPresented: $showModeSheet) {
-                    ModeView(mode: $mode)
                 }
             }
+        }
+        .sheet(isPresented: $showModeSheet) {
+            ModeView(mode: $mode)
         }
         .navigationTitle("distribution")
     }
