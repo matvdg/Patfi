@@ -106,7 +106,7 @@ struct AddInternalTransferView: View {
                     dismiss()
                     
                 })
-                .disabled(sourceAccount == nil || destinationAccount == nil || amount == nil)
+                .disabled(sourceAccount == nil || destinationAccount == nil || amount == 0 || amount == nil)
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }

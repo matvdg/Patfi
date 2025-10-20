@@ -122,7 +122,7 @@ struct AccountDetailView: View {
                         HStack {
                             Text(snap.date.toString)
                             Spacer()
-                            Text(snap.balance.toString)
+                            ColorAmount(amount: snap.balance)
                                 .monospacedDigit()
                         }
                         .swipeActions(edge: .trailing) {

@@ -17,9 +17,7 @@ struct TransactionChartView: View {
         
         VStack {
             Text("total")
-            Text(total > 0 ? "+\(total.toString)" : total.toString)
-                .font(.headline)
-                .foregroundColor(total >= 0 ? .green : .red)
+            ColorAmount(amount: total)
             
             Chart(data, id: \.type) { item in
                 BarMark(
@@ -38,11 +36,9 @@ struct TransactionChartView: View {
             }
             
             HStack {
-                Text("+\(totalIncome.toString)")
-                    .foregroundColor(.green)
+                ColorAmount(amount: totalIncome)
                 Spacer()
-                Text((-totalExpense).toString)
-                    .foregroundColor(.red)
+                ColorAmount(amount: -totalExpense)
             }
         }
         .padding()
@@ -58,7 +54,7 @@ struct TransactionChartView: View {
         let income2 = Transaction(title: "Wage", transactionType: .income, paymentMethod: .bankTransfer, date: Date(), amount: 2000, account: nil)
         let expense2 = Transaction(title: "Rent", transactionType: .expense, paymentMethod: .bankTransfer, expenseCategory: .housing, date: Date(), amount: 2000, account: nil)
         TransactionChartView(transactions: [income2, expense2])
-        let income3 = Transaction(title: "Wage", transactionType: .income, paymentMethod: .bankTransfer, date: Date(), amount: 2000, account: nil)
+        let income3 = Transaction(title: "Wage", transactionType: .income, paymentMethod: .bankTransfer, date: Date(), amount: 5000, account: nil)
         let expense3 = Transaction(title: "Rent", transactionType: .expense, paymentMethod: .bankTransfer, expenseCategory: .housing, date: Date(), amount: 2000, account: nil)
         TransactionChartView(transactions: [income3, expense3])
     }

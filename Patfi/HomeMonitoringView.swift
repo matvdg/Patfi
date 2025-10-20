@@ -70,7 +70,7 @@ struct HomeMonitoringView: View {
                                         }
                                     }
                                     Spacer()
-                                    Text(point.total.toString).bold()
+                                    ColorAmount(amount: point.total).bold()
                                 }
                             }
                     }

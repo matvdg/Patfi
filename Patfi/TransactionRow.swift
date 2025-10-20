@@ -20,11 +20,9 @@ struct TransactionRow: View {
             }
             .font(.footnote)
             Spacer()
-            Text(transaction.transactionType == .income ? "+\(transaction.amount.toString)" : "-\(transaction.amount.toString)")
+            ColorAmount(amount: transaction.transactionType == .expense ? -transaction.amount : transaction.amount)
                 .font(.body)
                 .bold()
-                .foregroundColor(transaction.transactionType == .expense ? .red : .green)
-                
         }
         .lineLimit(1)
         .minimumScaleFactor(0.1)

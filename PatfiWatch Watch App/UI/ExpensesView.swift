@@ -42,9 +42,9 @@ struct ExpensesView: View {
                 ForEach(expensesByPaymentMethod, id: \.key) { (paymentMethod, expenses) in
                     HStack(spacing: 8) {
                         Circle().fill(paymentMethod.color).frame(width: 10, height: 10)
-                        Text(paymentMethod.localized)
+                        Text(paymentMethod.localized).lineLimit(1)
                         Spacer()
-                        Text("-\(transactionRepository.total(for: expenses).toString)")
+                        ColorAmount(amount: -transactionRepository.total(for: expenses))
                     }
                     .minimumScaleFactor(0.2)
                     .font(.footnote)
@@ -55,7 +55,7 @@ struct ExpensesView: View {
                         Circle().fill(cat.color).frame(width: 10, height: 10)
                         Text(cat.localized)
                         Spacer()
-                        Text("-\(transactionRepository.total(for: expenses).toString)")
+                        ColorAmount(amount: -transactionRepository.total(for: expenses))
                     }
                     .minimumScaleFactor(0.2)
                     .font(.footnote)

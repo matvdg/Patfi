@@ -76,7 +76,7 @@ struct AccountsView: View {
                                         Circle().fill(category.color).frame(width: 10, height: 10)
                                         Text(category.localized)
                                         Spacer()
-                                        Text(balanceRepository.balance(for: items).toString)
+                                        ColorAmount(amount: balanceRepository.balance(for: items))
                                     }
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.1)
@@ -101,7 +101,7 @@ struct AccountsView: View {
                                         Circle().fill(bank.swiftUIColor).frame(width: 10, height: 10)
                                         Text(bank.name)
                                         Spacer()
-                                        Text(balanceRepository.balance(for: items).toString)
+                                        ColorAmount(amount: balanceRepository.balance(for: items))
                                     }
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.1)

@@ -87,7 +87,7 @@ struct AddIncomeView: View {
                     dismiss()
                     
                 })
-                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedAccount == nil || amount == nil)
+                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedAccount == nil || amount == 0 || amount == nil)
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }

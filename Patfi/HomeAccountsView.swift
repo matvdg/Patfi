@@ -121,7 +121,7 @@ struct HomeAccountsView: View {
                                         .frame(width: 10, height: 10)
                                     Text(bank.name)
                                     Spacer()
-                                    Text(balanceRepository.balance(for: items).toString)
+                                    ColorAmount(amount: balanceRepository.balance(for: items))
                                 }
                                 .onLongPressGesture {
                                     editBankColor = bank
@@ -155,7 +155,7 @@ struct HomeAccountsView: View {
                                     Circle().fill(category.color).frame(width: 10, height: 10)
                                     Text(category.localized)
                                     Spacer()
-                                    Text(balanceRepository.balance(for: items).toString)
+                                    ColorAmount(amount: balanceRepository.balance(for: items))
                                 }
                             }
                             .frame(height: isCollapsed ? 5 : 30)

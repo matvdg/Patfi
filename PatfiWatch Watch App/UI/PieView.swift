@@ -49,7 +49,7 @@ struct PieView: View {
                                         Text(bank.name)
                                     }
                                     Spacer()
-                                    Text(total.toString)
+                                    ColorAmount(amount: total)
                                 }
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.1)
@@ -79,7 +79,7 @@ struct PieView: View {
                                     Text(cat.localized)
                                 }
                                 Spacer()
-                                Text(total.toString)
+                                ColorAmount(amount: total)
                             }
                             .lineLimit(1)
                             .minimumScaleFactor(0.1)

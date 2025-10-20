@@ -28,6 +28,27 @@ extension ModelContainer {
         /// Quick access to mock/empty data
         let mockDataEnabled = true
         
+        func insertBalanceSnapshots(
+            iterations: Int,
+            dayFormula: (Int) -> TimeInterval,
+            accounts: [Account],
+            container: ModelContainer
+        ) {
+            for i in 0...iterations {
+                let days = dayFormula(i)
+                for account in accounts {
+                    let range = account.category == .loan ? -10000...0 : 10000...20000
+                    let balance = Double.random(in: Double(range.lowerBound)...Double(range.upperBound))
+                    let snapshot = BalanceSnapshot(
+                        date: Date().addingTimeInterval(-60*60*24*days),
+                        balance: balance,
+                        account: account
+                    )
+                    container.mainContext.insert(snapshot)
+                }
+            }
+        }
+        
         let config = ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         let container = try! ModelContainer(for: schema, configurations: [config])
         
@@ -52,83 +73,17 @@ extension ModelContainer {
             let a6 = Account(name: "Gold", category: .commodities, bank: revolut)
             let a7 = Account(name: "PEA", category: .stocks, bank: bnp)
             let a8 = Account(name: " APL", category: .stocks, bank: tradeRepublic)
+            let a9 = Account(name: "Prêt conso", category: .loan, bank: boursoBank)
             
-            let accounts: [Account] = [a1, a2, a3, a4, a5, a6, a7, a8]
+            let accounts: [Account] = [a1, a2, a3, a4, a5, a6, a7, a8, a9]
             accounts.forEach { a in
                 container.mainContext.insert(a)
             }
             
-            /// 12 days balances
-            for i in 0...12 {
-                let days = TimeInterval(i)
-                let b1 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a1)
-                let b2 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a2)
-                let b3 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a3)
-                let b4 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a4)
-                let b5 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a5)
-                let b6 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a6)
-                let b7 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a7)
-                let b8 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a8)
-                
-                let balances: [BalanceSnapshot] = [b1, b2, b3, b4, b5, b6, b7, b8]
-                balances.forEach { b in
-                    container.mainContext.insert(b)
-                }
-            }
-            
-            /// 12 weeks balances
-            for i in 0...12 {
-                let days = TimeInterval(i*7+13)
-                let b1 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a1)
-                let b2 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a2)
-                let b3 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a3)
-                let b4 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a4)
-                let b5 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a5)
-                let b6 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a6)
-                let b7 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a7)
-                let b8 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a8)
-                
-                let balances: [BalanceSnapshot] = [b1, b2, b3, b4, b5, b6, b7, b8]
-                balances.forEach { b in
-                    container.mainContext.insert(b)
-                }
-            }
-            
-            /// 12 months balances
-            for i in 0...12 {
-                let days = TimeInterval(i*31+128)
-                let b1 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a1)
-                let b2 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a2)
-                let b3 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a3)
-                let b4 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a4)
-                let b5 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a5)
-                let b6 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a6)
-                let b7 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a7)
-                let b8 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a8)
-                
-                let balances: [BalanceSnapshot] = [b1, b2, b3, b4, b5, b6, b7, b8]
-                balances.forEach { b in
-                    container.mainContext.insert(b)
-                }
-            }
-            
-            /// 12 years balances
-            for i in 0...12 {
-                let days = TimeInterval(i*365+365)
-                let b1 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a1)
-                let b2 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a2)
-                let b3 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a3)
-                let b4 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a4)
-                let b5 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a5)
-                let b6 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a6)
-                let b7 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a7)
-                let b8 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*days), balance: Double.random(in: 10000...20000), account: a8)
-                
-                let balances: [BalanceSnapshot] = [b1, b2, b3, b4, b5, b6, b7, b8]
-                balances.forEach { b in
-                    container.mainContext.insert(b)
-                }
-            }
+            insertBalanceSnapshots(iterations: 12, dayFormula: { TimeInterval($0) }, accounts: accounts, container: container)
+            insertBalanceSnapshots(iterations: 12, dayFormula: { TimeInterval($0*7+13) }, accounts: accounts, container: container)
+            insertBalanceSnapshots(iterations: 12, dayFormula: { TimeInterval($0*31+128) }, accounts: accounts, container: container)
+            insertBalanceSnapshots(iterations: 12, dayFormula: { TimeInterval($0*365+365) }, accounts: accounts, container: container)
             
             /// 36  months transactions
             for i in 0...36 {

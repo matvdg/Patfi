@@ -9,7 +9,7 @@ struct TotalView: View {
     var body: some View {
         VStack(alignment: .center, spacing: 10) {
             let balance = balanceRepository.balance(for: accounts)
-            Text(balance.toString)
+            ColorAmount(amount: balance)
                 .font(.largeTitle)
                 .bold()
                 .minimumScaleFactor(0.2)

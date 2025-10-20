@@ -71,7 +71,7 @@ struct BarView: View {
                                 }
                             }
                             Divider()
-                            Text(point.total.toString)
+                            ColorAmount(amount: point.total)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
                         }

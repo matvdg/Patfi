@@ -88,7 +88,7 @@ struct AddExpenseView: View {
                     dismiss()
                     
                 })
-                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedAccount == nil || amount == nil || expenseCategory == nil)
+                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedAccount == nil || amount == nil || amount == 0 || expenseCategory == nil)
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }
