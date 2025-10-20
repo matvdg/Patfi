@@ -17,7 +17,7 @@ struct TransactionChartView: View {
         
         VStack {
             Text("total")
-            ColorAmount(amount: total)
+            ColorAmount(amount: total).bold()
             
             Chart(data, id: \.type) { item in
                 BarMark(
@@ -36,9 +36,9 @@ struct TransactionChartView: View {
             }
             
             HStack {
-                ColorAmount(amount: totalIncome)
+                ColorAmount(amount: totalIncome).bold()
                 Spacer()
-                ColorAmount(amount: -totalExpense)
+                ColorAmount(amount: -totalExpense).bold()
             }
         }
         .padding()
