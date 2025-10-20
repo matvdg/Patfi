@@ -17,7 +17,7 @@ struct TransactionChartView: View {
         
         VStack {
             Text("total")
-            Text(total.toString)
+            Text(total > 0 ? "+\(total.toString)" : total.toString)
                 .font(.headline)
                 .foregroundColor(total >= 0 ? .green : .red)
             
@@ -38,10 +38,10 @@ struct TransactionChartView: View {
             }
             
             HStack {
-                Text(totalIncome.toString)
+                Text("+\(totalIncome.toString)")
                     .foregroundColor(.green)
                 Spacer()
-                Text(totalExpense.toString)
+                Text((-totalExpense).toString)
                     .foregroundColor(.red)
             }
         }
@@ -51,7 +51,16 @@ struct TransactionChartView: View {
 }
 
 #Preview {
-    let income = Transaction(title: "Wage", transactionType: .income, paymentMethod: .bankTransfer, date: Date(), amount: 3000, account: nil)
-    let expense = Transaction(title: "Rent", transactionType: .expense, paymentMethod: .bankTransfer, expenseCategory: .housing, date: Date(), amount: 3800, account: nil)
-    TransactionChartView(transactions: [income, expense])
+    VStack {
+        let income = Transaction(title: "Wage", transactionType: .income, paymentMethod: .bankTransfer, date: Date(), amount: 2000, account: nil)
+        let expense = Transaction(title: "Rent", transactionType: .expense, paymentMethod: .bankTransfer, expenseCategory: .housing, date: Date(), amount: 3800, account: nil)
+        TransactionChartView(transactions: [income, expense])
+        let income2 = Transaction(title: "Wage", transactionType: .income, paymentMethod: .bankTransfer, date: Date(), amount: 2000, account: nil)
+        let expense2 = Transaction(title: "Rent", transactionType: .expense, paymentMethod: .bankTransfer, expenseCategory: .housing, date: Date(), amount: 2000, account: nil)
+        TransactionChartView(transactions: [income2, expense2])
+        let income3 = Transaction(title: "Wage", transactionType: .income, paymentMethod: .bankTransfer, date: Date(), amount: 2000, account: nil)
+        let expense3 = Transaction(title: "Rent", transactionType: .expense, paymentMethod: .bankTransfer, expenseCategory: .housing, date: Date(), amount: 2000, account: nil)
+        TransactionChartView(transactions: [income3, expense3])
+    }
+    
 }
