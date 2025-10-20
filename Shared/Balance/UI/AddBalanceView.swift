@@ -77,7 +77,7 @@ struct AddBalanceView: View {
                     balanceRepository.add(amount: newBalance, date: date, account: selectedAccount, context: context)
                     dismiss()
                 }
-                .disabled(Double(amountText.replacingOccurrences(of: ",", with: ".")) == nil || selectedAccount == nil)
+                .disabled(newBalance == nil || selectedAccount == nil)
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }
