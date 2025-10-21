@@ -31,9 +31,14 @@ struct AddBalanceView: View {
             Section {
 #if os(watchOS)
                 NavigationLink {
-                    NumericalKeyboardView(text: $amountText)
+                    NumericalKeyboardView(text: $amountText, signMode: selectedAccount?.category ?? .other == .loan ? .negativeOnly : .both)
                 } label: {
                     Text(amountText.isEmpty ? String(localized:"balance") : amountText)
+                }
+                .onChange(of: selectedAccount) { _, new in
+                    if let cat = new?.category, cat == .loan {
+                        amountText = ""
+                    }
                 }
 #else
                 TextField("balance", text: $amountText)

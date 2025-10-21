@@ -35,7 +35,7 @@ struct AddExpenseView: View {
             Section {
 #if os(watchOS)
                 NavigationLink {
-                    NumericalKeyboardView(text: $amountText)
+                    NumericalKeyboardView(text: $amountText, signMode: .negativeOnly)
                 } label: {
                     Text(amountText.isEmpty ? String(localized:"amount") : amountText)
                 }

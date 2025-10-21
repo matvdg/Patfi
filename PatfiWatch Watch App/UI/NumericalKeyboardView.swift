@@ -1,18 +1,25 @@
 import SwiftUI
 import WatchKit
 
+enum SignMode {
+    case positiveOnly
+    case negativeOnly
+    case both
+}
+
 struct NumericalKeyboardView: View {
     
     private let currencySymbol: String = Locale.current.currencySymbol ?? "€"
     @Environment(\.dismiss) private var dismiss
     @Binding var text: String
+    var signMode: SignMode = .both
     
     private let decimalSeparator: String = Locale.current.decimalSeparator ?? "."
     private var keys: [[String]] {
         [
             ["1","2","3", "4"],
             ["5","6","7","8"],
-            [decimalSeparator, "9","0","+/-"]
+            ["9","0",decimalSeparator,"-/+"]
         ]
     }
     
@@ -50,12 +57,11 @@ struct NumericalKeyboardView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 5) {
             Text(formattedText)
                 .font(.headline)
                 .foregroundColor(text.hasPrefix("+") ? .green : (text.hasPrefix("-") ? .red : .primary))
                 .frame(height: 20)
-                .padding(.bottom, 10)
             ForEach(keys, id: \.self) { row in
                 HStack {
                     ForEach(row, id: \.self) { key in
@@ -66,6 +72,8 @@ struct NumericalKeyboardView: View {
                                 .font(.headline)
                         }
                         .buttonStyle(.glass)
+                        .disabled(key == "-/+" && signMode != .both)
+                        .opacity((key == "-/+" && signMode != .both) ? 0.5 : 1.0)
                     }
                 }
             }
@@ -83,24 +91,26 @@ struct NumericalKeyboardView: View {
     private func handleKey(_ key: String) {
         WKInterfaceDevice.current().play(.click)
         switch key {
-        case "+/-":
-            if !text.isEmpty {
+        case "-/+":
+            if signMode == .both {
                 if text.hasPrefix("-") {
-                    // Replace leading "-" with "+"
-                    text.removeFirst()
-                    text = "+" + text
+                    text = "+" + text.dropFirst()
                 } else if text.hasPrefix("+") {
-                    // Replace leading "+" with "-"
-                    text.removeFirst()
-                    text = "-" + text
+                    text = "-" + text.dropFirst()
                 } else if !text.isEmpty {
-                    // Add "-" by default
                     text = "-" + text
                 }
             }
         default:
             if text.isEmpty {
-                text = "+" + key
+                switch signMode {
+                case .positiveOnly:
+                    text = "+" + key
+                case .negativeOnly:
+                    text = "-" + key
+                case .both:
+                    text = "+" + key
+                }
             } else {
                 text.append(key)
             }
@@ -110,6 +120,6 @@ struct NumericalKeyboardView: View {
 
 #Preview {
     NavigationStack {
-        NumericalKeyboardView(text: .constant("44"))
+        NumericalKeyboardView(text: .constant("-44.99"), signMode: .negativeOnly)
     }
 }

@@ -38,7 +38,7 @@ struct AddInternalTransferView: View {
             Section {
 #if os(watchOS)
                 NavigationLink {
-                    NumericalKeyboardView(text: $amountText)
+                    NumericalKeyboardView(text: $amountText, signMode: .positiveOnly)
                 } label: {
                     Text(amountText.isEmpty ? String(localized:"amount") : amountText)
                 }
