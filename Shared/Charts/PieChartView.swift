@@ -57,7 +57,7 @@ struct PieChartView: View {
     }
     
     var body: some View {
-        let slices = allSlices.filter { sortByBank != true || $0.label != Category.loan.localized }
+        let slices = allSlices.filter { sortByBank == nil || $0.total > 0 }
         let total: Double = grouping == .expenses ? transactionRepository.total(for: transactions) : balanceRepository.balance(for: accounts)
         
         VStack(alignment: .center, spacing: 20) {

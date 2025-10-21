@@ -55,10 +55,10 @@ extension ModelContainer {
         if mockDataEnabled {
             let boursoBank = Bank(name: "BoursoBank", color: .purple)
             let greenGot = Bank(name: "GreenGot", color: .green)
-            let bnp = Bank(name: "BNP Paribas", color: .green)
+            let bnp = Bank(name: "BNP Paribas", color: .yellow)
             let crypto = Bank(name: "Crypto", color: .blue)
             let tradeRepublic = Bank(name: "Trade Republic", color: .gray)
-            let revolut = Bank(name: "Revolut", color: .blue)
+            let revolut = Bank(name: "Revolut", color: .red)
             let banks: [Bank] = [boursoBank, greenGot, bnp, crypto, tradeRepublic, revolut]
             banks.forEach { bank in
                 container.mainContext.insert(bank)
