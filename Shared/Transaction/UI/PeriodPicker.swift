@@ -83,5 +83,7 @@ struct PeriodPicker: View {
 }
 
 #Preview {
-    PeriodPicker(selectedDate: .constant(Date()), period: .constant(.months))
+    @Previewable @State var date: Date = Date()
+    @Previewable @State var period: Period = .months
+    PeriodPicker(selectedDate: $date, period: $period)
 }

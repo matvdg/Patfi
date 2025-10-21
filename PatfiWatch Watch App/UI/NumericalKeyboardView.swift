@@ -119,7 +119,13 @@ struct NumericalKeyboardView: View {
 }
 
 #Preview {
-    NavigationStack {
-        NumericalKeyboardView(text: .constant("-44.99"), signMode: .negativeOnly)
+    @Previewable @State var amount: String = "-44.99"
+    TabView {
+        NavigationStack {
+            NumericalKeyboardView(text: $amount, signMode: .negativeOnly)
+        }
+        NavigationStack {
+            NumericalKeyboardView(text: $amount, signMode: .both)
+        }
     }
 }

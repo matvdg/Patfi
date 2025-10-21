@@ -43,5 +43,6 @@ struct SortView: View {
 }
 
 #Preview {
-    SortView(sorting: .constant(.bank))
+    @Previewable @State var mode: Sorting = .amount
+    SortView(sorting: $mode)
 }

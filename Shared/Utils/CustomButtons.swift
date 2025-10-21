@@ -94,12 +94,13 @@ struct BankButton: View {
 }
 
 #Preview {
-    ArrowButton(isUp: .constant(false))
-    ArrowRightButton(isRight: .constant(false)) {
+    @Previewable @State var isOn = false
+    ArrowButton(isUp: $isOn)
+    ArrowRightButton(isRight: $isOn) {
         Text("Exemple")
             .padding(.leading, 8)
     }
-    CollapseButton(isCollapsed: .constant(false))
-    PaymentMethodButton(sortByPaymentMethod: .constant(false))
-    BankButton(sortByBank: .constant(false))
+    CollapseButton(isCollapsed: $isOn)
+    PaymentMethodButton(sortByPaymentMethod: $isOn)
+    BankButton(sortByBank: $isOn)
 }

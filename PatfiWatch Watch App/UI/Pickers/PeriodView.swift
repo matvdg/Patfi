@@ -30,5 +30,6 @@ struct PeriodView: View {
 }
 
 #Preview {
-    PeriodView(period: .constant(.months))
+    @Previewable @State var period: Period = .months
+    PeriodView(period: $period)
 }

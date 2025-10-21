@@ -30,5 +30,6 @@ struct ModeView: View {
 }
 
 #Preview {
-    ModeView(mode: .constant(.categories))
+    @Previewable @State var mode: WatchMode = .categories
+    ModeView(mode: $mode)
 }
