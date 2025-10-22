@@ -27,6 +27,7 @@ struct BalanceChartView: View {
                     width: .fixed(geo.size.width / 20)
                 )
                 .foregroundStyle(by: .value("", point.change))
+                .cornerRadius(6)
             }
             .chartForegroundStyleScale([
                 "equal": .blue,

@@ -6,21 +6,21 @@ extension ModelContainer {
     @MainActor
     static let shared: ModelContainer = {
         let schema = Schema([Account.self, BalanceSnapshot.self, Bank.self, Transaction.self])
-        #if targetEnvironment(simulator) || DEBUG
+#if targetEnvironment(simulator) || DEBUG
         return ModelContainer.getSimulatorSharedContainer(schema: schema)
-        #else
-            let config: ModelConfiguration
-            if FileManager.default.ubiquityIdentityToken != nil {
-                config = ModelConfiguration(schema: schema, cloudKitDatabase: .private(AppIDs.iCloudID))
-            } else {
-                config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
-            }
-            do {
-                return try ModelContainer(for: schema, configurations: [config])
-            } catch {
-                fatalError("Failed to load SwiftData ModelContainer: \(error)")
-            }
-        #endif
+#else
+        let config: ModelConfiguration
+        if FileManager.default.ubiquityIdentityToken != nil {
+            config = ModelConfiguration(schema: schema, cloudKitDatabase: .private(AppIDs.iCloudID))
+        } else {
+            config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
+        }
+        do {
+            return try ModelContainer(for: schema, configurations: [config])
+        } catch {
+            fatalError("Failed to load SwiftData ModelContainer: \(error)")
+        }
+#endif
     }()
     
     @MainActor

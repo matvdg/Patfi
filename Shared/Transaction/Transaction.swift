@@ -5,14 +5,16 @@ import SwiftUI
 @Model
 final class Transaction {
     
+    #Index<Transaction>([\.date])
+
     var title: String = ""
     var date: Date = Date()
     
     /// Always positive (transactionType expense or income will infer the sign -/+)
     var amount: Double = 0.0
     var account: Account? = nil
-    var transactionType: TransactionType
-    var paymentMethod: PaymentMethod
+    var transactionType = TransactionType.income
+    var paymentMethod = PaymentMethod.bankTransfer
     var expenseCategory: ExpenseCategory? = nil
     /// True if this transaction is an internal transfer between accounts
     var isInternalTransfer: Bool = false

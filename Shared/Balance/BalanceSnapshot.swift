@@ -4,6 +4,8 @@ import SwiftData
 @Model
 final class BalanceSnapshot: Identifiable, Hashable {
     
+    #Index<BalanceSnapshot>([\.date])
+    
     var date: Date = Date()
     var balance: Double = 0.0
     var account: Account? = nil
