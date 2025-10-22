@@ -44,8 +44,6 @@ struct HomeMonitoringView: View {
                                         Text("now")
                                     } else {
                                         switch period {
-                                        case .days:
-                                            Text(point.date.toString)
                                         case .weeks:
                                             let weekOfYear = Calendar.current.component(.weekOfYear, from: point.date)
                                             HStack {
@@ -60,13 +58,8 @@ struct HomeMonitoringView: View {
                                                 Divider()
                                                 Text(point.date.toString)
                                             }
-                                        case .years:
-                                            let year = Calendar.current.component(.year, from: point.date)
-                                            HStack {
-                                                Text(String(format: "%02d", year % 100)).bold()
-                                                Divider()
-                                                Text(point.date.toString)
-                                            }
+                                        default:
+                                            Text(point.date.toString)
                                         }
                                     }
                                     Spacer()

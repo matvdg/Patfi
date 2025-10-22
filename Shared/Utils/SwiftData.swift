@@ -30,17 +30,15 @@ extension ModelContainer {
         
         func insertBalanceSnapshots(
             iterations: Int,
-            dayFormula: (Int) -> TimeInterval,
             accounts: [Account],
             container: ModelContainer
         ) {
             for i in 0...iterations {
-                let days = dayFormula(i)
                 for account in accounts {
                     let range = account.category == .loan ? -10000...0 : 10000...20000
                     let balance = Double.random(in: Double(range.lowerBound)...Double(range.upperBound))
                     let snapshot = BalanceSnapshot(
-                        date: Date().addingTimeInterval(-60*60*24*days),
+                        date: Date().addingTimeInterval(-60*60*24*Double(i)),
                         balance: balance,
                         account: account
                     )
@@ -80,10 +78,7 @@ extension ModelContainer {
                 container.mainContext.insert(a)
             }
             
-            insertBalanceSnapshots(iterations: 12, dayFormula: { TimeInterval($0) }, accounts: accounts, container: container)
-            insertBalanceSnapshots(iterations: 12, dayFormula: { TimeInterval($0*7+13) }, accounts: accounts, container: container)
-            insertBalanceSnapshots(iterations: 12, dayFormula: { TimeInterval($0*31+128) }, accounts: accounts, container: container)
-            insertBalanceSnapshots(iterations: 12, dayFormula: { TimeInterval($0*365+365) }, accounts: accounts, container: container)
+            insertBalanceSnapshots(iterations: 200, accounts: accounts, container: container)
             
             /// 36  months transactions
             for i in 0...36 {

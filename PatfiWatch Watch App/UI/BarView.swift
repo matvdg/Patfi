@@ -37,15 +37,13 @@ struct BarView: View {
                         .sheet(isPresented: $showPeriodSheet) {
                             PeriodView(period: $period)
                         }
-                        .frame(height: 100)
+                        .frame(height: 120)
                     ForEach(balancesByPeriod.enumerated(), id: \.element.id) { index, point in
                         HStack {
                             if index == 0 {
                                 Text("now")
                             } else {
                                 switch period {
-                                case .days:
-                                    Text(point.date.toString)
                                 case .weeks:
                                     let weekOfYear = Calendar.current.component(.weekOfYear, from: point.date)
                                     HStack {
@@ -60,14 +58,8 @@ struct BarView: View {
                                         Divider()
                                         Text(point.date.toString)
                                     }
-                                case .years:
-                                    let year = Calendar.current.component(.year, from: point.date)
-                                    HStack {
-                                        Text(String(format: "%02d", year % 100)).bold()
-                                        Divider()
-                                        Spacer()
-                                        Text(point.date.toString)
-                                    }
+                                default:
+                                    Text(point.date.toString)
                                 }
                             }
                             Divider()

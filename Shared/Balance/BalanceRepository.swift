@@ -64,7 +64,8 @@ class BalanceRepository {
                 if let date = cal.date(byAdding: .month, value: -i, to: cal.dateInterval(of: .month, for: now)!.end) {
                     periods.append(date)
                 }
-            case .years:
+            case .years: // 5 years otherwise slow because too many transactions
+                guard i < 5 else { break }
                 if let date = cal.date(byAdding: .year, value: -i, to: cal.dateInterval(of: .year, for: now)!.end) {
                     periods.append(date)
                 }

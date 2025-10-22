@@ -3,7 +3,9 @@ import WidgetKit
 
 enum AppIDs {
     static let appGroupID = "group.fr.matvdg.patfi"
-    static let defaults = UserDefaults(suiteName: appGroupID)!
+    static var defaults: UserDefaults {
+        UserDefaults(suiteName: appGroupID)!
+    }
     static let iCloudID = "iCloud.fr.matvdg.patfi"
 }
 

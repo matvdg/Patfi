@@ -36,7 +36,7 @@ struct BalanceChartView: View {
             .chartYScale(domain: yMin...yMax)
             .chartLegend(.hidden)
             .chartXAxis {
-                AxisMarks(values: .automatic(desiredCount: 12)) { value in
+                AxisMarks(values: .automatic(desiredCount: period == .years ? 5 : 12)) { value in
                     AxisGridLine()
                     AxisTick()
                     if let d = value.as(Date.self) {
@@ -59,7 +59,7 @@ struct BalanceChartView: View {
                         case .years:
                             let year = Calendar.current.component(.year, from: d)
                             AxisValueLabel {
-                                Text(String(format: "%02d", year % 100)).minimumScaleFactor(0.2)
+                                Text("\(year)").minimumScaleFactor(0.2)
                             }
                         }
                     }
@@ -77,6 +77,9 @@ struct BalanceChartView: View {
             .chartXAxis(.automatic)
             .chartXScale(domain: .automatic, range: .plotDimension(startPadding: 20, endPadding: 20))
         }
+        #if !os(watchOS)
+        .padding()
+        #endif
         
     }
     
