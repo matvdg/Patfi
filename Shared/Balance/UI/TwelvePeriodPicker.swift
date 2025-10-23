@@ -4,13 +4,37 @@ struct TwelvePeriodPicker: View {
     
     @Binding var selectedDate: Date
     @Binding var period: Period
+
+    init(selectedDate: Binding<Date>, period: Binding<Period>) {
+        self._selectedDate = selectedDate
+        self._period = period
+        self._selectedDate.wrappedValue = normalizedDate(for: selectedDate.wrappedValue, period: period.wrappedValue)
+    }
+    
+    func normalizedDate(for date: Date, period: Period) -> Date {
+        let cal = Calendar.current
+        switch period {
+        case .days:
+            return cal.dateInterval(of: .day, for: date)!.end
+        case .weeks:
+            return cal.dateInterval(of: .weekOfYear, for: date)!.end
+        case .months:
+            return cal.dateInterval(of: .month, for: date)!.end
+        case .years:
+            return cal.dateInterval(of: .year, for: date)!.end
+        }
+    }
     
     var body: some View {
         HStack {
             Spacer()
             Button {
-                if let newDate = Calendar.current.date(byAdding: component(for: period), value: -1, to: selectedDate) {
-                    selectedDate = newDate
+                let cal = Calendar.current
+                // Step back 1 second so a boundary date (e.g., month end -> next month start) is treated as part of the intended period
+                let reference = cal.date(byAdding: .second, value: -1, to: selectedDate) ?? selectedDate
+                let start = cal.dateInterval(of: component(for: period), for: reference)!.start
+                if let newDate = cal.date(byAdding: component(for: period), value: -1, to: start) {
+                    selectedDate = normalizedDate(for: newDate, period: period)
                 }
             } label: {
                 Image(systemName: "chevron.left")
@@ -33,8 +57,12 @@ struct TwelvePeriodPicker: View {
 #endif
             Spacer()
             Button {
-                if let newDate = Calendar.current.date(byAdding: component(for: period), value: 1, to: selectedDate) {
-                    selectedDate = newDate
+                let cal = Calendar.current
+                // Same boundary-safe reference
+                let reference = cal.date(byAdding: .second, value: -1, to: selectedDate) ?? selectedDate
+                let start = cal.dateInterval(of: component(for: period), for: reference)!.start
+                if let newDate = cal.date(byAdding: component(for: period), value: 1, to: start) {
+                    selectedDate = normalizedDate(for: newDate, period: period)
                 }
             } label: {
                 Image(systemName: "chevron.right")
@@ -69,12 +97,12 @@ struct TwelvePeriodPicker: View {
         let calendar = Calendar.current
         switch period {
         case .days:
-            guard let start = calendar.date(byAdding: .day, value: -11, to: date) else { return "" }
+            guard let start = calendar.date(byAdding: .day, value: -10, to: date) else { return "" }
             let startStr = start.formatted(Date.FormatStyle().day().month(.abbreviated))
             let endStr = date.formatted(Date.FormatStyle().day().month(.abbreviated).year())
             return "\(startStr) – \(endStr)".capitalized
         case .weeks:
-            guard let start = calendar.date(byAdding: .weekOfYear, value: -11, to: date) else { return "" }
+            guard let start = calendar.date(byAdding: .weekOfYear, value: -10, to: date) else { return "" }
             let startWeek = calendar.component(.weekOfYear, from: start)
             let startYear = calendar.component(.yearForWeekOfYear, from: start)
             let endWeek = calendar.component(.weekOfYear, from: date)
@@ -89,12 +117,12 @@ struct TwelvePeriodPicker: View {
                 return "\(startWeekStr) \(startYear) – \(endWeekStr) \(endYear)"
             }
         case .months:
-            guard let start = calendar.date(byAdding: .month, value: -11, to: date) else { return "" }
+            guard let start = calendar.date(byAdding: .month, value: -10, to: date) else { return "" }
             let startStr = start.formatted(.dateTime.month(.abbreviated).year())
             let endStr = date.formatted(.dateTime.month(.abbreviated).year())
             return "\(startStr) – \(endStr)".capitalized
         case .years:
-            guard let start = calendar.date(byAdding: .year, value: -11, to: date) else { return "" }
+            guard let start = calendar.date(byAdding: .year, value: -3, to: date) else { return "" }
             let startYear = calendar.component(.year, from: start)
             let endYear = calendar.component(.year, from: date)
             return "\(startYear) – \(endYear)"

@@ -16,3 +16,32 @@ final class BalanceSnapshot: Identifiable, Hashable {
         self.account = account
     }
 }
+
+extension BalanceSnapshot {
+    static func predicate(for period: Period, containing date: Date) -> Predicate<BalanceSnapshot> {
+        let calendar = Calendar.current
+        let start: Date
+        let end: Date
+
+        switch period {
+        case .days:
+            let startOfDay = calendar.startOfDay(for: date)
+            start = calendar.date(byAdding: .day, value: -12, to: startOfDay)!
+            end = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        case .weeks:
+            let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: date)!.start
+            start = calendar.date(byAdding: .weekOfYear, value: -12, to: startOfWeek)!
+            end = calendar.date(byAdding: .weekOfYear, value: 1, to: startOfWeek)!
+        case .months:
+            let startOfMonth = calendar.dateInterval(of: .month, for: date)!.start
+            start = calendar.date(byAdding: .month, value: -12, to: startOfMonth)!
+            end = calendar.date(byAdding: .month, value: 1, to: startOfMonth)!
+        case .years:
+            let startOfYear = calendar.dateInterval(of: .year, for: date)!.start
+            start = calendar.date(byAdding: .year, value: -5, to: startOfYear)!
+            end = calendar.date(byAdding: .year, value: 1, to: startOfYear)!
+        }
+
+        return #Predicate { $0.date >= start && $0.date < end }
+    }
+}

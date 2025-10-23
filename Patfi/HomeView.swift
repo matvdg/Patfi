@@ -11,7 +11,8 @@ struct HomeView: View {
     @State private var showAddAccount = false
     @State private var selectedChart = 0
     @State var mode: Mode = .accounts
-    @State var period: Period = .months
+    @State private var selectedDate: Date = .now
+    @State private var period: Period = .months
     
     private let accountRepository = AccountRepository()
     private let balanceRepository = BalanceRepository()
@@ -71,13 +72,7 @@ struct HomeView: View {
                             .pickerStyle(.segmented)
                             .padding()
                         } else if selectedChart == 1 {
-                            Picker("", selection: $period) {
-                                ForEach(Period.allCases) { period in
-                                    Text(period.localized).tag(period)
-                                }
-                            }
-                            .pickerStyle(.segmented)
-                            .padding()
+                            TwelvePeriodPicker(selectedDate: $selectedDate, period: $period)
                         }
                     }
                 }
@@ -89,7 +84,7 @@ struct HomeView: View {
                     case .expenses: HomeExpensesView()
                     }
                 case 1: // Monitoring (Balances BarChart)
-                    HomeMonitoringView(period: period)
+                    HomeMonitoringView(for: period, containing: selectedDate)
                 default: // Transactions (Incomes/expenses BarChart)
                     HomeTransactionsView()
                 }

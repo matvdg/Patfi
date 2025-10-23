@@ -99,150 +99,161 @@ struct ExpensesView: View {
             }
         )
     }
-
+    
     var body: some View {
-        VStack {
-            PieChartView(accounts: [], transactions: expenses, grouping: .expenses, sortByPaymentMethod: sortByPaymentMethod)
-                .frame(height: isGraphHidden ? 0 : nil)
-                .opacity(isGraphHidden ? 0 : 1)
-            ZStack {
-                ArrowButton(isUp: $isGraphHidden)
-                HStack {
-                    PaymentMethodButton(sortByPaymentMethod: $sortByPaymentMethod).padding(.leading, 12)
-                    Spacer()
-                    CollapseButton(isCollapsed: allCollapsedBinding).padding(.trailing, 12)
-                }
-            }
-            if sortByPaymentMethod {
-                List {
-                    ForEach(expensesByPaymentMethod, id: \.key) { (paymentMethod, expenses) in
-                        let isCollapsed = collapsedSections.contains(paymentMethod.id)
-                        Section {
-                            if !isCollapsed {
-                                ForEach(expenses) { expense in
-                                    NavigationLink {
-                                        EditTransactionView(transaction: expense)
-                                    } label: {
-                                        TransactionRow(transaction: expense, showPaymentMethodLogo: true)
-                                    }
-                                    .swipeActions(edge: .trailing) {
-                                        Button(role: .destructive) {
-                                            transactionRepository.delete(expense, context: context)
-                                        } label: { Label("delete", systemImage: "trash") }
-                                    }
-                    #if !os(watchOS)
-                                    .contextMenu {
-                                        Button(role: .destructive) {
-                                            transactionRepository.delete(expense, context: context)
-                                        } label: {
-                                            Label("delete", systemImage: "trash")
-                                        }
-                                    }
-                    #endif
-                                }
-                            } else {
-                                EmptyView().frame(height: 100)
-                            }
-                        } header: {
-                            ArrowRightButton(isRight: Binding(
-                                get: { isCollapsed },
-                                set: { isCollapsed in
-                                    if isCollapsed {
-                                        collapsedSections.insert(paymentMethod.id)
-                                    } else {
-                                        collapsedSections.remove(paymentMethod.id)
-                                    }
-                                }
-                            )) {
-                                HStack(spacing: 8) {
-                                    Circle().fill(paymentMethod.color).frame(width: 10, height: 10)
-                                    Text(paymentMethod.localized).minimumScaleFactor(0.5)
-                                    Spacer()
-                                    ColorAmount(amount: -transactionRepository.total(for: expenses))
-                                }
-                            }
-                            .frame(height: isCollapsed ? 22 : 30)
-                            .padding(.top, isCollapsed ? 4 : 0)
-    #if os(macOS)
-                            .padding(.vertical, 8)
-                            .frame(height: 50)
-    #endif
-                        }
-                    }
-                }
+        Group {
+            if transactions.isEmpty {
+                ContentUnavailableView(
+                    "noData",
+                    systemImage: "receipt",
+                    description: Text("transactionsEmptyDescription")
+                )
             } else {
-                List {
-                    ForEach(expensesByCategory, id: \.key) { (cat, expenses) in
-                        let isCollapsed = collapsedSections.contains(cat.id)
-                        Section {
-                            if !isCollapsed {
-                                ForEach(expenses) { expense in
-                                    NavigationLink {
-                                        EditTransactionView(transaction: expense)
-                                    } label: {
-                                        TransactionRow(transaction: expense)
+                
+                VStack {
+                    PieChartView(accounts: [], transactions: expenses, grouping: .expenses, sortByPaymentMethod: sortByPaymentMethod)
+                        .frame(height: isGraphHidden ? 0 : nil)
+                        .opacity(isGraphHidden ? 0 : 1)
+                    ZStack {
+                        ArrowButton(isUp: $isGraphHidden)
+                        HStack {
+                            PaymentMethodButton(sortByPaymentMethod: $sortByPaymentMethod).padding(.leading, 12)
+                            Spacer()
+                            CollapseButton(isCollapsed: allCollapsedBinding).padding(.trailing, 12)
+                        }
+                    }
+                    if sortByPaymentMethod {
+                        List {
+                            ForEach(expensesByPaymentMethod, id: \.key) { (paymentMethod, expenses) in
+                                let isCollapsed = collapsedSections.contains(paymentMethod.id)
+                                Section {
+                                    if !isCollapsed {
+                                        ForEach(expenses) { expense in
+                                            NavigationLink {
+                                                EditTransactionView(transaction: expense)
+                                            } label: {
+                                                TransactionRow(transaction: expense, showPaymentMethodLogo: true)
+                                            }
+                                            .swipeActions(edge: .trailing) {
+                                                Button(role: .destructive) {
+                                                    transactionRepository.delete(expense, context: context)
+                                                } label: { Label("delete", systemImage: "trash") }
+                                            }
+#if !os(watchOS)
+                                            .contextMenu {
+                                                Button(role: .destructive) {
+                                                    transactionRepository.delete(expense, context: context)
+                                                } label: {
+                                                    Label("delete", systemImage: "trash")
+                                                }
+                                            }
+#endif
+                                        }
+                                    } else {
+                                        EmptyView().frame(height: 100)
                                     }
-                                    .swipeActions(edge: .trailing) {
-                                        Button(role: .destructive) {
-                                            transactionRepository.delete(expense, context: context)
-                                        } label: { Label("delete", systemImage: "trash") }
-                                    }
-                    #if !os(watchOS)
-                                    .contextMenu {
-                                        Button(role: .destructive) {
-                                            transactionRepository.delete(expense, context: context)
-                                        } label: {
-                                            Label("delete", systemImage: "trash")
+                                } header: {
+                                    ArrowRightButton(isRight: Binding(
+                                        get: { isCollapsed },
+                                        set: { isCollapsed in
+                                            if isCollapsed {
+                                                collapsedSections.insert(paymentMethod.id)
+                                            } else {
+                                                collapsedSections.remove(paymentMethod.id)
+                                            }
+                                        }
+                                    )) {
+                                        HStack(spacing: 8) {
+                                            Circle().fill(paymentMethod.color).frame(width: 10, height: 10)
+                                            Text(paymentMethod.localized).minimumScaleFactor(0.5)
+                                            Spacer()
+                                            ColorAmount(amount: -transactionRepository.total(for: expenses))
                                         }
                                     }
-                    #endif
+                                    .frame(height: isCollapsed ? 22 : 30)
+                                    .padding(.top, isCollapsed ? 4 : 0)
+#if os(macOS)
+                                    .padding(.vertical, 8)
+                                    .frame(height: 50)
+#endif
                                 }
-                            } else {
-                                EmptyView().frame(height: 100)
                             }
-                        } header: {
-                            ArrowRightButton(isRight: Binding(
-                                get: { isCollapsed },
-                                set: { isCollapsed in
-                                    if isCollapsed {
-                                        collapsedSections.insert(cat.id)
+                        }
+                    } else {
+                        List {
+                            ForEach(expensesByCategory, id: \.key) { (cat, expenses) in
+                                let isCollapsed = collapsedSections.contains(cat.id)
+                                Section {
+                                    if !isCollapsed {
+                                        ForEach(expenses) { expense in
+                                            NavigationLink {
+                                                EditTransactionView(transaction: expense)
+                                            } label: {
+                                                TransactionRow(transaction: expense)
+                                            }
+                                            .swipeActions(edge: .trailing) {
+                                                Button(role: .destructive) {
+                                                    transactionRepository.delete(expense, context: context)
+                                                } label: { Label("delete", systemImage: "trash") }
+                                            }
+#if !os(watchOS)
+                                            .contextMenu {
+                                                Button(role: .destructive) {
+                                                    transactionRepository.delete(expense, context: context)
+                                                } label: {
+                                                    Label("delete", systemImage: "trash")
+                                                }
+                                            }
+#endif
+                                        }
                                     } else {
-                                        collapsedSections.remove(cat.id)
+                                        EmptyView().frame(height: 100)
                                     }
-                                }
-                            )) {
-                                HStack(spacing: 8) {
-                                    Circle().fill(cat.color).frame(width: 10, height: 10)
-                                    Text(cat.localized).minimumScaleFactor(0.5)
-                                    Spacer()
-                                    ColorAmount(amount: -transactionRepository.total(for: expenses))
+                                } header: {
+                                    ArrowRightButton(isRight: Binding(
+                                        get: { isCollapsed },
+                                        set: { isCollapsed in
+                                            if isCollapsed {
+                                                collapsedSections.insert(cat.id)
+                                            } else {
+                                                collapsedSections.remove(cat.id)
+                                            }
+                                        }
+                                    )) {
+                                        HStack(spacing: 8) {
+                                            Circle().fill(cat.color).frame(width: 10, height: 10)
+                                            Text(cat.localized).minimumScaleFactor(0.5)
+                                            Spacer()
+                                            ColorAmount(amount: -transactionRepository.total(for: expenses))
+                                        }
+                                    }
+                                    .frame(height: isCollapsed ? 22 : 30)
+                                    .padding(.top, isCollapsed ? 4 : 0)
+#if os(macOS)
+                                    .padding(.vertical, 8)
+                                    .frame(height: 50)
+#endif
                                 }
                             }
-                            .frame(height: isCollapsed ? 22 : 30)
-                            .padding(.top, isCollapsed ? 4 : 0)
-    #if os(macOS)
-                            .padding(.vertical, 8)
-                            .frame(height: 50)
-    #endif
                         }
                     }
                 }
+                .onChange(of: isLandscape) {
+                    isGraphHidden = false
+                }
+                .onChange(of: sortByPaymentMethod) {
+                    collapsedSections.removeAll()
+                    allCollapsedBinding.wrappedValue = true
+                }
+                .onChange(of: selectedDate, initial: true) { oldValue, newValue in
+                    collapsedSections.removeAll()
+                    allCollapsedBinding.wrappedValue = true
+                }
+                .onChange(of: period) { oldValue, newValue in
+                    collapsedSections.removeAll()
+                    allCollapsedBinding.wrappedValue = true
+                }
             }
-        }
-        .onChange(of: isLandscape) {
-            isGraphHidden = false
-        }
-        .onChange(of: sortByPaymentMethod) {
-            collapsedSections.removeAll()
-            allCollapsedBinding.wrappedValue = true
-        }
-        .onChange(of: selectedDate, initial: true) { oldValue, newValue in
-            collapsedSections.removeAll()
-            allCollapsedBinding.wrappedValue = true
-        }
-        .onChange(of: period) { oldValue, newValue in
-            collapsedSections.removeAll()
-            allCollapsedBinding.wrappedValue = true
         }
         .navigationTitle(isLandscape ? "" : "expenses")
     }

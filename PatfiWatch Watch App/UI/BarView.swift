@@ -10,7 +10,7 @@ struct BarView: View {
     private let balanceRepository = BalanceRepository()
     
     private var balancesByPeriod: [BalanceRepository.TotalPoint] {
-        balanceRepository.generateSeries(for: period, from: snapshots).sorted { $0.date > $1.date }
+        balanceRepository.generateSeries(for: period, selectedDate: Date(), from: snapshots).sorted { $0.date > $1.date }
     }
     
     var body: some View {
@@ -24,7 +24,7 @@ struct BarView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 List {
-                    BalanceChartView(snapshots: snapshots, period: period)
+                    BalanceChartView(snapshots: snapshots, period: period, selectedDate: Date())
                         .toolbar {
                             ToolbarItem(placement: .bottomBar) {
                                 Button {

@@ -29,11 +29,13 @@ extension ModelContainer {
         let mockDataEnabled = true
         
         func insertBalanceSnapshots(
-            iterations: Int,
             accounts: [Account],
             container: ModelContainer
         ) {
-            for i in 0...iterations {
+            let totalDays = 3650 // 10y
+            var i = 0
+            var iterationCount = 0
+            while i <= totalDays {
                 for account in accounts {
                     let range = account.category == .loan ? -10000...0 : 10000...20000
                     let balance = Double.random(in: Double(range.lowerBound)...Double(range.upperBound))
@@ -43,6 +45,17 @@ extension ModelContainer {
                         account: account
                     )
                     container.mainContext.insert(snapshot)
+                }
+                iterationCount += 1
+                switch i {
+                case 0..<30:
+                    i += 1
+                case 30..<(30 + 8*7):
+                    i += 7
+                case (30 + 8*7)..<(30 + 8*7 + 12*30):
+                    i += 30
+                default:
+                    i += 365
                 }
             }
         }
@@ -78,7 +91,7 @@ extension ModelContainer {
                 container.mainContext.insert(a)
             }
             
-            insertBalanceSnapshots(iterations: 200, accounts: accounts, container: container)
+            insertBalanceSnapshots(accounts: accounts, container: container)
             
             /// 36  months transactions
             for i in 0...36 {

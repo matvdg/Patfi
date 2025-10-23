@@ -44,29 +44,28 @@ class BalanceRepository {
         try? context.save()
     }
     
-    func generateSeries(for period: Period, from snapshots: [BalanceSnapshot]) -> [TotalPoint] {
+    func generateSeries(for period: Period, selectedDate: Date, from snapshots: [BalanceSnapshot]) -> [TotalPoint] {
         if snapshots.isEmpty { return [] }
         var cal = Calendar.current
         cal.timeZone = TimeZone.current
-        let now = Date()
         var periods: [Date] = []
         for i in 0..<12 {
             switch period {
             case .days:
-                if let date = cal.date(byAdding: .day, value: -i, to: cal.dateInterval(of: .day, for: now)!.end) {
+                if let date = cal.date(byAdding: .day, value: -i, to: cal.dateInterval(of: .day, for: selectedDate)!.end) {
                     periods.append(date)
                 }
             case .weeks:
-                if let date = cal.date(byAdding: .weekOfYear, value: -i, to: cal.dateInterval(of: .weekOfYear, for: now)!.end) {
+                if let date = cal.date(byAdding: .weekOfYear, value: -i, to: cal.dateInterval(of: .weekOfYear, for: selectedDate)!.end) {
                     periods.append(date)
                 }
             case .months:
-                if let date = cal.date(byAdding: .month, value: -i, to: cal.dateInterval(of: .month, for: now)!.end) {
+                if let date = cal.date(byAdding: .month, value: -i, to: cal.dateInterval(of: .month, for: selectedDate)!.end) {
                     periods.append(date)
                 }
             case .years: // 5 years otherwise slow because too many transactions
                 guard i < 5 else { break }
-                if let date = cal.date(byAdding: .year, value: -i, to: cal.dateInterval(of: .year, for: now)!.end) {
+                if let date = cal.date(byAdding: .year, value: -i, to: cal.dateInterval(of: .year, for: selectedDate)!.end) {
                     periods.append(date)
                 }
             }

@@ -12,6 +12,7 @@ struct NumericalKeyboardView: View {
     private let currencySymbol: String = Locale.current.currencySymbol ?? "€"
     @Environment(\.dismiss) private var dismiss
     @Binding var text: String
+    @State var isPositive = true
     var signMode: SignMode = .both
     
     private let decimalSeparator: String = Locale.current.decimalSeparator ?? "."
@@ -19,7 +20,7 @@ struct NumericalKeyboardView: View {
         [
             ["1","2","3", "4"],
             ["5","6","7","8"],
-            ["9","0",decimalSeparator,"-/+"]
+            ["9","0",decimalSeparator,"OK"]
         ]
     }
     
@@ -68,39 +69,49 @@ struct NumericalKeyboardView: View {
                         Button {
                             handleKey(key)
                         } label: {
-                            Text(key)
-                                .font(.headline)
+                            if key == "OK" {
+                                Image(systemName: "checkmark").bold().foregroundColor(.green)
+                            } else {
+                                Text(key)
+                                    .font(.headline)
+                            }
                         }
                         .buttonStyle(.glass)
-                        .disabled(key == "-/+" && signMode != .both)
-                        .opacity((key == "-/+" && signMode != .both) ? 0.5 : 1.0)
                     }
                 }
             }
         }
         .padding(13)
         .toolbar {
-            ToolbarItem(placement: .destructiveAction) {
+            ToolbarItem(placement: .topBarTrailing) {
                 Button("", systemImage: "delete.left", role: .destructive) {
                     if !text.isEmpty { text.removeLast() }
-                }
+                }.foregroundColor(.red)
             }
+            ToolbarItem(placement: .topBarLeading) {
+                Button("", systemImage: isPositive ? "plus.forwardslash.minus" : "minus.forwardslash.plus", role: .confirm) {
+                    isPositive.toggle()
+                    if text.hasPrefix("-") {
+                        text = "+" + text.dropFirst()
+                    } else if text.hasPrefix("+") {
+                        text = "-" + text.dropFirst()
+                    } else if !text.isEmpty {
+                        text = "-" + text
+                    }
+                }
+                .foregroundColor(isPositive ? .green : .red)
+                .disabled(signMode != .both)
+                .opacity((signMode != .both) ? 0.0 : 1.0)
+            }
+            
         }
     }
     
     private func handleKey(_ key: String) {
         WKInterfaceDevice.current().play(.click)
         switch key {
-        case "-/+":
-            if signMode == .both {
-                if text.hasPrefix("-") {
-                    text = "+" + text.dropFirst()
-                } else if text.hasPrefix("+") {
-                    text = "-" + text.dropFirst()
-                } else if !text.isEmpty {
-                    text = "-" + text
-                }
-            }
+        case "OK":
+            dismiss()
         default:
             if text.isEmpty {
                 switch signMode {
@@ -109,7 +120,7 @@ struct NumericalKeyboardView: View {
                 case .negativeOnly:
                     text = "-" + key
                 case .both:
-                    text = "+" + key
+                    text = (isPositive ? "+" : "-") + key
                 }
             } else {
                 text.append(key)
@@ -119,13 +130,13 @@ struct NumericalKeyboardView: View {
 }
 
 #Preview {
-    @Previewable @State var amount: String = "-44.99"
+    @Previewable @State var amount: String = "44.99"
     TabView {
         NavigationStack {
-            NumericalKeyboardView(text: $amount, signMode: .negativeOnly)
+            NumericalKeyboardView(text: $amount, signMode: .both)
         }
         NavigationStack {
-            NumericalKeyboardView(text: $amount, signMode: .both)
+            NumericalKeyboardView(text: $amount, signMode: .positiveOnly)
         }
     }
 }

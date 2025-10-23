@@ -36,29 +36,37 @@ struct ExpensesView: View {
     }
     
     var body: some View {
-        VStack {
-            PieChartView(accounts: [], transactions: expenses, grouping: .expenses, sortByPaymentMethod: sortByPaymentMethod)
-            if sortByPaymentMethod {
-                ForEach(expensesByPaymentMethod, id: \.key) { (paymentMethod, expenses) in
-                    HStack(spacing: 8) {
-                        Circle().fill(paymentMethod.color).frame(width: 10, height: 10)
-                        Text(paymentMethod.localized).lineLimit(1)
-                        Spacer()
-                        ColorAmount(amount: -transactionRepository.total(for: expenses))
+        if transactions.isEmpty {
+            ContentUnavailableView(
+                "noData",
+                systemImage: "receipt",
+                description: Text("transactionsEmptyDescription")
+            )
+        } else {
+            VStack {
+                PieChartView(accounts: [], transactions: expenses, grouping: .expenses, sortByPaymentMethod: sortByPaymentMethod)
+                if sortByPaymentMethod {
+                    ForEach(expensesByPaymentMethod, id: \.key) { (paymentMethod, expenses) in
+                        HStack(spacing: 8) {
+                            Circle().fill(paymentMethod.color).frame(width: 10, height: 10)
+                            Text(paymentMethod.localized).lineLimit(1)
+                            Spacer()
+                            ColorAmount(amount: -transactionRepository.total(for: expenses))
+                        }
+                        .minimumScaleFactor(0.2)
+                        .font(.footnote)
                     }
-                    .minimumScaleFactor(0.2)
-                    .font(.footnote)
-                }
-            } else {
-                ForEach(expensesByCategory, id: \.key) { (cat, expenses) in
-                    HStack(spacing: 8) {
-                        Circle().fill(cat.color).frame(width: 10, height: 10)
-                        Text(cat.localized)
-                        Spacer()
-                        ColorAmount(amount: -transactionRepository.total(for: expenses))
+                } else {
+                    ForEach(expensesByCategory, id: \.key) { (cat, expenses) in
+                        HStack(spacing: 8) {
+                            Circle().fill(cat.color).frame(width: 10, height: 10)
+                            Text(cat.localized)
+                            Spacer()
+                            ColorAmount(amount: -transactionRepository.total(for: expenses))
+                        }
+                        .minimumScaleFactor(0.2)
+                        .font(.footnote)
                     }
-                    .minimumScaleFactor(0.2)
-                    .font(.footnote)
                 }
             }
         }

@@ -71,7 +71,7 @@ struct AddExpenseView: View {
                         Text(account.name)
                         Text(" • ")
                         if let amount {
-                            Text("previousBalance \(balance.toString) newBalance \((balance - amount).toString)")
+                            Text("previousBalance \(balance.toString) newBalance \((balance - abs(amount)).toString)")
                         } else {
                             Text("balance: \(balance.toString)")
                         }

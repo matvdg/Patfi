@@ -310,13 +310,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add balances to see the graph"
+            "value" : "No balance for this period"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter des soldes pour voir le graphe"
+            "state" : "needs_review",
+            "value" : "Aucun solde pour cette période"
           }
         }
       }
