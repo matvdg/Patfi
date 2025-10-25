@@ -51,7 +51,7 @@ struct ExpensesView: View {
                             Circle().fill(paymentMethod.color).frame(width: 10, height: 10)
                             Text(paymentMethod.localized).lineLimit(1)
                             Spacer()
-                            ColorAmount(amount: -transactionRepository.total(for: expenses))
+                            AmountText(amount: -transactionRepository.total(for: expenses))
                         }
                         .minimumScaleFactor(0.2)
                         .font(.footnote)
@@ -62,7 +62,7 @@ struct ExpensesView: View {
                             Circle().fill(cat.color).frame(width: 10, height: 10)
                             Text(cat.localized)
                             Spacer()
-                            ColorAmount(amount: -transactionRepository.total(for: expenses))
+                            AmountText(amount: -transactionRepository.total(for: expenses))
                         }
                         .minimumScaleFactor(0.2)
                         .font(.footnote)

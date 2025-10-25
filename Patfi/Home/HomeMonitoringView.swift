@@ -54,28 +54,26 @@ struct HomeMonitoringView: View {
                         List {
                             ForEach(balancesByPeriod.enumerated(), id: \.element.id) { index, point in
                                 HStack {
-                                    //                                if Calendar
                                     switch period {
                                     case .weeks:
                                         let weekOfYear = Calendar.current.component(.weekOfYear, from: point.date)
                                         HStack {
                                             Text("w\(weekOfYear)").bold()
                                             Divider()
-                                            Text(point.date.toString)
+                                            Text(point.date.toDateStyleMediumString)
                                         }
                                     case .months:
                                         let month = Calendar.current.component(.month, from: point.date)
                                         HStack {
                                             Text("\(month)").bold()
                                             Divider()
-                                            Text(point.date.toString)
+                                            Text(point.date.toDateStyleMediumString)
                                         }
                                     default:
-                                        Text(point.date.toString)
+                                        Text(point.date.toDateStyleMediumString)
                                     }
-                                    //                                }
                                     Spacer()
-                                    ColorAmount(amount: point.total).bold()
+                                    AmountText(amount: point.total).bold()
                                 }
                             }
                         }

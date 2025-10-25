@@ -1,21 +1,26 @@
 import SwiftUI
 
-struct ColorAmount: View {
+struct AmountText: View {
     
-    var amount: Double
+    var amount: Double?
     
     var body: some View {
         Group {
-            switch amount {
-            case ..<0:
-                Text(amount.toString).foregroundStyle(.red)
-            case 0:
-                Text(amount.toString)
-            default:
-                Text("+\(amount.toString)").foregroundStyle(.green)
+            if let amount {
+                switch amount {
+                case ..<0:
+                    Text(amount.currencyAmount).foregroundStyle(.red)
+                case 0:
+                    Text(amount.currencyAmount)
+                default:
+                    Text(amount.currencyAmount).foregroundStyle(.green)
+                }
+            } else {
+                Text(amount.currencyAmount) // Placeholder "amount"
             }
         }
         .lineLimit(1)
+        .bold()
         #if os(watchOS)
         .minimumScaleFactor(0.5)
         #endif
@@ -24,9 +29,10 @@ struct ColorAmount: View {
 
 #Preview {
     VStack {
-        ColorAmount(amount: 2344.9999)
-        ColorAmount(amount: 2344.99)
-        ColorAmount(amount: 0)
-        ColorAmount(amount: -2344.9999)
+        AmountText(amount: 2344.9999)
+        AmountText(amount: 2344.99)
+        AmountText(amount: 0)
+        AmountText(amount: -2344.9999)
+        AmountText(amount: nil)
     }
 }

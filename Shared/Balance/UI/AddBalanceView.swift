@@ -17,42 +17,21 @@ struct AddBalanceView: View {
     }
     
     @State private var date: Date = .now
-    @State private var amountText: String = ""
+    @State private var newBalance: Double?
     @FocusState private var focused: Bool
     let balanceRepository = BalanceRepository()
-    
-    var newBalance: Double? {
-        Double(amountText.replacingOccurrences(of: ",", with: "."))
-    }
     
     var body: some View {
         
         Form {
             Section {
-#if os(watchOS)
-                NavigationLink {
-                    NumericalKeyboardView(text: $amountText, signMode: selectedAccount?.category ?? .other == .loan ? .negativeOnly : .both)
-                } label: {
-                    Text(amountText.isEmpty ? String(localized:"balance") : amountText)
-                }
-                .onChange(of: selectedAccount) { _, new in
-                    if let cat = new?.category, cat == .loan {
-                        amountText = ""
-                    }
-                }
-#else
-                TextField("balance", text: $amountText)
-#if os(iOS) || os(tvOS) || os(visionOS)
-                    .keyboardType(.decimalPad)
-#endif
+                AmountTextField(amount: $newBalance, signMode: selectedAccount?.category == .loan ? .negativeOnly : .both)
                     .focused($focused)
-                    .onChange(of: amountText) { _, newValue in
-                        let cleaned = newValue.filter { !$0.isWhitespace }
-                        if cleaned != newValue {
-                            amountText = cleaned
+                    .onChange(of: selectedAccount?.category) { _, new in
+                        if new == .loan {
+                            newBalance = nil
                         }
                     }
-#endif
                 AccountPicker(id: $selectedAccountID, title: String(localized: "account"))
                 DatePicker("date", selection: $date, displayedComponents: [.date])
             }
@@ -66,9 +45,9 @@ struct AddBalanceView: View {
                         Text(account.name)
                         Text(" • ")
                         if let newBalance {
-                            Text("previousBalance \(previousBalance.toString) newBalance \(newBalance.toString)")
+                            Text("previousBalance \(previousBalance.currencyAmount) newBalance \(newBalance.currencyAmount)")
                         } else {
-                            Text("balance: \(previousBalance.toString)")
+                            Text("balance: \(previousBalance.currencyAmount)")
                         }
                     }
                 }

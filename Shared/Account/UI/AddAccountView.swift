@@ -9,15 +9,11 @@ struct AddAccountView: View {
     
     @State private var name: String = ""
     @State private var category: Category = .other
-    @State private var initialBalanceText: String = ""
+    @State private var balance: Double?
     @State private var bank: Bank? = nil
     @FocusState private var focused: Bool
     
     let accountRepository = AccountRepository()
-    
-    var balance: Double? {
-        Double(initialBalanceText.replacingOccurrences(of: ",", with: "."))
-    }
     
     var body: some View {
         Form {
@@ -55,31 +51,13 @@ struct AddAccountView: View {
             }
             
             Section("initialBalance") {
-                
-#if os(watchOS)
-                NavigationLink {
-                    NumericalKeyboardView(text: $initialBalanceText, signMode: category == .loan ? .negativeOnly : .both)
-                } label: {
-                    Text(initialBalanceText.isEmpty ? String(localized:"balance") : initialBalanceText)
-                }
-                .onChange(of: category) { _, new in
-                    if new == .loan {
-                        initialBalanceText = ""
-                    }
-                }
-#else
-                TextField("balance", text: $initialBalanceText)
-#if os(iOS) || os(tvOS) || os(visionOS)
-                    .keyboardType(.decimalPad)
-#endif
+                AmountTextField(amount: $balance, signMode: category == .loan ? .negativeOnly : .both)
                     .focused($focused)
-                    .onChange(of: initialBalanceText) { _, newValue in
-                        let cleaned = newValue.filter { !$0.isWhitespace }
-                        if cleaned != newValue {
-                            initialBalanceText = cleaned
+                    .onChange(of: category) { _, new in
+                        if new == .loan {
+                            balance = nil
                         }
                     }
-#endif
             }
         }
         .navigationTitle("addAccount")

@@ -83,7 +83,7 @@ struct PieChartView: View {
                 VStack {
                     Text("total")
                         .font(.caption)
-                    Text(total.toString)
+                    Text(total.currencyAmount)
                         .font(.headline)
                         .bold()
                         .minimumScaleFactor(0.5)

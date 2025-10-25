@@ -12,12 +12,13 @@ struct AddInternalTransferView: View {
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     
-    @State private var amountText: String = ""
+    @State private var amount: Double?
     @FocusState private var focused: Bool
     @State private var sourceAccountID: PersistentIdentifier?
     @State private var destinationAccountID: PersistentIdentifier?
     @State private var date: Date = .now
     @State private var markAsDavingsInvestments: Bool = false
+    @State private var title: String = String(localized: "internalTransfer")
     
     private var sourceAccount: Account? {
         accounts.first(where: { $0.persistentModelID == sourceAccountID })
@@ -29,32 +30,12 @@ struct AddInternalTransferView: View {
     
     let transactionRepository =  TransactionRepository()
     
-    var amount: Double? {
-        Double(amountText.replacingOccurrences(of: ",", with: "."))
-    }
-    
     var body: some View {
         Form {
             Section {
-#if os(watchOS)
-                NavigationLink {
-                    NumericalKeyboardView(text: $amountText, signMode: .positiveOnly)
-                } label: {
-                    Text(amountText.isEmpty ? String(localized:"amount") : amountText)
-                }
-#else
-                TextField("amount", text: $amountText)
-#if os(iOS) || os(tvOS) || os(visionOS)
-                    .keyboardType(.decimalPad)
-#endif
+                AmountTextField(amount: $amount, signMode: .positiveOnly)
                     .focused($focused)
-                    .onChange(of: amountText) { _, newValue in
-                        let cleaned = newValue.filter { !$0.isWhitespace }
-                        if cleaned != newValue {
-                            amountText = cleaned
-                        }
-                    }
-#endif
+                TextField("description", text: $title)
                 AccountPicker(id: $sourceAccountID, title: String(localized: "sourceAccount"))
                 AccountPicker(id: $destinationAccountID, title: String(localized: "destinationAccount"))
                 DatePicker("date", selection: $date, displayedComponents: [.date])
@@ -70,9 +51,9 @@ struct AddInternalTransferView: View {
                             Text(sourceAccount.name)
                             Text(" • ")
                             if let amount {
-                                Text("previousBalance \(balance.toString) newBalance \((balance - abs(amount)).toString)")
+                                Text("previousBalance \(balance.currencyAmount) newBalance \((balance - abs(amount)).currencyAmount)")
                             } else {
-                                Text("balance: \(balance.toString)")
+                                Text("balance: \(balance.currencyAmount)")
                             }
                         }
                     }
@@ -85,9 +66,9 @@ struct AddInternalTransferView: View {
                             Text(destinationAccount.name)
                             Text(" • ")
                             if let amount {
-                                Text("previousBalance \(balance.toString) newBalance \((balance + abs(amount)).toString)")
+                                Text("previousBalance \(balance.currencyAmount) newBalance \((balance + abs(amount)).currencyAmount)")
                             } else {
-                                Text("balance: \(balance.toString)")
+                                Text("balance: \(balance.currencyAmount)")
                             }
                         }
                     }
@@ -102,7 +83,7 @@ struct AddInternalTransferView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {
                     guard let amount, let sourceAccount, let destinationAccount else { return }
-                    transactionRepository.addInternalTransfer(amount: amount, sourceAccount: sourceAccount, destinationAccount: destinationAccount, date: date, markAsDavingsInvestments: markAsDavingsInvestments, context: context)
+                    transactionRepository.addInternalTransfer(title: title, amount: amount, sourceAccount: sourceAccount, destinationAccount: destinationAccount, date: date, markAsDavingsInvestments: markAsDavingsInvestments, context: context)
                     dismiss()
                     
                 })

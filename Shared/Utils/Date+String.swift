@@ -2,13 +2,13 @@ import Foundation
 
 extension Date {
     
-    var toString: String {
+    var toDateStyleMediumString: String {
         let df = DateFormatter()
         df.dateStyle = .medium
         return df.string(from: self)
     }
     
-    var toShortString: String {
+    var toDateStyleShortString: String {
         let df = DateFormatter()
         df.dateStyle = .short
         return df.string(from: self)

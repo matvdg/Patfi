@@ -103,6 +103,7 @@
 				Transaction/UI/EditTransactionView.swift,
 				Transaction/UI/ExpenseCategoryLogo.swift,
 				Transaction/UI/PaymentMethodLogo.swift,
+				Utils/AmountTextField.swift,
 				Utils/CustomButtons.swift,
 				Utils/QuickActions.swift,
 			);

@@ -18,7 +18,7 @@ struct EditTransactionView: View {
                 HStack {
                     Text("amount")
                     Spacer()
-                    Text(transaction.transactionType == .income ? "+\(transaction.amount.toString)" : "-\(transaction.amount.toString)")
+                    Text(transaction.transactionType == .income ? "+\(transaction.amount.currencyAmount)" : "-\(transaction.amount.currencyAmount)")
                         .font(.body)
                         .bold()
                         .foregroundColor(transaction.transactionType == .expense ? .red : .green)

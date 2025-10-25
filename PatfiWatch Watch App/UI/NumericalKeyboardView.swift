@@ -1,19 +1,15 @@
 import SwiftUI
 import WatchKit
 
-enum SignMode {
-    case positiveOnly
-    case negativeOnly
-    case both
-}
-
 struct NumericalKeyboardView: View {
     
     private let currencySymbol: String = Locale.current.currencySymbol ?? "€"
     @Environment(\.dismiss) private var dismiss
-    @Binding var text: String
+    @Binding var amount: Double?
+    @State private var inputString: String = ""
     @State var isPositive = true
     var signMode: SignMode = .both
+    var displayCurrency: Bool = true
     
     private let decimalSeparator: String = Locale.current.decimalSeparator ?? "."
     private var keys: [[String]] {
@@ -23,46 +19,31 @@ struct NumericalKeyboardView: View {
             ["9","0",decimalSeparator,"OK"]
         ]
     }
-    
-    // Computed property for currency formatter
-    private var currencyFormatter: NumberFormatter {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale.current
-        return formatter
-    }
-
-    // Computed property for formatted text
-    private var formattedText: String {
-        guard !text.isEmpty else { return text }
-        let sign: String
-        let numericPart: String
-        if text.hasPrefix("-") {
-            sign = "-"
-            numericPart = String(text.dropFirst())
-        } else if text.hasPrefix("+") {
-            sign = "+"
-            numericPart = String(text.dropFirst())
-        } else {
-            sign = ""
-            numericPart = text
-        }
-        // Replace local decimal separator with dot for conversion
-        let normalizedNumeric = numericPart.replacingOccurrences(of: decimalSeparator, with: ".")
-        if let number = Double(normalizedNumeric) {
-            if let formatted = currencyFormatter.string(from: NSNumber(value: abs(number))) {
-                return sign + formatted
-            }
-        }
-        return text
-    }
 
     var body: some View {
         VStack(spacing: 5) {
-            Text(formattedText)
-                .font(.headline)
-                .foregroundColor(text.hasPrefix("+") ? .green : (text.hasPrefix("-") ? .red : .primary))
-                .frame(height: 20)
+            HStack(spacing: 0) {
+                if !inputString.isEmpty {
+                    if !isPositive {
+                        Text("-")
+                    }
+                    let prefixSymbols: Set<String> = ["$", "£", "¥", "₹", "฿", "₩", "₦", "₱", "₫", "CHF"]
+                    let symbol = currencySymbol
+                    let formattedInput = inputString.replacingOccurrences(of: ".", with: decimalSeparator)
+                    if !displayCurrency {
+                        Text(formattedInput)
+                    } else if prefixSymbols.contains(symbol) {
+                        Text(symbol)
+                        Text(formattedInput)
+                    } else {
+                        Text(formattedInput)
+                        Text(" \(symbol)")
+                    }
+                }
+            }
+            .frame(height: 20)
+            .bold()
+            .foregroundColor(isPositive ? .green : .red)
             ForEach(keys, id: \.self) { row in
                 HStack {
                     ForEach(row, id: \.self) { key in
@@ -85,25 +66,57 @@ struct NumericalKeyboardView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("", systemImage: "delete.left", role: .destructive) {
-                    if !text.isEmpty { text.removeLast() }
+                    if !inputString.isEmpty {
+                        inputString.removeLast()
+                        updateAmountFromInput()
+                    }
                 }.foregroundColor(.red)
             }
             ToolbarItem(placement: .topBarLeading) {
                 Button("", systemImage: isPositive ? "plus.forwardslash.minus" : "minus.forwardslash.plus", role: .confirm) {
                     isPositive.toggle()
-                    if text.hasPrefix("-") {
-                        text = "+" + text.dropFirst()
-                    } else if text.hasPrefix("+") {
-                        text = "-" + text.dropFirst()
-                    } else if !text.isEmpty {
-                        text = "-" + text
+                    if let amt = amount {
+                        amount = -amt
                     }
                 }
                 .foregroundColor(isPositive ? .green : .red)
                 .disabled(signMode != .both)
-                .opacity((signMode != .both) ? 0.0 : 1.0)
+                .opacity((signMode == .both) ? 1 : 0)
             }
             
+        }
+        .onAppear {
+            if let amount {
+                isPositive = amount >= 0
+                if amount.truncatingRemainder(dividingBy: 1) == 0 {
+                    inputString = String(Int(abs(amount)))
+                } else {
+                    inputString = String(abs(amount))
+                }
+            } else {
+                inputString = ""
+            }
+        }
+        .onChange(of: inputString) {
+            print(inputString)
+        }
+    }
+    
+    private func updateAmountFromInput() {
+        guard let number = Double(inputString), inputString != "." else {
+            amount = nil
+            return
+        }
+        let absValue = abs(number)
+        switch signMode {
+        case .positiveOnly:
+            amount = absValue
+            isPositive = true
+        case .negativeOnly:
+            amount = -absValue
+            isPositive = false
+        case .both:
+            amount = isPositive ? absValue : -absValue
         }
     }
     
@@ -112,31 +125,46 @@ struct NumericalKeyboardView: View {
         switch key {
         case "OK":
             dismiss()
-        default:
-            if text.isEmpty {
-                switch signMode {
-                case .positiveOnly:
-                    text = "+" + key
-                case .negativeOnly:
-                    text = "-" + key
-                case .both:
-                    text = (isPositive ? "+" : "-") + key
+        case decimalSeparator:
+            if !inputString.contains(".") {
+                if inputString.isEmpty {
+                    inputString = "0" + "."
+                } else {
+                    inputString.append(".")
                 }
-            } else {
-                text.append(key)
+                updateAmountFromInput()
+            }
+        default:
+            let parts = inputString.split(separator: ".", omittingEmptySubsequences: false)
+            let integerPartCount = parts.first?.count ?? 0
+            if integerPartCount >= 7 && !inputString.contains(".") {
+                return
+            }
+            if key.allSatisfy({ $0.isNumber }) {
+                if inputString == "0" {
+                    inputString.removeFirst()
+                }
+                if let dotIndex = inputString.firstIndex(of: ".") {
+                    let decimals = inputString[dotIndex...].dropFirst()
+                    if decimals.count >= 2 {
+                        return
+                    }
+                }
+                inputString.append(key)
+                updateAmountFromInput()
             }
         }
     }
 }
 
 #Preview {
-    @Previewable @State var amount: String = "44.99"
+    @Previewable @State var amount: Double? = 44.99
     TabView {
         NavigationStack {
-            NumericalKeyboardView(text: $amount, signMode: .both)
+            NumericalKeyboardView(amount: $amount, signMode: .both)
         }
         NavigationStack {
-            NumericalKeyboardView(text: $amount, signMode: .positiveOnly)
+            NumericalKeyboardView(amount: $amount, signMode: .positiveOnly)
         }
     }
 }

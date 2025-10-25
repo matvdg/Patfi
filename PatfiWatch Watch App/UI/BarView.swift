@@ -49,21 +49,21 @@ struct BarView: View {
                                     HStack {
                                         Text("w\(weekOfYear)").bold()
                                         Divider()
-                                        Text(point.date.toString)
+                                        Text(point.date.toDateStyleMediumString)
                                     }
                                 case .months:
                                     let month = Calendar.current.component(.month, from: point.date)
                                     HStack {
                                         Text("\(month)").bold()
                                         Divider()
-                                        Text(point.date.toString)
+                                        Text(point.date.toDateStyleMediumString)
                                     }
                                 default:
-                                    Text(point.date.toString)
+                                    Text(point.date.toDateStyleMediumString)
                                 }
                             }
                             Divider()
-                            ColorAmount(amount: point.total)
+                            AmountText(amount: point.total)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
                         }

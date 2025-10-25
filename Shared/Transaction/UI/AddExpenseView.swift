@@ -15,7 +15,7 @@ struct AddExpenseView: View {
     @State private var title: String = ""
     @State private var paymentMethod: Transaction.PaymentMethod = .applePay
     @State private var expenseCategory: Transaction.ExpenseCategory?
-    @State private var amountText: String = ""
+    @State private var amount: Double?
     @FocusState private var focused: Bool
     @State private var selectedAccountID: PersistentIdentifier?
     @State private var date: Date = .now
@@ -26,32 +26,11 @@ struct AddExpenseView: View {
     
     let transactionRepository =  TransactionRepository()
     
-    var amount: Double? {
-        Double(amountText.replacingOccurrences(of: ",", with: "."))
-    }
-    
     var body: some View {
         Form {
             Section {
-#if os(watchOS)
-                NavigationLink {
-                    NumericalKeyboardView(text: $amountText, signMode: .negativeOnly)
-                } label: {
-                    Text(amountText.isEmpty ? String(localized:"amount") : amountText)
-                }
-#else
-                TextField("amount", text: $amountText)
-#if os(iOS) || os(tvOS) || os(visionOS)
-                    .keyboardType(.decimalPad)
-#endif
+                AmountTextField(amount: $amount, signMode: .negativeOnly)
                     .focused($focused)
-                    .onChange(of: amountText) { _, newValue in
-                        let cleaned = newValue.filter { !$0.isWhitespace }
-                        if cleaned != newValue {
-                            amountText = cleaned
-                        }
-                    }
-#endif
                 TextField("description", text: $title)
 #if !os(macOS)
                     .textInputAutocapitalization(.words)
@@ -71,9 +50,9 @@ struct AddExpenseView: View {
                         Text(account.name)
                         Text(" • ")
                         if let amount {
-                            Text("previousBalance \(balance.toString) newBalance \((balance - abs(amount)).toString)")
+                            Text("previousBalance \(balance.currencyAmount) newBalance \((balance - abs(amount)).currencyAmount)")
                         } else {
-                            Text("balance: \(balance.toString)")
+                            Text("balance: \(balance.currencyAmount)")
                         }
                     }
                 }

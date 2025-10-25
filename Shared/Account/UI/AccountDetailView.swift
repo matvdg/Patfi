@@ -120,9 +120,9 @@ struct AccountDetailView: View {
                     .buttonStyle(.plain)
                     ForEach(snaps.sorted(by: { $0.date > $1.date })) { snap in
                         HStack {
-                            Text(snap.date.toString)
+                            Text(snap.date.toDateStyleMediumString)
                             Spacer()
-                            ColorAmount(amount: snap.balance)
+                            AmountText(amount: snap.balance)
                                 .monospacedDigit()
                         }
                         .swipeActions(edge: .trailing) {

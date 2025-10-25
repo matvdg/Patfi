@@ -1,15 +1,24 @@
 import Foundation
 
-extension Double {
+extension NumberFormatter {
     
-    var toString: String {
+    static func getCurrencyFormatter() -> NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.currencyCode = Locale.current.currency?.identifier ?? "€"
-        return formatter.string(from: NSNumber(value: self)) ?? "\(self)"
+        formatter.locale = Locale.current
+        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 0
+        return formatter
+    }
+}
+
+extension Double {
+    
+    var currencyAmount: String {
+        NumberFormatter.getCurrencyFormatter().string(from: NSNumber(value: self)) ?? String(localized: "amount")
     }
 
-    var toShortString: String {
+    var toDateStyleShortString: String {
         let absValue = abs(self)
         let sign = self < 0 ? "-" : ""
         switch absValue {
@@ -32,5 +41,21 @@ extension Double {
                 return String(format: "%.2f", self)
             }
         }
+    }
+}
+
+extension Double? {
+    var currencyAmount: String {
+        guard let amount = self else { return String(localized: "amount") }
+        return amount.currencyAmount
+    }
+}
+
+extension String {
+    var cleanComa: String {
+        replacingOccurrences(of: ",", with: ".").cleanSpaces
+    }
+    var cleanSpaces: String {
+        replacingOccurrences(of: "\\s", with: "", options: .regularExpression)
     }
 }

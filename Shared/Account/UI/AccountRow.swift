@@ -16,7 +16,7 @@ struct AccountRow: View {
                 .foregroundColor(.primary)
             if displayBalance {
                 Spacer()
-                ColorAmount(amount: account.latestBalance?.balance ?? 0)
+                AmountText(amount: account.latestBalance?.balance ?? 0)
                     .font(.body)
                     .bold()
             }

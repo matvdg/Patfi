@@ -10,11 +10,11 @@ struct TransactionRow: View {
             ExpenseCategoryLogo(cat: transaction.expenseCategory, isInternalTransfer: transaction.isInternalTransfer)
             VStack(alignment: .leading, spacing: 3) {
                 Text(transaction.title)
-                Text(transaction.date.toShortString)
+                Text(transaction.date.toDateStyleShortString)
             }
             .font(.footnote)
             Spacer()
-            ColorAmount(amount: transaction.transactionType == .expense ? -transaction.amount : transaction.amount)
+            AmountText(amount: transaction.transactionType == .expense ? -transaction.amount : transaction.amount)
                 .font(.body)
                 .bold()
                 

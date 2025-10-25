@@ -44,7 +44,7 @@ struct BanksView: View {
                                 Spacer()
                                 if let accounts = bank.accounts {
                                     let total = balanceRepository.balance(for: accounts)
-                                    ColorAmount(amount: total)
+                                    AmountText(amount: total)
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.1)
                                 }

@@ -14,13 +14,13 @@ struct TransactionRow: View {
                 ExpenseCategoryLogo(cat: transaction.expenseCategory, isInternalTransfer: transaction.isInternalTransfer)
             }
             HStack(alignment: .center, spacing: 3) {
-                Text(transaction.date.toShortString)
+                Text(transaction.date.toDateStyleShortString)
                 Text("•")
                 Text(transaction.title)
             }
             .font(.footnote)
             Spacer()
-            ColorAmount(amount: transaction.transactionType == .expense ? -transaction.amount : transaction.amount)
+            AmountText(amount: transaction.transactionType == .expense ? -transaction.amount : transaction.amount)
                 .font(.body)
                 .bold()
         }

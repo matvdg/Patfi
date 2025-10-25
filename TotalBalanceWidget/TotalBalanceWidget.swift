@@ -5,7 +5,7 @@ import Charts
 
 struct Provider: TimelineProvider {
     
-    static let mockTotal = 1234567.89.toString
+    static let mockTotal = 1234567.89.currencyAmount
     static let mockBalancesByBank: [(bankName: String, total: Double, colorPalette: String)] = [
         (bankName: "N26", total: 1000.0, colorPalette: "blue"),
         (bankName: "Revolut", total: 2000.0, colorPalette: "green"),
@@ -27,7 +27,7 @@ struct Provider: TimelineProvider {
             return (bankName: bankName, total: total, colorPalette: colorPalette)
         }
         let balancesByCategory = BalanceReader.balancesByCategory
-        let entry = SimpleEntry(date: Date(), balance: balanceValue.toString, balancesByBank: balancesByBank, balancesByCategory: balancesByCategory)
+        let entry = SimpleEntry(date: Date(), balance: balanceValue.currencyAmount, balancesByBank: balancesByBank, balancesByCategory: balancesByCategory)
         completion(entry)
     }
     
@@ -42,7 +42,7 @@ struct Provider: TimelineProvider {
             return (bankName: bankName, total: total, colorPalette: colorPalette)
         }
         let balancesByCategory = BalanceReader.balancesByCategory
-        let entry = SimpleEntry(date: currentDate, balance: balanceValue.toString, balancesByBank: balancesByBank, balancesByCategory: balancesByCategory)
+        let entry = SimpleEntry(date: currentDate, balance: balanceValue.currencyAmount, balancesByBank: balancesByBank, balancesByCategory: balancesByCategory)
         let timeline = Timeline(entries: [entry], policy: .never)
         completion(timeline)
     }
@@ -105,7 +105,7 @@ struct TotalBalanceWidgetEntryView : View {
                             .foregroundColor(.primary)
                             .minimumScaleFactor(0.1)
                         Spacer()
-                        Text(total.toString)
+                        Text(total.currencyAmount)
                             .minimumScaleFactor(0.3)
                     }
                 }
@@ -158,7 +158,7 @@ struct TotalBalanceWidgetEntryView : View {
                             Text(category.localized).minimumScaleFactor(0.5)
                         }
                         Spacer()
-                        Text(total.toString)
+                        Text(total.currencyAmount)
                             .minimumScaleFactor(0.5)
                     }
                 }
@@ -194,7 +194,7 @@ struct TotalBalanceWidgetEntryView : View {
                                 .foregroundColor(.primary)
                                 .minimumScaleFactor(0.1)
                             Spacer()
-                            Text(total.toString)
+                            Text(total.currencyAmount)
                                 .minimumScaleFactor(0.3)
                         }
                     }
@@ -220,7 +220,7 @@ struct TotalBalanceWidgetEntryView : View {
                                 Text(category.localized).minimumScaleFactor(0.5)
                             }
                             Spacer()
-                            Text(total.toString)
+                            Text(total.currencyAmount)
                                 .minimumScaleFactor(0.5)
                         }
                     }
