@@ -90,14 +90,14 @@ struct HomeAccountsView: View {
                                             Button(role: .confirm) {
                                                 editBankColor = bank
                                             } label: {
-                                                Label("editBank", systemImage: "paintpalette")
+                                                Label("EditBank", systemImage: "paintpalette")
                                             }
                                         }
                                         .contextMenu {
                                             Button(role: .confirm) {
                                                 editBankColor = bank
                                             } label: {
-                                                Label("editBank", systemImage: "paintpalette")
+                                                Label("EditBank", systemImage: "paintpalette")
                                             }
                                         }
                                 }
@@ -182,7 +182,7 @@ struct HomeAccountsView: View {
         .navigationDestination(item: $editBankColor, destination: { bank in
             EditBankView(bank: bank)
         })
-        .navigationTitle(isLandscape ? "" : "accounts")
+        .navigationTitle(isLandscape ? "" : "Accounts")
     }
 }
 

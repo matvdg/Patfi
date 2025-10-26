@@ -31,14 +31,14 @@ struct AddIncomeView: View {
             Section {
                 AmountTextField(amount: $amount, signMode: .positiveOnly)
                     .focused($focused)
-                TextField("description", text: $title)
+                TextField("Description", text: $title)
 #if !os(macOS)
                     .textInputAutocapitalization(.words)
 #endif
                     .autocorrectionDisabled()
-                AccountPicker(id: $selectedAccountID, title: String(localized: "account"))
+                AccountPicker(id: $selectedAccountID, title: String(localized: "Account"))
                 PaymentMethodPicker(paymentMethod: $paymentMethod)
-                DatePicker("date", selection: $date, displayedComponents: [.date])
+                DatePicker("Date", selection: $date, displayedComponents: [.date])
             } footer: {
                 if let account = selectedAccount, let balance = account.latestBalance?.balance {
                     HStack {
@@ -49,15 +49,15 @@ struct AddIncomeView: View {
                         Text(account.name)
                         Text(" • ")
                         if let amount {
-                            Text("previousBalance \(balance.currencyAmount) newBalance \((balance + abs(amount)).currencyAmount)")
+                            Text("PreviousBalance \(balance.currencyAmount) newBalance \((balance + abs(amount)).currencyAmount)")
                         } else {
-                            Text("balance: \(balance.currencyAmount)")
+                            Text("Balance: \(balance.currencyAmount)")
                         }
                     }
                 }
             }
         }
-        .navigationTitle("addIncome")
+        .navigationTitle("AddIncome")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {

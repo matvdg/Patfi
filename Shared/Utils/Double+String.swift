@@ -15,7 +15,7 @@ extension NumberFormatter {
 extension Double {
     
     var currencyAmount: String {
-        NumberFormatter.getCurrencyFormatter().string(from: NSNumber(value: self)) ?? String(localized: "amount")
+        NumberFormatter.getCurrencyFormatter().string(from: NSNumber(value: self)) ?? String(localized: "Amount")
     }
 
     var toDateStyleShortString: String {
@@ -46,7 +46,7 @@ extension Double {
 
 extension Double? {
     var currencyAmount: String {
-        guard let amount = self else { return String(localized: "amount") }
+        guard let amount = self else { return String(localized: "Amount") }
         return amount.currencyAmount
     }
 }

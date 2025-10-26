@@ -1,16 +1,17 @@
 import SwiftData
 import SwiftUI
 
-struct FilteredTransactionsView: View {
+struct TransactionsView: View {
     
-    @State private var selectedMonth: Date = .now
+    @State private var selectedDate: Date = .now
+    @State private var selectedPeriod: Period = .month
     @State private var showActions = false
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     
     var body: some View {
         VStack {
-            PeriodPicker(selectedDate: $selectedMonth, period: .constant(.months))
-            TransactionsView(month: selectedMonth)
+            PeriodPicker(selectedDate: $selectedDate, selectedPeriod: $selectedPeriod)
+            FilteredTransactionsView(selectedDate: selectedDate, selectedPeriod: selectedPeriod)
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -21,7 +22,7 @@ struct FilteredTransactionsView: View {
                 }
             }
         }
-        .confirmationDialog("add", isPresented: $showActions) {
+        .confirmationDialog("Add", isPresented: $showActions) {
             ForEach(QuickAction.allCases, id: \.self) { action in
                 // If there are no accounts, skip actions that require an account
                 if accounts.isEmpty && action.requiresAccount {
@@ -36,9 +37,10 @@ struct FilteredTransactionsView: View {
     }
 }
 
-struct TransactionsView: View {
+struct FilteredTransactionsView: View {
     
-    private var selectedMonth: Date
+    private var selectedDate: Date
+    private var selectedPeriod: Period
     
     @Query private var transactions: [Transaction]
     @Environment(\.modelContext) private var context
@@ -46,18 +48,19 @@ struct TransactionsView: View {
     
     private let transactionRepository = TransactionRepository()
     
-    init(month: Date) {
-        self.selectedMonth = month
-        _transactions = Query(filter: Transaction.predicate(for: .months, containing: selectedMonth), sort: \.date, order: .reverse)
+    init(selectedDate: Date, selectedPeriod: Period) {
+        self.selectedDate = selectedDate
+        self.selectedPeriod = selectedPeriod
+        _transactions = Query(filter: Transaction.predicate(for: selectedPeriod, containing: selectedDate), sort: \.date, order: .reverse)
     }
     
     var body: some View {
         Group {
             if transactions.isEmpty {
                 ContentUnavailableView(
-                    "noData",
+                    "NoData",
                     systemImage: "receipt",
-                    description: Text("transactionsEmptyDescription")
+                    description: Text("DescriptionEmptyTransactions")
                 )
             } else {
                 List(transactions) { transaction in
@@ -69,18 +72,18 @@ struct TransactionsView: View {
                     .swipeActions(edge: .trailing) {
                         Button(role: .destructive) {
                             transactionRepository.delete(transaction, context: context)
-                        } label: { Label("delete", systemImage: "trash") }
+                        } label: { Label("Delete", systemImage: "trash") }
                     }
                 }
             }
         }
-        .navigationTitle("transactions")
+        .navigationTitle("Transactions")
     }
 }
 
 #Preview {
     NavigationStack {
-        FilteredTransactionsView()
+        TransactionsView()
             .modelContainer(ModelContainer.shared)
     }
 }

@@ -17,13 +17,13 @@ struct AddAccountView: View {
     
     var body: some View {
         Form {
-            Section("account") {
-                TextField("name", text: $name)
+            Section("Account") {
+                TextField("Name", text: $name)
 #if !os(macOS)
                     .textInputAutocapitalization(.words)
 #endif
                     .autocorrectionDisabled()
-                Picker("category", selection: $category) {
+                Picker("Category", selection: $category) {
                     ForEach(Category.allCases) { c in
                         HStack {
                             Circle().fill(c.color).frame(width: 10, height: 10)
@@ -37,20 +37,20 @@ struct AddAccountView: View {
 #endif
             }
             
-            Section("bank") {
+            Section("Bank") {
                 NavigationLink {
                     EditBanksView(selectedBank: $bank)
                 } label: {
                     if let bank {
                         BankRow(bank: bank)
                     } else {
-                        Text("selectBank")
+                        Text("SelectBank")
                             .foregroundColor(.primary)
                     }
                 }
             }
             
-            Section("initialBalance") {
+            Section("Balance") {
                 AmountTextField(amount: $balance, signMode: category == .loan ? .negativeOnly : .both)
                     .focused($focused)
                     .onChange(of: category) { _, new in
@@ -60,7 +60,7 @@ struct AddAccountView: View {
                     }
             }
         }
-        .navigationTitle("addAccount")
+        .navigationTitle("AddAccount")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {

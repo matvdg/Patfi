@@ -31,15 +31,15 @@ struct AddExpenseView: View {
             Section {
                 AmountTextField(amount: $amount, signMode: .negativeOnly)
                     .focused($focused)
-                TextField("description", text: $title)
+                TextField("Description", text: $title)
 #if !os(macOS)
                     .textInputAutocapitalization(.words)
 #endif
                     .autocorrectionDisabled()
-                AccountPicker(id: $selectedAccountID, title: String(localized: "account"))
+                AccountPicker(id: $selectedAccountID, title: String(localized: "Account"))
                 PaymentMethodPicker(paymentMethod: $paymentMethod)
                 ExpenseCategoryPicker(expenseCategory: $expenseCategory)
-                DatePicker("date", selection: $date, displayedComponents: [.date])
+                DatePicker("Date", selection: $date, displayedComponents: [.date])
             } footer: {
                 if let account = selectedAccount, let balance = account.latestBalance?.balance {
                     HStack {
@@ -50,15 +50,15 @@ struct AddExpenseView: View {
                         Text(account.name)
                         Text(" • ")
                         if let amount {
-                            Text("previousBalance \(balance.currencyAmount) newBalance \((balance - abs(amount)).currencyAmount)")
+                            Text("PreviousBalance \(balance.currencyAmount) newBalance \((balance - abs(amount)).currencyAmount)")
                         } else {
-                            Text("balance: \(balance.currencyAmount)")
+                            Text("Balance: \(balance.currencyAmount)")
                         }
                     }
                 }
             }
         }
-        .navigationTitle("addExpense")
+        .navigationTitle("AddExpense")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {
@@ -87,7 +87,7 @@ struct PaymentMethodPicker: View {
     
     var body: some View {
         
-        Picker("paymentMethod", selection: $paymentMethod) {
+        Picker("PaymentMethod", selection: $paymentMethod) {
             ForEach(Transaction.PaymentMethod.allCases) { p in
                 Label(p.localized, systemImage: p.iconName)
                     .foregroundStyle(.primary)
@@ -108,7 +108,7 @@ struct ExpenseCategoryPicker: View {
     
     var body: some View {
         
-        Picker("expenseCategory", selection: $expenseCategory) {
+        Picker("ExpenseCategory", selection: $expenseCategory) {
             ForEach(Transaction.ExpenseCategory.allCases) { cat in
                 Label(cat.localized, systemImage: cat.iconName)
                     .foregroundStyle(.primary)

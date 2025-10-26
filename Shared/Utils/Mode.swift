@@ -5,8 +5,8 @@ enum Mode: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var localized: LocalizedStringResource {
         switch self {
-        case .accounts: return "accounts"
-        case .expenses: return "expenses"
+        case .accounts: return "Accounts"
+        case .expenses: return "Expenses"
         }
     }
 }
@@ -16,10 +16,10 @@ enum WatchMode: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var localized: LocalizedStringResource {
         switch self {
-        case .categories: return "categories"
-        case .banks: return "banks"
-        case .expenses: return "expenses"
-        case .paymentMethod: return "paymentMethod"
+        case .categories: return "Categories"
+        case .banks: return "Banks"
+        case .expenses: return "Expenses"
+        case .paymentMethod: return "PaymentMethod"
         }
     }
 }

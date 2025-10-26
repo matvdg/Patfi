@@ -32,8 +32,8 @@ struct AddBalanceView: View {
                             newBalance = nil
                         }
                     }
-                AccountPicker(id: $selectedAccountID, title: String(localized: "account"))
-                DatePicker("date", selection: $date, displayedComponents: [.date])
+                AccountPicker(id: $selectedAccountID, title: String(localized: "Account"))
+                DatePicker("Date", selection: $date, displayedComponents: [.date])
             }
             footer: {
                 if let account = selectedAccount, let previousBalance = account.latestBalance?.balance {
@@ -45,15 +45,15 @@ struct AddBalanceView: View {
                         Text(account.name)
                         Text(" • ")
                         if let newBalance {
-                            Text("previousBalance \(previousBalance.currencyAmount) newBalance \(newBalance.currencyAmount)")
+                            Text("PreviousBalance \(previousBalance.currencyAmount) newBalance \(newBalance.currencyAmount)")
                         } else {
-                            Text("balance: \(previousBalance.currencyAmount)")
+                            Text("Balance: \(previousBalance.currencyAmount)")
                         }
                     }
                 }
             }
         }
-        .navigationTitle(String(localized: "addBalance"))
+        .navigationTitle(String(localized: "AddBalance"))
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm) {

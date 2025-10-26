@@ -6,13 +6,13 @@ struct BalanceChartView: View {
     
     let snapshots: [BalanceSnapshot]
     
-    var period: Period
+    var selectedPeriod: Period
     var selectedDate: Date
     private let balanceRepository = BalanceRepository()
     
     var body: some View {
         
-        let series = balanceRepository.generateSeries(for: period, selectedDate: selectedDate, from: snapshots)
+        let series = balanceRepository.generateSeries(for: selectedPeriod, selectedDate: selectedDate, from: snapshots)
         
         GeometryReader { geo in
             let minValue = series.map(\.total).min() ?? 0
@@ -22,9 +22,9 @@ struct BalanceChartView: View {
             let yMax = minValue == maxValue ? maxValue + 1 : maxValue + padding
             Chart(series) { point in
                 BarMark(
-                    x: .value("date", point.date),
+                    x: .value("Date", point.date),
                     yStart: .value("Min", yMin),
-                    yEnd: .value("total", point.total),
+                    yEnd: .value("Total", point.total),
                     width: .fixed(geo.size.width / 20)
                 )
                 .foregroundStyle(by: .value("", point.change))
@@ -38,31 +38,12 @@ struct BalanceChartView: View {
             .chartYScale(domain: yMin...yMax)
             .chartLegend(.hidden)
             .chartXAxis {
-                AxisMarks(values: .automatic(desiredCount: period == .years ? 5 : 12)) { value in
+                AxisMarks(values: .automatic(desiredCount: selectedPeriod == .year ? 5 : 12)) { value in
                     AxisGridLine()
                     AxisTick()
-                    if let d = value.as(Date.self) {
-                        switch period {
-                        case .days:
-                            let day = Calendar.current.component(.day, from: d)
-                            AxisValueLabel {
-                                Text("\(day)").minimumScaleFactor(0.2)
-                            }
-                        case .weeks:
-                            let weekOfYear = Calendar.current.component(.weekOfYear, from: d)
-                            AxisValueLabel {
-                                Text("w\(weekOfYear)").minimumScaleFactor(0.2)
-                            }
-                        case .months:
-                            let month = Calendar.current.component(.month, from: d)
-                            AxisValueLabel {
-                                Text("\(month)").minimumScaleFactor(0.2)
-                            }
-                        case .years:
-                            let year = Calendar.current.component(.year, from: d)
-                            AxisValueLabel {
-                                Text("\(year)").minimumScaleFactor(0.2)
-                            }
+                    if let date = value.as(Date.self) {
+                        AxisValueLabel {
+                            Text("\(date.getComponent(for: selectedPeriod))").minimumScaleFactor(0.2)
                         }
                     }
                 }
@@ -98,5 +79,5 @@ struct BalanceChartView: View {
     let b7 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*7), balance: Double.random(in: 10000...30000), account: account)
     let b8 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*6), balance: Double.random(in: 10000...30000), account: account)
     let b9 = BalanceSnapshot(date: Date().addingTimeInterval(-60*60*24*31*5), balance: Double.random(in: 10000...30000), account: account)
-    BalanceChartView(snapshots: [b1, b2, b3, b4, b5, b6, b7, b8, b9], period: .months, selectedDate: Date())
+    BalanceChartView(snapshots: [b1, b2, b3, b4, b5, b6, b7, b8, b9], selectedPeriod: .month, selectedDate: Date())
 }

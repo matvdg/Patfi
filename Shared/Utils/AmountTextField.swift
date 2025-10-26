@@ -25,7 +25,7 @@ struct AmountTextField: View {
                         Text("-")
                     }
 #endif
-                    TextField("amount", text: $textValue)
+                    TextField("Amount", text: $textValue)
                         .focused($isEditing)
 #if !os(macOS)
                         .keyboardType(.decimalPad)
@@ -66,7 +66,7 @@ struct AmountTextField: View {
             }
             if signMode == .both {
                 Divider()
-                Toggle("overdrawn", isOn: Binding(
+                Toggle("OverdrawnAccount", isOn: Binding(
                     get: { !isPositive },
                     set: { _,_ in
                         isPositive.toggle()

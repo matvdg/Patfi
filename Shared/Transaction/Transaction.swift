@@ -47,8 +47,8 @@ final class Transaction {
 
         var localized: String {
             switch self {
-            case .expense: return String(localized: "transaction.expense")
-            case .income: return String(localized: "transaction.income")
+            case .expense: return String(localized: "Expense")
+            case .income: return String(localized: "Income")
             }
         }
     }
@@ -56,24 +56,24 @@ final class Transaction {
 }
 
 extension Transaction {
-    static func predicate(for period: Period, containing date: Date) -> Predicate<Transaction> {
+    static func predicate(for selectedPeriod: Period, containing date: Date) -> Predicate<Transaction> {
         let calendar = Calendar.current
         let start: Date
         let end: Date
 
-        switch period {
-        case .days:
+        switch selectedPeriod {
+        case .day:
             start = calendar.startOfDay(for: date)
             end = calendar.date(byAdding: .day, value: 1, to: start)!
-        case .weeks:
+        case .week:
             let interval = calendar.dateInterval(of: .weekOfYear, for: date)!
             start = interval.start
             end = interval.end
-        case .months:
+        case .month:
             let interval = calendar.dateInterval(of: .month, for: date)!
             start = interval.start
             end = interval.end
-        case .years:
+        case .year:
             let interval = calendar.dateInterval(of: .year, for: date)!
             start = interval.start
             end = interval.end

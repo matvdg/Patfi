@@ -44,34 +44,34 @@ class BalanceRepository {
         try? context.save()
     }
     
-    func generateSeries(for period: Period, selectedDate: Date, from snapshots: [BalanceSnapshot]) -> [TotalPoint] {
+    func generateSeries(for selectedPeriod: Period, selectedDate: Date, from snapshots: [BalanceSnapshot]) -> [TotalPoint] {
         if snapshots.isEmpty { return [] }
         var cal = Calendar.current
         cal.timeZone = TimeZone.current
-        var periods: [Date] = []
+        var selectedPeriods: [Date] = []
         for i in 0..<12 {
-            switch period {
-            case .days:
-                if let date = cal.date(byAdding: .day, value: -i, to: cal.dateInterval(of: .day, for: selectedDate)!.end) {
-                    periods.append(date)
+            switch selectedPeriod {
+            case .day:
+                if let date = cal.date(byAdding: .day, value: -i, to: selectedDate.normalizedDate(selectedPeriod: .day)) {
+                    selectedPeriods.append(date)
                 }
-            case .weeks:
-                if let date = cal.date(byAdding: .weekOfYear, value: -i, to: cal.dateInterval(of: .weekOfYear, for: selectedDate)!.end) {
-                    periods.append(date)
+            case .week:
+                if let date = cal.date(byAdding: .weekOfYear, value: -i, to: selectedDate.normalizedDate(selectedPeriod: .week)) {
+                    selectedPeriods.append(date)
                 }
-            case .months:
-                if let date = cal.date(byAdding: .month, value: -i, to: cal.dateInterval(of: .month, for: selectedDate)!.end) {
-                    periods.append(date)
+            case .month:
+                if let date = cal.date(byAdding: .month, value: -i, to: selectedDate.normalizedDate(selectedPeriod: .month)) {
+                    selectedPeriods.append(date)
                 }
-            case .years: // 5 years otherwise slow because too many transactions
+            case .year: // 5 years otherwise slow because too many transactions
                 guard i < 5 else { break }
-                if let date = cal.date(byAdding: .year, value: -i, to: cal.dateInterval(of: .year, for: selectedDate)!.end) {
-                    periods.append(date)
+                if let date = cal.date(byAdding: .year, value: -i, to: selectedDate.normalizedDate(selectedPeriod: .year)) {
+                    selectedPeriods.append(date)
                 }
             }
         }
 
-        let sortedPeriods = periods.sorted()
+        let sortedPeriods = selectedPeriods.sorted()
 
         // Prepare snapshots grouped by account and sorted by date ascending
         var snapshotsByAccount: [PersistentIdentifier: [(date: Date, value: Double)]] = [:]
@@ -89,12 +89,12 @@ class BalanceRepository {
 
         var result: [TotalPoint] = []
 
-        for (index, periodStart) in sortedPeriods.enumerated() {
+        for (index, selectedPeriodStart) in sortedPeriods.enumerated() {
             var total: Double = 0
 
             for (_, snaps) in snapshotsByAccount {
-                // Find last snapshot before or at periodStart
-                if let lastSnap = snaps.last(where: { $0.date <= periodStart }) {
+                // Find last snapshot before or at selectedPeriodStart
+                if let lastSnap = snaps.last(where: { $0.date <= selectedPeriodStart }) {
                     total += lastSnap.value
                 }
             }
@@ -113,7 +113,7 @@ class BalanceRepository {
                 }
             }
 
-            result.append(TotalPoint(date: periodStart, total: total, change: change))
+            result.append(TotalPoint(date: selectedPeriodStart, total: total, change: change))
         }
 
         return result

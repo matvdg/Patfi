@@ -16,12 +16,12 @@ struct TransactionChartView: View {
         ]
         
         VStack {
-            Text("total")
+            Text("Total")
             AmountText(amount: total).bold()
             
             Chart(data, id: \.type) { item in
                 BarMark(
-                    x: .value("amount", item.amount),
+                    x: .value("Amount", item.amount),
                     y: .value("", "")
                 )
                 .foregroundStyle(item.color)

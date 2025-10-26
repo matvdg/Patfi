@@ -16,7 +16,7 @@ struct EditTransactionView: View {
         Form {
             Section {
                 HStack {
-                    Text("amount")
+                    Text("Amount")
                     Spacer()
                     Text(transaction.transactionType == .income ? "+\(transaction.amount.currencyAmount)" : "-\(transaction.amount.currencyAmount)")
                         .font(.body)
@@ -25,14 +25,14 @@ struct EditTransactionView: View {
                 }
                 if let account = transaction.account {
                     HStack {
-                        Text("account")
+                        Text("Account")
                         Spacer()
                         AccountRow(account: account, displayBalance: false)
                     }
                 }
             }
             Section {
-                TextField("description", text: $transaction.title)
+                TextField("Description", text: $transaction.title)
 #if !os(macOS)
                     .textInputAutocapitalization(.words)
 #endif
@@ -44,7 +44,7 @@ struct EditTransactionView: View {
                 
                 if transaction.transactionType == .expense {
                     if transaction.isInternalTransfer {
-                        Toggle("markAsSavingsOrInvestment", isOn: Binding(
+                        Toggle("MarkAsSavingsOrInvestment", isOn: Binding(
                             get: { transaction.expenseCategory == .savingsInvestments },
                             set: { transaction.expenseCategory = $0 ? .savingsInvestments : nil }
                         ))
@@ -52,17 +52,17 @@ struct EditTransactionView: View {
                         ExpenseCategoryPicker(expenseCategory: $transaction.expenseCategory)
                     }
                 }
-                DatePicker("date", selection: $transaction.date, displayedComponents: [.date])
+                DatePicker("Date", selection: $transaction.date, displayedComponents: [.date])
                 Button(role: .destructive) {
                     transactionRepository.delete(transaction, context: context)
                     dismiss()
                 }.foregroundStyle(.red)
             } header: {
-                Text("edit")
+                Text("Edit")
             }
 
         }
-        .navigationTitle(transaction.isInternalTransfer ? "internalTransfer" : transaction.transactionType == .expense ? "expense" : "income")
+        .navigationTitle(transaction.isInternalTransfer ? "InternalTransfer" : transaction.transactionType == .expense ? "Expense" : "Income")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {

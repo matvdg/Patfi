@@ -18,7 +18,7 @@ struct AddInternalTransferView: View {
     @State private var destinationAccountID: PersistentIdentifier?
     @State private var date: Date = .now
     @State private var markAsDavingsInvestments: Bool = false
-    @State private var title: String = String(localized: "internalTransfer")
+    @State private var title: String = String(localized: "InternalTransfer")
     
     private var sourceAccount: Account? {
         accounts.first(where: { $0.persistentModelID == sourceAccountID })
@@ -35,11 +35,11 @@ struct AddInternalTransferView: View {
             Section {
                 AmountTextField(amount: $amount, signMode: .positiveOnly)
                     .focused($focused)
-                TextField("description", text: $title)
-                AccountPicker(id: $sourceAccountID, title: String(localized: "sourceAccount"))
-                AccountPicker(id: $destinationAccountID, title: String(localized: "destinationAccount"))
-                DatePicker("date", selection: $date, displayedComponents: [.date])
-                Toggle("markAsSavingsOrInvestment", isOn: $markAsDavingsInvestments)
+                TextField("Description", text: $title)
+                AccountPicker(id: $sourceAccountID, title: String(localized: "SourceAccount"))
+                AccountPicker(id: $destinationAccountID, title: String(localized: "DestinationAccount"))
+                DatePicker("Date", selection: $date, displayedComponents: [.date])
+                Toggle("MarkAsSavingsOrInvestment", isOn: $markAsDavingsInvestments)
             } footer: {
                 VStack(alignment: .leading, spacing: 8) {
                     if let sourceAccount, let balance = sourceAccount.latestBalance?.balance {
@@ -51,9 +51,9 @@ struct AddInternalTransferView: View {
                             Text(sourceAccount.name)
                             Text(" • ")
                             if let amount {
-                                Text("previousBalance \(balance.currencyAmount) newBalance \((balance - abs(amount)).currencyAmount)")
+                                Text("PreviousBalance \(balance.currencyAmount) newBalance \((balance - abs(amount)).currencyAmount)")
                             } else {
-                                Text("balance: \(balance.currencyAmount)")
+                                Text("Balance: \(balance.currencyAmount)")
                             }
                         }
                     }
@@ -66,9 +66,9 @@ struct AddInternalTransferView: View {
                             Text(destinationAccount.name)
                             Text(" • ")
                             if let amount {
-                                Text("previousBalance \(balance.currencyAmount) newBalance \((balance + abs(amount)).currencyAmount)")
+                                Text("PreviousBalance \(balance.currencyAmount) newBalance \((balance + abs(amount)).currencyAmount)")
                             } else {
-                                Text("balance: \(balance.currencyAmount)")
+                                Text("Balance: \(balance.currencyAmount)")
                             }
                         }
                     }
@@ -78,7 +78,7 @@ struct AddInternalTransferView: View {
                 .italic()
             }
         }
-        .navigationTitle("internalTransfer")
+        .navigationTitle("InternalTransfer")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {

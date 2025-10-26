@@ -23,16 +23,16 @@ enum Category: String, Codable, CaseIterable, Identifiable {
     
     var localized: String {
         switch self {
-        case .current:       String(localized: "category.current")
-        case .savings:       String(localized: "category.savings")
-        case .crypto:        String(localized: "category.crypto")
-        case .stocks:        String(localized: "category.stocks")
-        case .bonds:        String(localized: "category.bonds")
-        case .lifeInsurance: String(localized: "category.lifeInsurance")
-        case .loan:          String(localized: "category.loan")
-        case .commodities:   String(localized: "category.commodities")
-        case .privateEquity: String(localized: "category.privateEquity")
-        case .other:         String(localized: "category.other")
+        case .current:       String(localized: "CategoryCurrent")
+        case .savings:       String(localized: "CategorySavings")
+        case .crypto:        String(localized: "CategoryCrypto")
+        case .stocks:        String(localized: "CategoryStocks")
+        case .bonds:        String(localized: "CategoryBonds")
+        case .lifeInsurance: String(localized: "CategoryLifeInsurance")
+        case .loan:          String(localized: "CategoryLoan")
+        case .commodities:   String(localized: "CategoryCommodities")
+        case .privateEquity: String(localized: "CategoryPrivateEquity")
+        case .other:         String(localized: "CategoryOther")
         }
     }
     

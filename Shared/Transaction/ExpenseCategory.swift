@@ -29,27 +29,27 @@ extension Transaction {
         
         var localized: String {
             switch self {
-            case .foodGroceries: return String(localized: "expense.foodGroceries") // Groceries & food
-            case .diningOut: return String(localized: "expense.diningOut") // Restaurants
-            case .transportation: return String(localized: "expense.transportation") // Transportation
-            case .housing: return String(localized: "expense.housing") // Housing
-            case .utilities: return String(localized: "expense.utilities") // Bills & utilities
-            case .insurance: return String(localized: "expense.insurance") // Insurance
-            case .healthcare: return String(localized: "expense.healthcare") // Healthcare
-            case .pets: return String(localized: "expense.pets") // Pets
-            case .entertainment: return String(localized: "expense.entertainment") // Entertainment
-            case .gaming: return String(localized: "expense.gaming") // Gaming
-            case .sportsFitness: return String(localized: "expense.sportsFitness") // Sports & fitness
-            case .shopping: return String(localized: "expense.shopping") // Shopping
-            case .education: return String(localized: "expense.education") // Education
-            case .travel: return String(localized: "expense.travel") // Travel
-            case .personalCare: return String(localized: "expense.personalCare") // Personal care
-            case .subscriptions: return String(localized: "expense.subscriptions") // Subscriptions (Netflix...)
-            case .taxes: return String(localized: "expense.taxes") // Taxes
-            case .debtPayment: return String(localized: "expense.debtPayment") // Debt & loan payments
-            case .giftsDonations: return String(localized: "expense.giftsDonations") // Gifts & donations
-            case .savingsInvestments: return String(localized: "expense.savingsInvestments") // Savings & investments
-            case .other: return String(localized: "expense.other") // Other
+            case .foodGroceries: return String(localized: "ExpenseFoodGroceries") // Groceries & food
+            case .diningOut: return String(localized: "ExpenseDiningOut") // Restaurants
+            case .transportation: return String(localized: "ExpenseTransportation") // Transportation
+            case .housing: return String(localized: "ExpenseHousing") // Housing
+            case .utilities: return String(localized: "ExpenseUtilities") // Bills & utilities
+            case .insurance: return String(localized: "ExpenseInsurance") // Insurance
+            case .healthcare: return String(localized: "ExpenseHealthcare") // Healthcare
+            case .pets: return String(localized: "ExpensePets") // Pets
+            case .entertainment: return String(localized: "ExpenseEntertainment") // Entertainment
+            case .gaming: return String(localized: "ExpenseGaming") // Gaming
+            case .sportsFitness: return String(localized: "ExpenseSportsFitness") // Sports & fitness
+            case .shopping: return String(localized: "ExpenseShopping") // Shopping
+            case .education: return String(localized: "ExpenseEducation") // Education
+            case .travel: return String(localized: "ExpenseTravel") // Travel
+            case .personalCare: return String(localized: "ExpensePersonalCare") // Personal care
+            case .subscriptions: return String(localized: "ExpenseSubscriptions") // Subscriptions (Netflix...)
+            case .taxes: return String(localized: "ExpenseTaxes") // Taxes
+            case .debtPayment: return String(localized: "ExpenseDebtPayment") // Debt & loan payments
+            case .giftsDonations: return String(localized: "ExpenseGiftsDonations") // Gifts & donations
+            case .savingsInvestments: return String(localized: "ExpenseSavingsInvestments") // Savings & investments
+            case .other: return String(localized: "ExpenseOther") // Other
             }
         }
         

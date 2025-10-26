@@ -15,17 +15,17 @@ extension Transaction {
         var localized: String {
             switch self {
             case .applePay:
-                return String(localized: "payment.applePay")
+                return String(localized: "PaymentApplePay")
             case .creditCard:
-                return String(localized: "payment.creditCard")
+                return String(localized: "PaymentCreditCard")
             case .cheque:
-                return String(localized: "payment.cheque")
+                return String(localized: "PaymentCheque")
             case .cashWithdrawal:
-                return String(localized: "payment.cashWithdrawal")
+                return String(localized: "PaymentCashWithdrawal")
             case .bankTransfer:
-                return String(localized: "payment.bankTransfer")
+                return String(localized: "PaymentBankTransfer")
             case .directDebit:
-                return String(localized: "payment.directDebit")
+                return String(localized: "PaymentDirectDebit")
             }
         }
         

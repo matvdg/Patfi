@@ -4,12 +4,12 @@ import SwiftUI
 struct HomeTransactionsView: View {
     
     @State private var selectedDate: Date = .now
-    @State private var period: Period = .months
+    @State private var selectedPeriod: Period = .month
     
     var body: some View {
         VStack {
-            PeriodPicker(selectedDate: $selectedDate, period: $period)
-            TransactionsView(for: period, containing: selectedDate)
+            PeriodPicker(selectedDate: $selectedDate, selectedPeriod: $selectedPeriod)
+            TransactionsView(for: selectedPeriod, containing: selectedDate)
         }
     }
 }
@@ -17,7 +17,7 @@ struct HomeTransactionsView: View {
 struct TransactionsView: View {
     
     private var selectedDate: Date
-    private var period: Period
+    private var selectedPeriod: Period
     
     @Query private var transactions: [Transaction]
     @Environment(\.modelContext) private var context
@@ -25,10 +25,10 @@ struct TransactionsView: View {
 
     private let transactionRepository = TransactionRepository()
 
-    init(for period: Period, containing selectedDate: Date) {
+    init(for selectedPeriod: Period, containing selectedDate: Date) {
         self.selectedDate = selectedDate
-        self.period = period
-        _transactions = Query(filter: Transaction.predicate(for: period, containing: selectedDate), sort: \.date, order: .reverse)
+        self.selectedPeriod = selectedPeriod
+        _transactions = Query(filter: Transaction.predicate(for: selectedPeriod, containing: selectedDate), sort: \.date, order: .reverse)
     }
     
     private var filteredTransactions: [Transaction] {
@@ -44,15 +44,15 @@ struct TransactionsView: View {
             if transactions.isEmpty {
                 VStack {
                     ContentUnavailableView(
-                        "noData",
+                        "NoData",
                         systemImage: "receipt",
-                        description: Text("transactionsEmptyDescription")
+                        description: Text("DescriptionEmptyTransactions")
                     )
                     Spacer()
                 }
             } else {
                 VStack {
-                    Toggle("hideInternalTransfers", isOn: $hideInternalTransfers)
+                    Toggle("HideInternalTransfers", isOn: $hideInternalTransfers)
                         .padding(.horizontal)
                     TransactionChartView(transactions: filteredTransactions)
                     List(filteredTransactions) { transaction in
@@ -64,14 +64,14 @@ struct TransactionsView: View {
                         .swipeActions(edge: .trailing) {
                             Button(role: .destructive) {
                                 transactionRepository.delete(transaction, context: context)
-                            } label: { Label("delete", systemImage: "trash") }
+                            } label: { Label("Delete", systemImage: "trash") }
                         }
 #if !os(watchOS)
                         .contextMenu {
                             Button(role: .destructive) {
                                 transactionRepository.delete(transaction, context: context)
                             } label: {
-                                Label("delete", systemImage: "trash")
+                                Label("Delete", systemImage: "trash")
                             }
                         }
 #endif
@@ -79,7 +79,7 @@ struct TransactionsView: View {
                 }
             }
         }
-        .navigationTitle("transactions")
+        .navigationTitle("Transactions")
     }
 }
 

@@ -10,7 +10,7 @@ struct AccountDetailView: View {
     
     @State private var showAddSnapshot = false
     @State private var showDeleteAccountConfirm = false
-    @State private var period: Period = .months
+    @State private var selectedPeriod: Period = .month
     @State private var showActions = false
     
     private let balanceRepository = BalanceRepository()
@@ -19,10 +19,10 @@ struct AccountDetailView: View {
     var body: some View {
         Form {
             // MARK: - Account info & editing
-            Section("account") {
-                TextField("name", text: $account.name)
+            Section("Account") {
+                TextField("Name", text: $account.name)
                     .disableAutocorrection(true)
-                Picker("category", selection: $account.category) {
+                Picker("Category", selection: $account.category) {
                     ForEach(Category.allCases) { c in
                         HStack {
                             Circle().fill(c.color).frame(width: 10, height: 10)
@@ -38,42 +38,42 @@ struct AccountDetailView: View {
                     Button(role: .confirm) {
                         accountRepository.unsetAsDefault(account: account, context: context)
                     } label: {
-                        Label("unsetAsDefault", systemImage: "star.slash")
+                        Label("UnsetAsDefault", systemImage: "star.slash")
                     }
                 } else {
                     Button(role: .confirm) {
                         accountRepository.setAsDefault(account: account, context: context)
                     } label: {
-                        Label("setAsDefault", systemImage: "star")
+                        Label("SetAsDefault", systemImage: "star")
                     }
                 }
                 
                 Button(role: .destructive) {
                     showDeleteAccountConfirm = true
                 } label: {
-                    Label("deleteAccount", systemImage: "trash")
+                    Label("DeleteAccount", systemImage: "trash")
                         .foregroundStyle(.red)
                 }
-                .confirmationDialog("deleteAccount", isPresented: $showDeleteAccountConfirm, titleVisibility: .visible) {
-                    Button("delete", role: .destructive) {
+                .confirmationDialog("DeleteAccount", isPresented: $showDeleteAccountConfirm, titleVisibility: .visible) {
+                    Button("Delete", role: .destructive) {
                         accountRepository.delete(account: account, context: context)
                         dismiss()
                     }
                     Button(role: .cancel, action: { dismiss() })
                 } message: {
-                    Text("deleteAccountDescription")
+                    Text("DescriptionDeleteAccount")
                 }
             }
             
             // MARK: - Bank
-            Section("bank") {
+            Section("Bank") {
                 NavigationLink {
                     EditBanksView(selectedBank: $account.bank)
                 } label: {
                     if let bank = account.bank {
                         BankRow(bank: bank).id(bank.id)
                     } else {
-                        Text("selectBank")
+                        Text("SelectBank")
                             .foregroundColor(.primary)
                     }
                 }
@@ -84,29 +84,29 @@ struct AccountDetailView: View {
                 if let snaps = account.balances, !snaps.isEmpty {
                     NavigationLink {
                         VStack {
-                            Picker("", selection: $period) {
-                                ForEach(Period.allCases) { period in
-                                    Text(period.localized).tag(period)
+                            Picker("", selection: $selectedPeriod) {
+                                ForEach(Period.allCases) { selectedPeriod in
+                                    Text(selectedPeriod.localized).tag(selectedPeriod)
                                 }
                             }
 #if !os(watchOS)
                             .pickerStyle(.segmented)
 #endif
                             .padding()
-                            BalanceChartView(snapshots: snaps, period: period, selectedDate: Date())
+                            BalanceChartView(snapshots: snaps, selectedPeriod: selectedPeriod, selectedDate: Date())
                             Spacer()
                         }
                     } label: {
                         VStack {
-                            Picker("", selection: $period) {
-                                ForEach(Period.allCases) { period in
-                                    Text(period.localized).tag(period)
+                            Picker("", selection: $selectedPeriod) {
+                                ForEach(Period.allCases) { selectedPeriod in
+                                    Text(selectedPeriod.localized).tag(selectedPeriod)
                                 }
                             }
 #if !os(watchOS)
                             .pickerStyle(.segmented)
 #endif
-                            BalanceChartView(snapshots: snaps, period: period, selectedDate: Date())
+                            BalanceChartView(snapshots: snaps, selectedPeriod: selectedPeriod, selectedDate: Date())
                                 .frame(height: 150)
                         }
                         
@@ -114,7 +114,7 @@ struct AccountDetailView: View {
                     Button(action: { showAddSnapshot = true }) {
                         HStack(alignment: .center, spacing: 8) {
                             Image(systemName: "plus")
-                            Text("addBalance")
+                            Text("AddBalance")
                         }
                     }
                     .buttonStyle(.plain)
@@ -128,21 +128,21 @@ struct AccountDetailView: View {
                         .swipeActions(edge: .trailing) {
                             Button(role: .destructive) {
                                 balanceRepository.delete(snap, context: context)
-                            } label: { Label("delete", systemImage: "trash") }
+                            } label: { Label("Delete", systemImage: "trash") }
                         }
 #if !os(watchOS)
                         .contextMenu {
                             Button(role: .destructive) {
                                 balanceRepository.delete(snap, context: context)
                             } label: {
-                                Label("delete", systemImage: "trash")
+                                Label("Delete", systemImage: "trash")
                             }
                         }
 #endif
                     }
-                    Text("tipBalance").foregroundStyle(.tertiary).italic()
+                    Text("TipBalance").foregroundStyle(.tertiary).italic()
                 } else {
-                    ContentUnavailableView("noSnapshots", systemImage: "clock.arrow.circlepath", description: Text("addBalance"))
+                    ContentUnavailableView("NoSnapshots", systemImage: "clock.arrow.circlepath", description: Text("AddBalance"))
                 }
             }
             .padding(.all)
@@ -151,7 +151,7 @@ struct AccountDetailView: View {
         .navigationDestination(isPresented: $showAddSnapshot, destination: {
             AddBalanceView(account: account)
         })
-        .navigationTitle(account.name.isEmpty ? String(localized: "account") : account.name)
+        .navigationTitle(account.name.isEmpty ? String(localized: "Account") : account.name)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 #if os(watchOS)
@@ -177,7 +177,7 @@ struct AccountDetailView: View {
                 #endif
             }
         }
-        .confirmationDialog("add", isPresented: $showActions) {
+        .confirmationDialog("Add", isPresented: $showActions) {
             ForEach(QuickAction.allCases, id: \.self) { action in
                 if action.requiresAccount {
                     NavigationLink(action.localizedTitle) {

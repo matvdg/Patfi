@@ -64,7 +64,7 @@ struct PieChartView: View {
             ZStack {
                 Chart(slices) { slice in
                     SectorMark(
-                        angle: .value("total", slice.total),
+                        angle: .value("Total", slice.total),
                         innerRadius: .ratio(0.6),
                         angularInset: 1.0
                     )
@@ -81,7 +81,7 @@ struct PieChartView: View {
                 
                 // Center label (total)
                 VStack {
-                    Text("total")
+                    Text("Total")
                         .font(.caption)
                     Text(total.currencyAmount)
                         .font(.headline)

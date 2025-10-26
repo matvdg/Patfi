@@ -18,25 +18,25 @@ final class BalanceSnapshot: Identifiable, Hashable {
 }
 
 extension BalanceSnapshot {
-    static func predicate(for period: Period, containing date: Date) -> Predicate<BalanceSnapshot> {
+    static func predicate(for selectedPeriod: Period, containing date: Date) -> Predicate<BalanceSnapshot> {
         let calendar = Calendar.current
         let start: Date
         let end: Date
 
-        switch period {
-        case .days:
+        switch selectedPeriod {
+        case .day:
             let startOfDay = calendar.startOfDay(for: date)
             start = calendar.date(byAdding: .day, value: -12, to: startOfDay)!
             end = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
-        case .weeks:
+        case .week:
             let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: date)!.start
             start = calendar.date(byAdding: .weekOfYear, value: -12, to: startOfWeek)!
             end = calendar.date(byAdding: .weekOfYear, value: 1, to: startOfWeek)!
-        case .months:
+        case .month:
             let startOfMonth = calendar.dateInterval(of: .month, for: date)!.start
             start = calendar.date(byAdding: .month, value: -12, to: startOfMonth)!
             end = calendar.date(byAdding: .month, value: 1, to: startOfMonth)!
-        case .years:
+        case .year:
             let startOfYear = calendar.dateInterval(of: .year, for: date)!.start
             start = calendar.date(byAdding: .year, value: -5, to: startOfYear)!
             end = calendar.date(byAdding: .year, value: 1, to: startOfYear)!

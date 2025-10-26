@@ -13,23 +13,27 @@ struct HomeView: View {
                 TotalView()
                 HStack(alignment: .center, spacing: 8) {
                     NavigationLink {
+                        // View displaying accounts list
                         AccountsView()
                     } label: {
                         Image(systemName: "list.bullet")
                     }
                     NavigationLink {
+                        // View displaying banks list
                         BanksView()
                     } label: {
                         Image(systemName: Bank.sfSymbol)
                     }
                     NavigationLink {
-                        FilteredTransactionsView()
+                        // View displaying transactions list
+                        TransactionsView()
                     } label: {
                         Image(systemName: "receipt")
                     }
                 }
                 HStack(alignment: .center, spacing: 8) {
                     NavigationLink {
+                        // View displaying pie charts (for accounts & expenses)
                         PieView()
                     } label: {
                         Image(systemName: "chart.pie")
@@ -41,12 +45,13 @@ struct HomeView: View {
                     }
                     .buttonStyle(.glassProminent)
                     NavigationLink {
-                        BarView()
+                        // View displaying monitoring bar charts
+                        MonitoringView()
                     } label: {
                         Image(systemName: "chart.bar")
                     }
                 }
-                .confirmationDialog("add", isPresented: $showActions) {
+                .confirmationDialog("Add", isPresented: $showActions) {
                     ForEach(QuickAction.allCases, id: \.self) { action in
                         // If there are no accounts, skip actions that require an account
                         if accounts.isEmpty && action.requiresAccount {

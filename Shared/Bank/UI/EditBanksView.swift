@@ -19,13 +19,13 @@ struct EditBanksView: View {
                 ContentUnavailableView {
                     Image(systemName: Bank.sfSymbol)
                 } description: {
-                    Text("noBank")
+                    Text("NoBank")
                 } actions: {
                     Button {
                         bankToModify = nil
                         showingAddBank = true
                     } label: {
-                        Label("createBank", systemImage: "plus")
+                        Label("CreateBank", systemImage: "plus")
                             .padding()
                     }
                     #if os(visionOS)
@@ -57,12 +57,12 @@ struct EditBanksView: View {
                             Button(role: .destructive) {
                                 bankRepository.delete(bank, context: context)
                             } label: {
-                                Label("delete", systemImage: "trash")
+                                Label("Delete", systemImage: "trash")
                             }
                             Button(role: .confirm) {
                                 bankToModify = bank
                             } label: {
-                                Label("edit", systemImage: "pencil")
+                                Label("Edit", systemImage: "pencil")
                             }
                         }
                         #if !os(watchOS)
@@ -70,12 +70,12 @@ struct EditBanksView: View {
                             Button(role: .destructive) {
                                 bankRepository.delete(bank, context: context)
                             } label: {
-                                Label("delete", systemImage: "trash")
+                                Label("Delete", systemImage: "trash")
                             }
                             Button(role: .confirm) {
                                 bankToModify = bank
                             } label: {
-                                Label("edit", systemImage: "pencil")
+                                Label("Edit", systemImage: "pencil")
                             }
                         }
                         #endif
@@ -83,7 +83,7 @@ struct EditBanksView: View {
                     #if !os(watchOS)
                     .listRowSeparator(.hidden)
                     #endif
-                    Text("tipBank").foregroundStyle(.tertiary).italic()
+                    Text("TipBank").foregroundStyle(.tertiary).italic()
                 }
                 .id(refreshID)
                 #if os(iOS) || os(tvOS) || os(visionOS)
@@ -104,7 +104,7 @@ struct EditBanksView: View {
                 }
             }
         }
-        .navigationTitle("banks")
+        .navigationTitle("Banks")
         .navigationDestination(isPresented: $showingAddBank, destination: {
             EditBankView()
         })

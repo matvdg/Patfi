@@ -12,7 +12,7 @@ struct HomeView: View {
     @State private var selectedChart = 0
     @State var mode: Mode = .accounts
     @State private var selectedDate: Date = .now
-    @State private var period: Period = .months
+    @State private var selectedPeriod: Period = .month
     
     private let accountRepository = AccountRepository()
     private let balanceRepository = BalanceRepository()
@@ -32,12 +32,12 @@ struct HomeView: View {
                 ContentUnavailableView {
                     Image(systemName: "creditcard")
                 } description: {
-                    Text("noAccounts")
+                    Text("NoAccounts")
                 } actions: {
                     Button {
                         showAddAccount = true
                     } label: {
-                        Label("createAccount", systemImage: "plus")
+                        Label("CreateAccount", systemImage: "plus")
                             .padding()
                     }
 #if os(visionOS)
@@ -50,9 +50,9 @@ struct HomeView: View {
                 if !isLandscape {
                     Picker("", selection: $selectedChart) {
 #if os(macOS)
-                        Text(selectedChart == 0 ? "􀜋 \(String(localized: "distribution"))" : "􀑀 \(String(localized: "distribution"))").tag(0)
-                        Text(selectedChart == 1 ? "􀐿 \(String(localized: "monitoring"))" : "􀐾 \(String(localized: "monitoring"))").tag(1)
-                        Text(selectedChart == 2 ? "􂷽 \(String(localized: "transactions"))" : "􂷼 \(String(localized: "transactions"))").tag(2)
+                        Text(selectedChart == 0 ? "􀜋 \(String(localized: "Distribution"))" : "􀑀 \(String(localized: "Distribution"))").tag(0)
+                        Text(selectedChart == 1 ? "􀐿 \(String(localized: "Monitoring"))" : "􀐾 \(String(localized: "Monitoring"))").tag(1)
+                        Text(selectedChart == 2 ? "􂷽 \(String(localized: "Transactions"))" : "􂷼 \(String(localized: "Transactions"))").tag(2)
 #else
                         Image(systemName: selectedChart == 0 ? "chart.pie.fill" : "chart.pie").tag(0)
                         Image(systemName: selectedChart == 1 ? "chart.bar.fill" : "chart.bar").tag(1)
@@ -72,7 +72,7 @@ struct HomeView: View {
                             .pickerStyle(.segmented)
                             .padding()
                         } else if selectedChart == 1 {
-                            TwelvePeriodPicker(selectedDate: $selectedDate, period: $period)
+                            TwelvePeriodPicker(selectedDate: $selectedDate, selectedPeriod: $selectedPeriod)
                         }
                     }
                 }
@@ -84,7 +84,7 @@ struct HomeView: View {
                     case .expenses: HomeExpensesView()
                     }
                 case 1: // Monitoring (Balances BarChart)
-                    HomeMonitoringView(for: period, containing: selectedDate)
+                    HomeMonitoringView(for: selectedPeriod, containing: selectedDate)
                 default: // Transactions (Incomes/expenses BarChart)
                     HomeTransactionsView()
                 }
@@ -93,6 +93,9 @@ struct HomeView: View {
         .onChange(of: scenePhase) { old, newPhase in
             print("ℹ️ \(scenePhase)")
             balanceRepository.updateWidgets(accounts: accounts)
+        }
+        .onAppear {
+            selectedDate = selectedDate.normalizedDate(selectedPeriod: selectedPeriod)
         }
 #if os(macOS)
         .padding()

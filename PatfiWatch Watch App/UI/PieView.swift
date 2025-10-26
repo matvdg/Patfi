@@ -6,7 +6,8 @@ struct PieView: View {
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     @State private var mode: WatchMode = .categories
     @State private var showModeSheet = false
-    @State private var selectedMonth: Date = .now
+    @State private var selectedDate: Date = .now
+    @State private var selectedPeriod: Period = .month
     private let balanceRepository = BalanceRepository()
     private let accountRepository = AccountRepository()
     private let transactionRepository = TransactionRepository()
@@ -15,9 +16,9 @@ struct PieView: View {
         Group {
             if accounts.isEmpty {
                 ContentUnavailableView(
-                    "noData",
+                    "NoData",
                     systemImage: "chart.pie",
-                    description: Text("pieChartEmptyDescription")
+                    description: Text("DescriptionEmptyPieChart")
                 )
             } else {
                 List {
@@ -85,7 +86,7 @@ struct PieView: View {
                             .minimumScaleFactor(0.1)
                         }
                     default:
-                        PeriodPicker(selectedDate: $selectedMonth, period: .constant(.months))
+                        PeriodPicker(selectedDate: $selectedDate, selectedPeriod: $selectedPeriod)
                             .toolbar {
                                 ToolbarItem(placement: .bottomBar) {
                                     Button {
@@ -95,7 +96,7 @@ struct PieView: View {
                                     }
                                 }
                             }
-                        ExpensesView(selectedMonth: selectedMonth, sortByPaymentMethod: mode == .paymentMethod)
+                        ExpensesView(selectedDate: selectedDate, selectedPeriod: selectedPeriod, sortByPaymentMethod: mode == .paymentMethod)
                     }
                 }
             }
@@ -103,7 +104,7 @@ struct PieView: View {
         .sheet(isPresented: $showModeSheet) {
             ModeView(mode: $mode)
         }
-        .navigationTitle("distribution")
+        .navigationTitle("Distribution")
     }
 }
 

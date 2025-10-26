@@ -3,13 +3,15 @@ import SwiftUI
 
 struct ExpensesView: View {
     
-    init(selectedMonth: Date, sortByPaymentMethod: Bool) {
-        self.selectedMonth = selectedMonth
+    init(selectedDate: Date, selectedPeriod: Period, sortByPaymentMethod: Bool) {
+        self.selectedDate = selectedDate
+        self.selectedPeriod = selectedPeriod
         self.sortByPaymentMethod = sortByPaymentMethod
-        _transactions = Query(filter: Transaction.predicate(for: .months, containing: selectedMonth), sort: \.date, order: .reverse)
+        _transactions = Query(filter: Transaction.predicate(for: selectedPeriod, containing: selectedDate), sort: \.date, order: .reverse)
     }
     
-    var selectedMonth: Date
+    var selectedPeriod: Period
+    var selectedDate: Date
     var sortByPaymentMethod: Bool
     
     @Query private var transactions: [Transaction]
@@ -38,9 +40,9 @@ struct ExpensesView: View {
     var body: some View {
         if transactions.isEmpty {
             ContentUnavailableView(
-                "noData",
+                "NoData",
                 systemImage: "receipt",
-                description: Text("transactionsEmptyDescription")
+                description: Text("DescriptionEmptyTransactions")
             )
         } else {
             VStack {
@@ -76,7 +78,7 @@ struct ExpensesView: View {
 #Preview {
     NavigationStack {
         List {
-            ExpensesView(selectedMonth: Date(), sortByPaymentMethod: false)
+            ExpensesView(selectedDate: Date(), selectedPeriod: .month, sortByPaymentMethod: false)
                 .modelContainer(ModelContainer.shared)
         }
     }

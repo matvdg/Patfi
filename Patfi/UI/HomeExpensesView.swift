@@ -6,7 +6,7 @@ struct HomeExpensesView: View {
     
     @State private var selectedDate: Date = .now
     @Environment(\.verticalSizeClass) private var verticalSizeClass
-    @State var period: Period = .months
+    @State var selectedPeriod: Period = .month
     
     private var isLandscape: Bool {
 #if os(iOS)
@@ -20,23 +20,23 @@ struct HomeExpensesView: View {
         
         VStack(alignment: .center) {
             if !isLandscape {
-                PeriodPicker(selectedDate: $selectedDate, period: $period)
+                PeriodPicker(selectedDate: $selectedDate, selectedPeriod: $selectedPeriod)
             }
-            ExpensesView(for: period, containing: selectedDate)
+            ExpensesView(for: selectedPeriod, containing: selectedDate)
         }
     }
 }
 
 struct ExpensesView: View {
     
-    init(for period: Period, containing selectedDate: Date) {
+    init(for selectedPeriod: Period, containing selectedDate: Date) {
         self.selectedDate = selectedDate
-        self.period = period
-        _transactions = Query(filter: Transaction.predicate(for: period, containing: selectedDate), sort: \.date, order: .reverse)
+        self.selectedPeriod = selectedPeriod
+        _transactions = Query(filter: Transaction.predicate(for: selectedPeriod, containing: selectedDate), sort: \.date, order: .reverse)
     }
     
     var selectedDate: Date
-    var period: Period
+    var selectedPeriod: Period
     
     @Query private var transactions: [Transaction]
     @Environment(\.modelContext) private var context
@@ -104,9 +104,9 @@ struct ExpensesView: View {
         Group {
             if transactions.isEmpty {
                 ContentUnavailableView(
-                    "noData",
+                    "NoData",
                     systemImage: "receipt",
-                    description: Text("transactionsEmptyDescription")
+                    description: Text("DescriptionEmptyTransactions")
                 )
             } else {
                 
@@ -137,14 +137,14 @@ struct ExpensesView: View {
                                             .swipeActions(edge: .trailing) {
                                                 Button(role: .destructive) {
                                                     transactionRepository.delete(expense, context: context)
-                                                } label: { Label("delete", systemImage: "trash") }
+                                                } label: { Label("Delete", systemImage: "trash") }
                                             }
 #if !os(watchOS)
                                             .contextMenu {
                                                 Button(role: .destructive) {
                                                     transactionRepository.delete(expense, context: context)
                                                 } label: {
-                                                    Label("delete", systemImage: "trash")
+                                                    Label("Delete", systemImage: "trash")
                                                 }
                                             }
 #endif
@@ -194,14 +194,14 @@ struct ExpensesView: View {
                                             .swipeActions(edge: .trailing) {
                                                 Button(role: .destructive) {
                                                     transactionRepository.delete(expense, context: context)
-                                                } label: { Label("delete", systemImage: "trash") }
+                                                } label: { Label("Delete", systemImage: "trash") }
                                             }
 #if !os(watchOS)
                                             .contextMenu {
                                                 Button(role: .destructive) {
                                                     transactionRepository.delete(expense, context: context)
                                                 } label: {
-                                                    Label("delete", systemImage: "trash")
+                                                    Label("Delete", systemImage: "trash")
                                                 }
                                             }
 #endif
@@ -249,13 +249,13 @@ struct ExpensesView: View {
                     collapsedSections.removeAll()
                     allCollapsedBinding.wrappedValue = true
                 }
-                .onChange(of: period) { oldValue, newValue in
+                .onChange(of: selectedPeriod) { oldValue, newValue in
                     collapsedSections.removeAll()
                     allCollapsedBinding.wrappedValue = true
                 }
             }
         }
-        .navigationTitle(isLandscape ? "" : "expenses")
+        .navigationTitle(isLandscape ? "" : "Expenses")
     }
 }
 

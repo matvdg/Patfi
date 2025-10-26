@@ -73,34 +73,34 @@ enum QuickAction: String, Identifiable, CaseIterable {
     private var title: String {
         switch self {
         case .bank:
-            return String(localized: "addBank")
+            return String(localized: "AddBank")
         case .account:
-            return String(localized: "addAccount")
+            return String(localized: "AddAccount")
         case .income:
-            return String(localized: "addIncome")
+            return String(localized: "AddIncome")
         case .expense:
-            return String(localized: "addExpense")
+            return String(localized: "AddExpense")
         case .transfer:
-            return String(localized: "addInternalTransfer")
+            return String(localized: "AddInternalTransfer")
         case .balance:
-            return String(localized: "addBalance")
+            return String(localized: "AddBalance")
         }
     }
     
     private var watchTitle: String {
         switch self {
         case .bank:
-            return String(localized: "bank")
+            return String(localized: "Bank")
         case .account:
-            return String(localized: "account")
+            return String(localized: "Account")
         case .income:
-            return String(localized: "income")
+            return String(localized: "Income")
         case .expense:
-            return String(localized: "expense")
+            return String(localized: "Expense")
         case .transfer:
-            return String(localized: "internalTransfer")
+            return String(localized: "InternalTransfer")
         case .balance:
-            return String(localized: "balance")
+            return String(localized: "Balance")
         }
     }
     
