@@ -107,6 +107,22 @@ struct HomeView: View {
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 Menu {
+                    NavigationLink {
+                        MarketSearchView()
+                    } label: {
+                        Label("Market search", systemImage: "magnifyingglass")
+                    }
+                    NavigationLink {
+                        MarketResultView(symbol: "AAPL", exchange: "NASDAQ")
+                    } label: {
+                        Label("AAPL", systemImage: "apple.logo")
+                    }
+                } label: {
+                    Image(systemName: "bitcoinsign")
+                }
+            }
+            ToolbarItem(placement: .automatic) {
+                Menu {
                     ForEach(QuickAction.allCases, id: \.self) { action in
                         // If there are no accounts, skip actions that require an account
                         if accounts.isEmpty && action.requiresAccount {
@@ -134,6 +150,8 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
-        .modelContainer(ModelContainer.shared)
+    NavigationStack {
+        HomeView()
+    }
+    .modelContainer(ModelContainer.shared)
 }

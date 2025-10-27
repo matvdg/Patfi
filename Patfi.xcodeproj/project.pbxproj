@@ -80,6 +80,13 @@
 			);
 			target = F60DBEBE2E69FD3300ED214A /* Patfi */;
 		};
+		F67662B92EAFD4DC003D0D04 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Market/MarketSearchView.swift,
+			);
+			target = F6B833912E8EA57C00B2AB0C /* PatfiWatch Watch App */;
+		};
 		F69CAE972E7F053F00627394 /* Exceptions for "Shared" folder in "TotalBalanceWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -97,6 +104,7 @@
 				Charts/MonitoringView.swift,
 				Charts/PieChartView.swift,
 				Charts/TransactionChartView.swift,
+				Market/MarketSearchView.swift,
 				Transaction/TransactionRepository.swift,
 				Transaction/UI/AddExpenseView.swift,
 				Transaction/UI/AddIncomeView.swift,
@@ -135,6 +143,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				F69CAE972E7F053F00627394 /* Exceptions for "Shared" folder in "TotalBalanceWidgetExtension" target */,
+				F67662B92EAFD4DC003D0D04 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
