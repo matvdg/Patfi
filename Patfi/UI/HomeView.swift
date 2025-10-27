@@ -84,7 +84,10 @@ struct HomeView: View {
                     case .expenses: HomeExpensesView()
                     }
                 case 1: // Monitoring (Balances BarChart)
-                    HomeMonitoringView(for: selectedPeriod, containing: selectedDate)
+                    MonitoringView(for: selectedPeriod, containing: selectedDate)
+                        .onAppear {
+                            selectedDate = selectedDate.normalizedDate(selectedPeriod: selectedPeriod)
+                        }
                 default: // Transactions (Incomes/expenses BarChart)
                     HomeTransactionsView()
                 }
@@ -92,10 +95,9 @@ struct HomeView: View {
         }
         .onChange(of: scenePhase) { old, newPhase in
             print("ℹ️ \(scenePhase)")
-            balanceRepository.updateWidgets(accounts: accounts)
-        }
-        .onAppear {
-            selectedDate = selectedDate.normalizedDate(selectedPeriod: selectedPeriod)
+            if scenePhase == .background {
+                balanceRepository.updateWidgets(accounts: accounts)
+            }
         }
 #if os(macOS)
         .padding()

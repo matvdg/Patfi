@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-struct BanksView: View {
+struct HomeBanksView: View {
     
     @Environment(\.modelContext) private var context
     @Query(sort: [SortDescriptor(\Bank.name, order: .forward)]) private var banks: [Bank]
@@ -90,6 +90,6 @@ struct BanksView: View {
 }
 
 #Preview {
-    BanksView()
+    HomeBanksView()
         .modelContainer(ModelContainer.shared)
 }

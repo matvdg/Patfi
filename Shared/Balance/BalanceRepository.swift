@@ -16,7 +16,11 @@ class BalanceRepository {
     
     func add(amount: Double, date: Date, account: Account, context: ModelContext) {
         
-        account.currentBalance = amount
+        // Update current balance if necessary
+        if date.isNow(for: .day) {
+            account.currentBalance = amount
+        }
+        
         
         let dayStart = Calendar.current.startOfDay(for: date)
 
@@ -41,14 +45,10 @@ class BalanceRepository {
         try? context.save()
     }
     
-    func delete(_ snap: BalanceSnapshot, context: ModelContext) {
-        context.delete(snap)
-        try? context.save()
-        if let account = snap.account {
-            let last = account.balances?.sorted(by: { $0.date > $1.date }).first?.balance ?? 0
-            account.currentBalance = last
-        }
-        try? context.save()
+    func updateWithTransaction(type: Transaction.TransactionType, amount: Double, account: Account, context: ModelContext) {
+        let latestBalance = account.latestBalance
+        let newBalance = type == .expense ? latestBalance - abs(amount) : latestBalance + abs(amount)
+        add(amount: newBalance, date: Date(), account: account, context: context)
     }
     
     func generateSeries(for selectedPeriod: Period, selectedDate: Date, from snapshots: [BalanceSnapshot]) -> [TotalPoint] {

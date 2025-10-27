@@ -26,15 +26,15 @@ extension BalanceSnapshot {
         switch selectedPeriod {
         case .day:
             let startOfDay = calendar.startOfDay(for: date)
-            start = calendar.date(byAdding: .day, value: -12, to: startOfDay)!
+            start = calendar.date(byAdding: .day, value: -365, to: startOfDay)!
             end = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
         case .week:
             let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: date)!.start
-            start = calendar.date(byAdding: .weekOfYear, value: -12, to: startOfWeek)!
+            start = calendar.date(byAdding: .weekOfYear, value: -100, to: startOfWeek)!
             end = calendar.date(byAdding: .weekOfYear, value: 1, to: startOfWeek)!
         case .month:
             let startOfMonth = calendar.dateInterval(of: .month, for: date)!.start
-            start = calendar.date(byAdding: .month, value: -12, to: startOfMonth)!
+            start = calendar.date(byAdding: .month, value: -24, to: startOfMonth)!
             end = calendar.date(byAdding: .month, value: 1, to: startOfMonth)!
         case .year:
             let startOfYear = calendar.dateInterval(of: .year, for: date)!.start

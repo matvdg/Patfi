@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-struct PieView: View {
+struct HomePieView: View {
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     @State private var mode: WatchMode = .categories
@@ -110,7 +110,7 @@ struct PieView: View {
 
 #Preview {
     NavigationStack {
-        PieView()
+        HomePieView()
             .modelContainer(ModelContainer.shared)
     }
 }

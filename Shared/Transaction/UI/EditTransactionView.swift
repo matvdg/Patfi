@@ -37,7 +37,7 @@ struct EditTransactionView: View {
                     .textInputAutocapitalization(.words)
 #endif
                     .autocorrectionDisabled()
-
+                
                 if !transaction.isInternalTransfer {
                     PaymentMethodPicker(paymentMethod: $transaction.paymentMethod)
                 }
@@ -60,7 +60,7 @@ struct EditTransactionView: View {
             } header: {
                 Text("Edit")
             }
-
+            
         }
         .navigationTitle(transaction.isInternalTransfer ? "InternalTransfer" : transaction.transactionType == .expense ? "Expense" : "Income")
         .toolbar {
@@ -92,9 +92,9 @@ struct EditTransactionView: View {
             EditTransactionView(transaction: Transaction(title: "Wage", transactionType: .income, paymentMethod: .bankTransfer, expenseCategory: nil, date: Date(), amount: 2000, account: Account(name: "CAV", category: .current, bank: Bank(name: "CIC", color: .green, logoAvaibility: .available)), isInternalTransfer: false))
         }
     }
-    #if !os(macOS)
+#if !os(macOS)
     .tabViewStyle(.page)
-    #endif
+#endif
     .ignoresSafeArea()
     .modelContainer(ModelContainer.shared)
 }

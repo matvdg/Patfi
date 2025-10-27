@@ -113,9 +113,7 @@ class TransactionRepository {
         }
         
         // Update balance for the account
-        let latestBalance = account.latestBalance
-        let newBalance = type == .expense ? latestBalance - abs(amount) : latestBalance + abs(amount)
-        balanceRepository.add(amount: newBalance, date: Date(), account: account, context: context)
+        balanceRepository.updateWithTransaction(type: type, amount: amount, account: account, context: context)
     }
     
 }

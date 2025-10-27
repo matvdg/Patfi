@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-struct TotalView: View {
+struct HomeTotalView: View {
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     private let balanceRepository = BalanceRepository()
@@ -20,6 +20,6 @@ struct TotalView: View {
 }
 
 #Preview {
-    TotalView()
+    HomeTotalView()
         .modelContainer(ModelContainer.shared)
 }

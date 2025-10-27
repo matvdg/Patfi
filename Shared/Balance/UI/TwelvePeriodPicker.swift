@@ -80,12 +80,12 @@ struct TwelvePeriodPicker: View {
         let calendar = Calendar.current
         switch selectedPeriod {
         case .day:
-            let startDate = calendar.date(byAdding: .day, value: -12, to: selectedDate)!
+            let startDate = calendar.date(byAdding: .day, value: -11, to: selectedDate)!
             let startStr = startDate.formatted(Date.FormatStyle().day().month(.abbreviated))
             let endStr = isNow ? now : selectedDate.formatted(Date.FormatStyle().day().month(.abbreviated).year())
             return "\(startStr) – \(endStr)".capitalized
         case .week:
-            let startDate = calendar.date(byAdding: .weekOfYear, value: -12, to: selectedDate)!
+            let startDate = calendar.date(byAdding: .weekOfYear, value: -11, to: selectedDate)!
             let startWeek = calendar.component(.weekOfYear, from: startDate)
             let startYear = calendar.component(.yearForWeekOfYear, from: startDate)
             let endWeek = calendar.component(.weekOfYear, from: selectedDate)
@@ -98,12 +98,12 @@ struct TwelvePeriodPicker: View {
                 return "\(startWeekStr) \(startYear) – \(endWeekStr)"
             }
         case .month:
-            let startDate = calendar.date(byAdding: .month, value: -12, to: selectedDate)!
+            let startDate = calendar.date(byAdding: .month, value: -11, to: selectedDate)!
             let startStr = startDate.formatted(.dateTime.month(.abbreviated).year())
             let endStr = isNow ? now : selectedDate.formatted(.dateTime.month(.abbreviated).year())
             return "\(startStr) – \(endStr)".capitalized
         case .year:
-            let startDate = calendar.date(byAdding: .year, value: -5, to: selectedDate)!
+            let startDate = calendar.date(byAdding: .year, value: -4, to: selectedDate)!
             let startYear = calendar.component(.year, from: startDate)
             let endYear = isNow ? now : "\(calendar.component(.year, from: selectedDate))"
             return "\(startYear) – \(endYear)"

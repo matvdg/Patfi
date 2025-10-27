@@ -3,31 +3,48 @@ import SwiftUI
 struct TransactionRow: View {
     
     var transaction: Transaction
+    var showPaymentMethodLogo: Bool = false
     
     var body: some View {
         
         HStack(alignment: .center, spacing: 8) {
-            ExpenseCategoryLogo(cat: transaction.expenseCategory, isInternalTransfer: transaction.isInternalTransfer)
+            if showPaymentMethodLogo {
+                PaymentMethodLogo(paymentMethod: transaction.paymentMethod)
+            } else {
+                ExpenseCategoryLogo(cat: transaction.expenseCategory, isInternalTransfer: transaction.isInternalTransfer)
+            }
+#if os(watchOS)
             VStack(alignment: .leading, spacing: 3) {
                 Text(transaction.title)
                 Text(transaction.date.toDateStyleShortString)
             }
             .font(.footnote)
+#else
+            HStack(alignment: .center, spacing: 3) {
+                Text(transaction.date.toDateStyleShortString)
+                Text("•")
+                Text(transaction.title)
+            }
+            .font(.footnote)
+#endif
             Spacer()
             AmountText(amount: transaction.transactionType == .expense ? -transaction.amount : transaction.amount)
                 .font(.body)
                 .bold()
-                
         }
         .lineLimit(1)
         .minimumScaleFactor(0.1)
     }
 }
 
+
+
+
+
 #Preview {
     NavigationStack {
         List {
-            TransactionRow(transaction: Transaction(title: "Carrefour", transactionType: .expense, paymentMethod: .applePay, expenseCategory: .foodGroceries, date: Date(), amount: 34.67))
+            TransactionRow(transaction: Transaction(title: "Carrefour", transactionType: .expense, paymentMethod: .applePay, expenseCategory: .foodGroceries, date: Date(), amount: 34.67), showPaymentMethodLogo: true)
             TransactionRow(transaction: Transaction(title: "Carrefour", transactionType: .expense, paymentMethod: .applePay, expenseCategory: .foodGroceries, date: Date(), amount: 34.67))
             TransactionRow(transaction: Transaction(title: "McDo", transactionType: .expense, paymentMethod: .creditCard, expenseCategory: .diningOut, date: Date(), amount: Double.random(in: 1...100)))
             TransactionRow(transaction: Transaction(title: "Rent", transactionType: .expense, paymentMethod: .creditCard, expenseCategory: .housing, date: Date(), amount: 800))

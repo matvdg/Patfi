@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-struct AccountsView: View {
+struct HomeAccountsView: View {
     
     @State private var sorting: Sorting = .bank
     @State private var showSortSheet = false
@@ -147,6 +147,6 @@ struct AccountsView: View {
 }
 
 #Preview {
-    NavigationStack { AccountsView() }
+    NavigationStack { HomeAccountsView() }
         .modelContainer(ModelContainer.shared)
 }

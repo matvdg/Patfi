@@ -35,8 +35,8 @@ struct ExpensesView: View {
         _transactions = Query(filter: Transaction.predicate(for: selectedPeriod, containing: selectedDate), sort: \.date, order: .reverse)
     }
     
-    var selectedDate: Date
-    var selectedPeriod: Period
+    private var selectedDate: Date
+    private var selectedPeriod: Period
     
     @Query private var transactions: [Transaction]
     @Environment(\.modelContext) private var context

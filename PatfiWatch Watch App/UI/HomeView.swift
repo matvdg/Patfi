@@ -10,23 +10,23 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .center, spacing: 8) {
-                TotalView()
+                HomeTotalView()
                 HStack(alignment: .center, spacing: 8) {
                     NavigationLink {
                         // View displaying accounts list
-                        AccountsView()
+                        HomeAccountsView()
                     } label: {
                         Image(systemName: "list.bullet")
                     }
                     NavigationLink {
                         // View displaying banks list
-                        BanksView()
+                        HomeBanksView()
                     } label: {
                         Image(systemName: Bank.sfSymbol)
                     }
                     NavigationLink {
                         // View displaying transactions list
-                        TransactionsView()
+                        HomeTransactionsView()
                     } label: {
                         Image(systemName: "receipt")
                     }
@@ -34,7 +34,7 @@ struct HomeView: View {
                 HStack(alignment: .center, spacing: 8) {
                     NavigationLink {
                         // View displaying pie charts (for accounts & expenses)
-                        PieView()
+                        HomePieView()
                     } label: {
                         Image(systemName: "chart.pie")
                     }
@@ -46,7 +46,7 @@ struct HomeView: View {
                     .buttonStyle(.glassProminent)
                     NavigationLink {
                         // View displaying monitoring bar charts
-                        MonitoringView()
+                        HomeMonitoringView()
                     } label: {
                         Image(systemName: "chart.bar")
                     }

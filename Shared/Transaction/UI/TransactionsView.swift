@@ -5,12 +5,37 @@ struct HomeTransactionsView: View {
     
     @State private var selectedDate: Date = .now
     @State private var selectedPeriod: Period = .month
+    @State private var showActions: Bool = false
+    
+    private var account: Account?
+    
+    init(account: Account? = nil) {
+        self.account = account
+    }
     
     var body: some View {
         VStack {
             PeriodPicker(selectedDate: $selectedDate, selectedPeriod: $selectedPeriod)
-            TransactionsView(for: selectedPeriod, containing: selectedDate)
+            TransactionsView(for: selectedPeriod, containing: selectedDate, account: account)
         }
+#if os(watchOS)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
+                    showActions = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+        .confirmationDialog("Add", isPresented: $showActions) {
+            ForEach(QuickAction.allCases, id: \.self) { action in
+                NavigationLink(action.localizedTitle) {
+                    action.destinationView()
+                }
+            }
+        }
+#endif
     }
 }
 
@@ -18,30 +43,40 @@ struct TransactionsView: View {
     
     private var selectedDate: Date
     private var selectedPeriod: Period
+    private var account: Account?
     
     @Query private var transactions: [Transaction]
     @Environment(\.modelContext) private var context
     @State private var hideInternalTransfers = false
-
+    
     private let transactionRepository = TransactionRepository()
-
-    init(for selectedPeriod: Period, containing selectedDate: Date) {
+    
+    init(for selectedPeriod: Period, containing selectedDate: Date, account: Account?) {
         self.selectedDate = selectedDate
         self.selectedPeriod = selectedPeriod
+        self.account = account
         _transactions = Query(filter: Transaction.predicate(for: selectedPeriod, containing: selectedDate), sort: \.date, order: .reverse)
     }
     
-    private var filteredTransactions: [Transaction] {
-        if hideInternalTransfers {
-            return transactions.filter { !$0.isInternalTransfer }
-        } else {
-            return transactions
+    private var accountTransactions: [Transaction] {
+        var accountTransactions: [Transaction] = transactions
+        if let account {
+            accountTransactions = transactions.filter { $0.account?.id == account.id }
         }
+        return accountTransactions
     }
-
+    
+    private var filteredTransactions: [Transaction] {
+        var filteredTransactions: [Transaction] = accountTransactions
+        if hideInternalTransfers {
+            filteredTransactions = accountTransactions.filter { !$0.isInternalTransfer }
+        }
+        return filteredTransactions
+    }
+    
     var body: some View {
         Group {
-            if transactions.isEmpty {
+            if accountTransactions.isEmpty {
                 VStack {
                     ContentUnavailableView(
                         "NoData",
@@ -52,9 +87,11 @@ struct TransactionsView: View {
                 }
             } else {
                 VStack {
+#if !os(watchOS)
                     Toggle("HideInternalTransfers", isOn: $hideInternalTransfers)
                         .padding(.horizontal)
                     TransactionChartView(transactions: filteredTransactions)
+#endif
                     List(filteredTransactions) { transaction in
                         NavigationLink {
                             EditTransactionView(transaction: transaction)
