@@ -53,7 +53,7 @@ struct AccountsView: View {
                 let sorted = accounts.sorted {
                     switch sorting {
                     case .name: return $0.name < $1.name
-                    default: return $0.latestBalance?.balance ?? 0 > $1.latestBalance?.balance ?? 0
+                    default: return $0.latestBalance > $1.latestBalance
                     }
                 }
                 List {

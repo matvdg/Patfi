@@ -36,7 +36,8 @@ struct AddBalanceView: View {
                 DatePicker("Date", selection: $date, displayedComponents: [.date])
             }
             footer: {
-                if let account = selectedAccount, let previousBalance = account.latestBalance?.balance {
+                if let account = selectedAccount {
+                    let previousBalance = account.latestBalance
                     HStack {
                         if let bank = account.bank {
                             Text(bank.name)

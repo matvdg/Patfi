@@ -97,9 +97,6 @@ struct NumericalKeyboardView: View {
                 inputString = ""
             }
         }
-        .onChange(of: inputString) {
-            print(inputString)
-        }
     }
     
     private func updateAmountFromInput() {

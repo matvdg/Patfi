@@ -42,7 +42,8 @@ struct AddInternalTransferView: View {
                 Toggle("MarkAsSavingsOrInvestment", isOn: $markAsDavingsInvestments)
             } footer: {
                 VStack(alignment: .leading, spacing: 8) {
-                    if let sourceAccount, let balance = sourceAccount.latestBalance?.balance {
+                    if let sourceAccount {
+                        let balance = sourceAccount.latestBalance
                         HStack {
                             if let bank = sourceAccount.bank {
                                 Text(bank.name)
@@ -57,7 +58,8 @@ struct AddInternalTransferView: View {
                             }
                         }
                     }
-                    if let destinationAccount, let balance = destinationAccount.latestBalance?.balance {
+                    if let destinationAccount {
+                        let balance = destinationAccount.latestBalance
                         HStack {
                             if let bank = destinationAccount.bank {
                                 Text(bank.name)

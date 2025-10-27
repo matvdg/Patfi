@@ -685,13 +685,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This will also delete all its associated balances"
+            "value" : "This will also delete all its associated transactions and balances"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cela va aussi supprimer tous les soldes associés"
+            "value" : "Cela va aussi supprimer tous les opérations et soldes associés"
           }
         }
       }

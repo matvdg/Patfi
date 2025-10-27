@@ -24,7 +24,7 @@ class AccountRepository {
     }
     
     func create(name: String, balance: Double, category: Category, bank: Bank, context: ModelContext) {
-        let account = Account(name: name, category: category, bank: bank)
+        let account = Account(name: name, category: category, currentBalance: balance, bank: bank)
         context.insert(account)
         let snap = BalanceSnapshot(date: Date(), balance: balance, account: account)
         context.insert(snap)

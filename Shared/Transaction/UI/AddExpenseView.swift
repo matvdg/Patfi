@@ -41,7 +41,8 @@ struct AddExpenseView: View {
                 ExpenseCategoryPicker(expenseCategory: $expenseCategory)
                 DatePicker("Date", selection: $date, displayedComponents: [.date])
             } footer: {
-                if let account = selectedAccount, let balance = account.latestBalance?.balance {
+                if let account = selectedAccount {
+                    let balance = account.latestBalance
                     HStack {
                         if let bank = account.bank {
                             Text(bank.name)

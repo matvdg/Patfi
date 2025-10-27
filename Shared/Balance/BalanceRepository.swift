@@ -16,6 +16,8 @@ class BalanceRepository {
     
     func add(amount: Double, date: Date, account: Account, context: ModelContext) {
         
+        account.currentBalance = amount
+        
         let dayStart = Calendar.current.startOfDay(for: date)
 
         // Compute day range for predicate-friendly filtering
@@ -41,6 +43,11 @@ class BalanceRepository {
     
     func delete(_ snap: BalanceSnapshot, context: ModelContext) {
         context.delete(snap)
+        try? context.save()
+        if let account = snap.account {
+            let last = account.balances?.sorted(by: { $0.date > $1.date }).first?.balance ?? 0
+            account.currentBalance = last
+        }
         try? context.save()
     }
     
@@ -120,7 +127,7 @@ class BalanceRepository {
     }
     
     func balance(for accounts: [Account]) -> Double {
-        accounts.reduce(0) { $0 + ($1.latestBalance?.balance ?? 0) }
+        accounts.reduce(0) { $0 + $1.latestBalance }
     }
 
     /// Persists balance information (total, per-account, per-category, per-bank) to AppGroup.defaults and reloads widget timelines.
@@ -148,9 +155,7 @@ class BalanceRepository {
         var result: [String: Double] = [:]
         for account in accounts {
             let name = "\(account.bank?.name ?? "") • \(account.name)"
-            if let balance = account.latestBalance?.balance {
-                result[name] = balance
-            }
+            result[name] = account.latestBalance
         }
         return result
     }

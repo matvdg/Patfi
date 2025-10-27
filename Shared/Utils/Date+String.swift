@@ -27,9 +27,7 @@ extension Date {
         case .year:
             date = cal.dateInterval(of: .year, for: self)!.end
         }
-        date = date.addingTimeInterval(-1)
-        print(date)
-        return date
+        return date.addingTimeInterval(-1)
     }
     
     func isNow(for selectedPeriod: Period) -> Bool {
