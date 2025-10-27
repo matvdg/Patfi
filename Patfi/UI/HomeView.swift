@@ -13,6 +13,8 @@ struct HomeView: View {
     @State var mode: Mode = .accounts
     @State private var selectedDate: Date = .now
     @State private var selectedPeriod: Period = .month
+    @AppStorage("isBetaEnabled") private var isBetaEnabled = false
+    @State private var showBetaBadge = false
     
     private let accountRepository = AccountRepository()
     private let balanceRepository = BalanceRepository()
@@ -103,22 +105,49 @@ struct HomeView: View {
         .padding()
 #endif
         .ignoresSafeArea(edges: .bottom)
-        
+        .overlay(alignment: .topLeading) {
+            ZStack {
+                Color.clear
+                    .frame(width: 60, height: 60)
+                    .contentShape(Rectangle())
+                    .onTapGesture(count: 3) {
+                        isBetaEnabled.toggle()
+                        print("🧪 Beta mode toggled → \(isBetaEnabled)")
+                        #if os(iOS)
+                        let generator = UINotificationFeedbackGenerator()
+                        generator.notificationOccurred(.success)
+                        #endif
+                        withAnimation {
+                            showBetaBadge = true
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation {
+                                showBetaBadge = false
+                            }
+                        }
+                    }
+                if showBetaBadge {
+                    BetaBadge()
+                }
+            }
+        }
         .toolbar {
-            ToolbarItem(placement: .automatic) {
-                Menu {
-                    NavigationLink {
-                        MarketSearchView()
+            if isBetaEnabled {
+                ToolbarItem(placement: .automatic) {
+                    Menu {
+                        NavigationLink {
+                            MarketSearchView()
+                        } label: {
+                            Label("Market search", systemImage: "magnifyingglass")
+                        }
+                        NavigationLink {
+                            MarketResultView(symbol: "AAPL", exchange: "NASDAQ")
+                        } label: {
+                            Label("AAPL", systemImage: "apple.logo")
+                        }
                     } label: {
-                        Label("Market search", systemImage: "magnifyingglass")
+                        Image(systemName: "bitcoinsign")
                     }
-                    NavigationLink {
-                        MarketResultView(symbol: "AAPL", exchange: "NASDAQ")
-                    } label: {
-                        Label("AAPL", systemImage: "apple.logo")
-                    }
-                } label: {
-                    Image(systemName: "bitcoinsign")
                 }
             }
             ToolbarItem(placement: .automatic) {

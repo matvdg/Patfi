@@ -4,6 +4,7 @@ struct QuoteResponse: Codable, Identifiable {
     let id = UUID()
     let symbol: String
     let name: String?
+    let instrumentName: String?
     let currency: String?
     let country: String?
     let instrumentType: String?
@@ -44,7 +45,8 @@ struct QuoteResponse: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case symbol
         case exchange
-        case name = "instrument_name"
+        case name
+        case instrumentName = "instrument_name"
         case instrumentType = "instrument_type"
         case currency
         case country

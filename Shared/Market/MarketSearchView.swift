@@ -32,8 +32,10 @@ struct MarketSearchView: View {
             HStack {
                 TextField("SYMBOL e.g. AAPL", text: $query)
                     .textFieldStyle(.roundedBorder)
+                #if os(iOS)
                     .keyboardType(.asciiCapable)
                     .textInputAutocapitalization(.characters)
+                #endif
                     .autocorrectionDisabled(true)
                     .focused($isSearchFieldFocused)
                     .onSubmit {
@@ -110,7 +112,7 @@ struct MarketSearchView: View {
                         VStack(alignment: .leading) {
                             Text(quote.symbol)
                                 .fontWeight(.bold)
-                            Text(quote.name ?? "")
+                            Text(quote.instrumentName ?? quote.name ?? "")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }

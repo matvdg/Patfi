@@ -7,6 +7,8 @@ struct MarketResultView: View {
     @State private var quote: QuoteResponse?
     @State private var isLoading = true
     @State private var errorMessage: String?
+    @State private var sharesOwned: Double = 58.345036
+    @State private var eurUsdRate: Double? = nil
     
     var body: some View {
         ZStack {
@@ -18,7 +20,7 @@ struct MarketResultView: View {
             .ignoresSafeArea()
             
             if isLoading {
-                ProgressView("Loading quote...")
+                ProgressView("Loading...")
                     .tint(.white)
                     .foregroundColor(.white)
                     .font(.headline)
@@ -32,6 +34,8 @@ struct MarketResultView: View {
                         performanceSection(for: quote)
                         Divider().background(Color.white.opacity(0.2))
                         statsSection(for: quote)
+                        Divider().background(Color.white.opacity(0.2))
+                        mySharesSection(for: quote)
                     }
                     .padding()
                 }
@@ -45,7 +49,6 @@ struct MarketResultView: View {
             await fetchQuote()
         }
         .navigationTitle(symbol)
-        .navigationBarTitleDisplayMode(.inline)
     }
     
     private func headerSection(for quote: QuoteResponse) -> some View {
@@ -56,6 +59,9 @@ struct MarketResultView: View {
                 .foregroundStyle(.white)
             
             HStack(spacing: 12) {
+                if quote.symbol == "AAPL" {
+                    Text("")
+                }
                 Text("\(quote.symbol)")
                     .font(.headline)
                     .foregroundColor(.white.opacity(0.8))
@@ -81,9 +87,16 @@ struct MarketResultView: View {
                 Text("Current Price")
                     .font(.caption)
                     .foregroundColor(.white.opacity(0.6))
-                Text("\(close)")
-                    .font(.system(size: 40, weight: .bold, design: .rounded))
-                    .foregroundColor(.green)
+                HStack(alignment: .bottom, spacing: 20) {
+                    Text("\(quote.currencySymbol)\(close)")
+                        .font(.system(size: 40, weight: .bold, design: .rounded))
+                    if let eurUsdRate {
+                        Text("\((Double(close) ?? 0)/eurUsdRate) €")
+                            .font(.headline)
+                    }
+                    
+                }
+                .foregroundColor(.green)
             }
             
             if let change = quote.change, let percent = quote.percentChange {
@@ -143,10 +156,61 @@ struct MarketResultView: View {
         }
     }
     
+    private func mySharesSection(for quote: QuoteResponse) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("My Shares")
+                .font(.title3)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .padding(.bottom, 4)
+
+            HStack {
+                Text("Shares owned:")
+                TextField("0", value: $sharesOwned, format: .number)
+                #if os(iOS)
+                    .keyboardType(.decimalPad)
+                #endif
+                    .frame(width: 100)
+            }
+            .foregroundColor(.white.opacity(0.9))
+
+            if let closeStr = quote.close, let close = Double(closeStr) {
+                let totalUSD = close * sharesOwned
+                Text("Total value: \(quote.currencySymbol)\(totalUSD, format: .number.precision(.fractionLength(2)))")
+                    .foregroundColor(.white)
+
+                if let eurUsdRate = eurUsdRate {
+                    let totalEUR = totalUSD / eurUsdRate
+                    Text("Total value: \(totalEUR.currencyAmount)")
+                        .foregroundColor(.white)
+                    HStack {
+                        Text("EUR/USD rate: \(eurUsdRate, format: .number.precision(.fractionLength(5)))")
+                            .foregroundColor(.white.opacity(0.7))
+                        Text("USD/EUR rate: \(1/eurUsdRate, format: .number.precision(.fractionLength(5)))")
+                            .foregroundColor(.white.opacity(0.7))
+                    }
+                    
+                } else {
+                    ProgressView("Fetching EUR/USD rate…")
+                        .tint(.white)
+                        .task {
+                            do {
+                                eurUsdRate = try await MarketRepository().fetchEURUSD()
+                            } catch {
+                                print("⚠️ EUR/USD fetch failed:", error)
+                            }
+                        }
+                }
+            }
+        }
+        .padding(.top)
+    }
+    
     private func fetchQuote() async {
         do {
             let result = try await MarketRepository().fetchQuote(for: symbol, exchange: exchange)
             quote = result
+            print(quote?.name ?? "No name")
         } catch {
             errorMessage = "Failed to load quote."
         }
