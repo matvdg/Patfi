@@ -10,8 +10,15 @@ final class Account: Identifiable, Hashable {
     var isDefault: Bool = false
     var currentBalance: Double?
     
+    var isAsset: Bool {
+        [.bonds, .crypto, .stocks, .commodities].contains(category)
+    }
+    
     @Relationship(inverse: \Bank.accounts)
     var bank: Bank? = nil
+    
+    @Relationship(deleteRule: .cascade)
+    var asset: Asset? = nil
     
     @Relationship(deleteRule: .cascade, inverse: \BalanceSnapshot.account)
     var balances: [BalanceSnapshot]? = nil
@@ -34,5 +41,31 @@ final class Account: Identifiable, Hashable {
         let last = balances?.sorted(by: { $0.date > $1.date }).first?.balance ?? 0
         currentBalance = last
         return last
+    }
+}
+
+@Model
+final class Asset: Identifiable, Hashable {
+    
+    var name: String
+    var quantity: Double
+    var symbol: String
+    var latestPrice: Double
+    var totalInAssetCurrency: Double
+    var totalInLocalCurrency: Double
+    var currencySymbol: String
+
+    @Relationship(inverse: \Account.asset)
+    var account: Account? = nil
+
+    init(name: String, quantity: Double, symbol: String, latestPrice: Double, totalInAssetCurrency: Double, totalInLocalCurrency: Double, currencySymbol: String, account: Account? = nil) {
+        self.quantity = quantity
+        self.symbol = symbol
+        self.latestPrice = latestPrice
+        self.totalInAssetCurrency = totalInAssetCurrency
+        self.totalInLocalCurrency = totalInLocalCurrency
+        self.account = account
+        self.name = name
+        self.currencySymbol = currencySymbol
     }
 }

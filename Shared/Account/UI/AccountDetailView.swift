@@ -5,6 +5,7 @@ struct AccountDetailView: View {
     
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("isBetaEnabled") private var isBetaEnabled = false
     
     @Bindable var account: Account
     
@@ -102,6 +103,23 @@ struct AccountDetailView: View {
                 }
             }
             
+            // MARK: - ßeta market sync
+            #if !os(watchOS)
+            if isBetaEnabled && account.isAsset  {
+                Section("🧪 ßeta market sync") {
+                    NavigationLink {
+                        MarketSearchView()
+                    } label: {
+                        if let asset = account.asset {
+                            AssetRow(asset: asset)
+                        } else {
+                            Label("Search a symbol", systemImage: "magnifyingglass")
+                                .foregroundColor(.primary)
+                        }
+                    }
+                }
+            }
+            #endif
         }
         .formStyle(.grouped)
         .navigationDestination(isPresented: $showAddSnapshot, destination: {
@@ -146,7 +164,8 @@ struct AccountDetailView: View {
 }
 
 #Preview {
-    let account = Account(name: "BoursoBank", category: .savings, currentBalance: 100000)
+    UserDefaults.standard.set(true, forKey: "isBetaEnabled")
+    let account = Account(name: "AAPL", category: .stocks, currentBalance: 13400)
     return NavigationStack { AccountDetailView(account: account) }.modelContainer(ModelContainer.shared)
 }
 

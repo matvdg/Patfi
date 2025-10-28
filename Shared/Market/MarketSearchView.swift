@@ -5,6 +5,7 @@ struct MarketSearchView: View {
     @State private var results: [QuoteResponse] = []
     @State private var isLoading = false
     @State private var errorMessage: String? = nil
+    @State private var showTwelveDataView: Bool = false
 
     @State private var selectedFlag: String = String(localized: "All")
     @State private var selectedCurrency: String = String(localized: "All")
@@ -137,14 +138,21 @@ struct MarketSearchView: View {
             }
         }
         .navigationTitle("Market search")
+        .navigationDestination(isPresented: $showTwelveDataView) {
+            TwelveDataView()
+        }
     }
 
     func performSearch() async {
         guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        guard let apiKey = AppIDs.twelveDataApiKey else {
+            showTwelveDataView = true
+            return
+        }
         isLoading = true
         errorMessage = nil
         do {
-            var searchResults = try await MarketRepository().searchQuotes(query: query)
+            var searchResults = try await MarketRepository().searchQuotes(query: query, apiKey: apiKey)
             searchResults = searchResults.filter { $0.symbol == query }
             results = searchResults
         } catch {

@@ -8,15 +8,13 @@ enum TwelveDataError: Error {
 
 class MarketRepository {
     
-    // TwelveData free plan
-    private let apiKey = "589930dcbf5547c69e9d8b716181e79e"
     private let baseURL = URL(string: "https://api.twelvedata.com")!
     
     /// Fetches the latest quote for a given symbol from Twelve Data API.
     /// - Parameter symbol: The ticker symbol to fetch.
     /// - Parameter exchange: The optional exchange code.
     /// - Returns: QuoteResponse with symbol, name, price, and currency.
-    func fetchQuote(for symbol: String, exchange: String? = nil) async throws -> QuoteResponse {
+    func fetchQuote(for symbol: String, exchange: String? = nil, apiKey: String) async throws -> QuoteResponse {
         var fullSymbol = symbol
         if let exchange = exchange, !exchange.isEmpty {
             fullSymbol += ":\(exchange)"
@@ -57,7 +55,7 @@ class MarketRepository {
     /// Searches for quotes matching the query from Twelve Data API.
     /// - Parameter query: The search query (symbol or name).
     /// - Returns: An array of QuoteResponse matching the query.
-    func searchQuotes(query: String) async throws -> [QuoteResponse] {
+    func searchQuotes(query: String, apiKey: String) async throws -> [QuoteResponse] {
         var components = URLComponents(url: baseURL.appendingPathComponent("symbol_search"), resolvingAgainstBaseURL: false)
         components?.queryItems = [
             URLQueryItem(name: "symbol", value: query),
@@ -92,7 +90,7 @@ class MarketRepository {
     
     /// Fetches the latest EUR/USD exchange rate (last close value) from Twelve Data API.
     /// - Returns: The most recent close value as Double.
-    func fetchEURUSD() async throws -> Double {
+    func fetchEURUSD(apiKey: String) async throws -> Double {
         var components = URLComponents(url: baseURL.appendingPathComponent("time_series"), resolvingAgainstBaseURL: false)
         components?.queryItems = [
             URLQueryItem(name: "symbol", value: "EUR/USD"),
@@ -130,6 +128,37 @@ class MarketRepository {
             return close
         } catch {
             throw TwelveDataError.decodingFailed
+        }
+    }
+    
+    
+    /// Validates if a Twelve Data API key is valid by performing a lightweight test request.
+    /// - Parameter apiKey: The API key to validate.
+    /// - Returns: `true` if the key is valid, otherwise `false`.
+    func validateAPIKey(_ apiKey: String) async -> Bool {
+        var components = URLComponents(url: baseURL.appendingPathComponent("quote"), resolvingAgainstBaseURL: false)
+        components?.queryItems = [
+            URLQueryItem(name: "symbol", value: "AAPL"),
+            URLQueryItem(name: "apikey", value: apiKey)
+        ]
+        
+        guard let url = components?.url else {
+            return false
+        }
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                return false
+            }
+            let json = String(decoding: data, as: UTF8.self)
+            if json.contains("401") {
+                return false
+            } else {
+                return true
+            }
+        } catch {
+            return false
         }
     }
 }

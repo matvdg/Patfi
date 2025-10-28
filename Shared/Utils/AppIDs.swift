@@ -8,6 +8,15 @@ enum AppIDs {
     }
     static let iCloudID = "iCloud.fr.matvdg.patfi"
     
+    static var twelveDataApiKey: String? {
+        get {
+            AppIDs.defaults.string(forKey: Keys.twelveDataApiKey)
+        }
+        set {
+            AppIDs.defaults.set(newValue, forKey: Keys.twelveDataApiKey)
+        }
+    }
+    
 }
 
 enum Keys {
@@ -15,6 +24,7 @@ enum Keys {
     static let balancesPerAccount = "balancesPerAccount"
     static let balancesPerCategory = "balancesPerCategory"
     static let balancesPerBank = "balancesPerBank"
+    static let twelveDataApiKey = "twelveDataApiKey"
 }
 
 struct BalanceReader {

@@ -83,7 +83,9 @@
 		F67662B92EAFD4DC003D0D04 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Market/MarketResultView.swift,
 				Market/MarketSearchView.swift,
+				Market/TwelveDataView.swift,
 			);
 			target = F6B833912E8EA57C00B2AB0C /* PatfiWatch Watch App */;
 		};
@@ -104,7 +106,9 @@
 				Charts/MonitoringView.swift,
 				Charts/PieChartView.swift,
 				Charts/TransactionChartView.swift,
+				Market/MarketResultView.swift,
 				Market/MarketSearchView.swift,
+				Market/TwelveDataView.swift,
 				Transaction/TransactionRepository.swift,
 				Transaction/UI/AddExpenseView.swift,
 				Transaction/UI/AddIncomeView.swift,

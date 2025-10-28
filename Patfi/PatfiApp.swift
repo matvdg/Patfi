@@ -62,6 +62,10 @@ struct PatfiApp: App {
             .onChange(of: scenePhase) {
                 UIApplication.shared.shortcutItems = QuickAction.itemsForCurrentContext
             }
+            .onAppear {
+                // Reset TwelveDataApiKey
+                AppIDs.twelveDataApiKey = nil
+            }
 #else
             // On macOS, just show HomeView without quick action logic
             NavigationStack { HomeView() }

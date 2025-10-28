@@ -42,6 +42,10 @@ extension Double {
             }
         }
     }
+    
+    var twoDecimalsString: String {
+        String(format: "%.2f", self)
+    }
 }
 
 extension Double? {

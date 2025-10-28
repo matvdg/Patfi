@@ -7,8 +7,9 @@ struct MarketResultView: View {
     @State private var quote: QuoteResponse?
     @State private var isLoading = true
     @State private var errorMessage: String?
-    @State private var sharesOwned: Double = 58.345036
+    @State private var sharesOwned: Double = 0
     @State private var eurUsdRate: Double? = nil
+    @State private var showTwelveDataView: Bool = false
     
     var body: some View {
         ZStack {
@@ -49,6 +50,9 @@ struct MarketResultView: View {
             await fetchQuote()
         }
         .navigationTitle(symbol)
+        .navigationDestination(isPresented: $showTwelveDataView) {
+            TwelveDataView()
+        }
     }
     
     private func headerSection(for quote: QuoteResponse) -> some View {
@@ -83,15 +87,15 @@ struct MarketResultView: View {
     
     private func priceSection(for quote: QuoteResponse) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            if let close = quote.close {
+            if let close = quote.close, let number = Double(close) {
                 Text("Current Price")
                     .font(.caption)
                     .foregroundColor(.white.opacity(0.6))
                 HStack(alignment: .bottom, spacing: 20) {
-                    Text("\(quote.currencySymbol)\(close)")
+                    Text("\(quote.currencySymbol)\(number.twoDecimalsString)")
                         .font(.system(size: 40, weight: .bold, design: .rounded))
                     if let eurUsdRate {
-                        Text("\((Double(close) ?? 0)/eurUsdRate) €")
+                        Text("\((number/eurUsdRate).twoDecimalsString) €")
                             .font(.headline)
                     }
                     
@@ -123,6 +127,7 @@ struct MarketResultView: View {
                     Text("Open: \(quote.open ?? "-")")
                     Text("High: \(quote.high ?? "-")")
                     Text("Low: \(quote.low ?? "-")")
+                    Text("Close: \(quote.close ?? "-")")
                     Text("Prev Close: \(quote.previousClose ?? "-")")
                 }
                 .foregroundColor(.white.opacity(0.8))
@@ -194,8 +199,9 @@ struct MarketResultView: View {
                     ProgressView("Fetching EUR/USD rate…")
                         .tint(.white)
                         .task {
+                            guard let apiKey = AppIDs.twelveDataApiKey else { return }
                             do {
-                                eurUsdRate = try await MarketRepository().fetchEURUSD()
+                                eurUsdRate = try await MarketRepository().fetchEURUSD(apiKey: apiKey)
                             } catch {
                                 print("⚠️ EUR/USD fetch failed:", error)
                             }
@@ -207,8 +213,12 @@ struct MarketResultView: View {
     }
     
     private func fetchQuote() async {
+        guard let apiKey = AppIDs.twelveDataApiKey else {
+            showTwelveDataView = true
+            return
+        }
         do {
-            let result = try await MarketRepository().fetchQuote(for: symbol, exchange: exchange)
+            let result = try await MarketRepository().fetchQuote(for: symbol, exchange: exchange, apiKey: apiKey)
             quote = result
             print(quote?.name ?? "No name")
         } catch {
