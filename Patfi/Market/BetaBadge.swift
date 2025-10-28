@@ -2,7 +2,7 @@ import SwiftUI
 
 struct BetaBadge: View {
     var body: some View {
-        Text("🧪 ßeta v3")
+        Text("🧪 ßeta")
             .bold()
             .font(.title3)
             .foregroundStyle(Color(.green))

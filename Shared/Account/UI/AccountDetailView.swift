@@ -14,6 +14,8 @@ struct AccountDetailView: View {
     @State private var selectedPeriod: Period = .month
     @State private var selectedDate: Date = Date()
     @State private var showActions = false
+    @State private var showEditQuantityPopup = false
+    @State private var newQuantity: Double = 0
     
     private let balanceRepository = BalanceRepository()
     private let accountRepository = AccountRepository()
@@ -104,22 +106,38 @@ struct AccountDetailView: View {
             }
             
             // MARK: - ßeta market sync
-            #if !os(watchOS)
+#if !os(watchOS)
             if isBetaEnabled && account.isAsset  {
                 Section("🧪 ßeta market sync") {
-                    NavigationLink {
-                        MarketSearchView()
-                    } label: {
-                        if let asset = account.asset {
-                            AssetRow(asset: asset)
-                        } else {
-                            Label("Search a symbol", systemImage: "magnifyingglass")
+                    if let asset = account.asset {
+                        Label("SyncedWith", systemImage: "arrow.trianglehead.2.clockwise.rotate.90")
+                        AssetRow(asset: asset)
+                        Text("LastSync \(asset.lastSyncDate.toDateStyleMediumWithTimeString)").font(.footnote)
+                        Button {
+                            newQuantity = account.asset?.quantity ?? 0
+                            showEditQuantityPopup = true
+                        } label: {
+                            Label("Edit quantity", systemImage: "square.and.pencil")
+                        }
+                        Button {
+                            account.asset = nil
+                            do { try context.save() } catch { print("Save error:", error) }
+                        } label: {
+                            Label("StopSyncing", systemImage: "stop.circle")
+                                .foregroundStyle(Color.red)
+                        }
+                    } else {
+                        NavigationLink {
+                            MarketSearchView(account: account)
+                        } label: {
+                            Label("SymbolSearch", systemImage: "magnifyingglass")
                                 .foregroundColor(.primary)
                         }
                     }
+                    
                 }
             }
-            #endif
+#endif
         }
         .formStyle(.grouped)
         .navigationDestination(isPresented: $showAddSnapshot, destination: {
@@ -128,13 +146,13 @@ struct AccountDetailView: View {
         .navigationTitle(account.name.isEmpty ? String(localized: "Account") : account.name)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                #if os(watchOS)
+#if os(watchOS)
                 Button {
                     showActions = true
                 } label: {
                     Image(systemName: "plus")
                 }
-                #else
+#else
                 Menu {
                     ForEach(QuickAction.allCases, id: \.self) { action in
                         if action.requiresAccount {
@@ -148,7 +166,7 @@ struct AccountDetailView: View {
                 } label: {
                     Image(systemName: "plus")
                 }
-                #endif
+#endif
             }
         }
         .confirmationDialog("Add", isPresented: $showActions) {
@@ -160,12 +178,27 @@ struct AccountDetailView: View {
                 }
             }
         }
+#if !os(watchOS)
+        .alert("Edit quantity", isPresented: $showEditQuantityPopup, actions: {
+            TextField("Quantity", value: $newQuantity, format: .number)
+            Button("Cancel", role: .cancel) { }
+            Button("Save") {
+                Task {
+                    if let apiKey = AppIDs.twelveDataApiKey, let euroDollarRate = try? await MarketRepository().fetchEURUSD(apiKey: apiKey) {
+                        account.asset?.update(quantity: newQuantity, euroDollarRate: euroDollarRate, context: context)
+                    }
+                }
+            }
+        }, message: {
+            Text("Enter new quantity")
+        })
+#endif
     }
 }
 
 #Preview {
     UserDefaults.standard.set(true, forKey: "isBetaEnabled")
     let account = Account(name: "AAPL", category: .stocks, currentBalance: 13400)
+    account.asset = 🍏
     return NavigationStack { AccountDetailView(account: account) }.modelContainer(ModelContainer.shared)
 }
-

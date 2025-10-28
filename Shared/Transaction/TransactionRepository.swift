@@ -83,7 +83,7 @@ class TransactionRepository {
     
     func delete(_ transaction: Transaction, context: ModelContext) {
         context.delete(transaction)
-        try? context.save()
+        do { try context.save() } catch { print("Save error:", error) }
     }
     
     private func addTransaction(type: Transaction.TransactionType,

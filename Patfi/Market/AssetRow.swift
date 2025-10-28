@@ -17,7 +17,7 @@ struct AssetRow: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: 4) {
-                Text("Qty: \(asset.quantity.twoDecimalsString)")
+                Text("Quantity: \(asset.quantity.twoDecimalsString)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Text("Last: \(asset.currencySymbol)\(asset.latestPrice.twoDecimalsString)")
@@ -28,11 +28,12 @@ struct AssetRow: View {
             VStack(alignment: .trailing, spacing: 4) {
                 Text("\(asset.currencySymbol)\(asset.totalInAssetCurrency.twoDecimalsString)")
                     .font(.headline)
-                Text("\(asset.totalInLocalCurrency.twoDecimalsString) €")
+                Text("\(asset.totalInEuros.twoDecimalsString) €")
                     .font(.headline)
                     .foregroundStyle(.tint)
             }
         }
+        .foregroundStyle(.black)
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 12)
@@ -44,15 +45,7 @@ struct AssetRow: View {
 
 #Preview {
     AssetRow(
-        asset: Asset(
-            name: "Apple",
-            quantity: 58.345036,
-            symbol: "AAPL",
-            latestPrice: 268.81,
-            totalInAssetCurrency: 15683.72912716,
-            totalInLocalCurrency: 13450.37,
-            currencySymbol: "$"
-        )
+        asset: 🍏
     )
     .padding()
 }

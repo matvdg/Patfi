@@ -1,9 +1,11 @@
 import Foundation
+import SwiftData
 
 enum TwelveDataError: Error {
     case invalidURL
     case requestFailed
     case decodingFailed
+    case needUpgrade
 }
 
 class MarketRepository {
@@ -14,15 +16,13 @@ class MarketRepository {
     /// - Parameter symbol: The ticker symbol to fetch.
     /// - Parameter exchange: The optional exchange code.
     /// - Returns: QuoteResponse with symbol, name, price, and currency.
-    func fetchQuote(for symbol: String, exchange: String? = nil, apiKey: String) async throws -> QuoteResponse {
-        var fullSymbol = symbol
-        if let exchange = exchange, !exchange.isEmpty {
-            fullSymbol += ":\(exchange)"
-        }
+    func fetchQuote(for symbol: String, exchange: String, apiKey: String) async throws -> QuoteResponse {
+                
         // Construct the URL for the quote endpoint
         var components = URLComponents(url: baseURL.appendingPathComponent("quote"), resolvingAgainstBaseURL: false)
         components?.queryItems = [
-            URLQueryItem(name: "symbol", value: fullSymbol),
+            URLQueryItem(name: "symbol", value: symbol),
+            URLQueryItem(name: "exchange", value: exchange),
             URLQueryItem(name: "apikey", value: apiKey)
         ]
         
@@ -42,6 +42,10 @@ class MarketRepository {
         }
         if let jsonString = String(data: data, encoding: .utf8) {
             print("🧾 JSON Response:\n\(jsonString)")
+        }
+        let json = String(decoding: data, as: UTF8.self)
+        if json.contains("404") {
+            throw TwelveDataError.needUpgrade
         }
         do {
             let decoder = JSONDecoder()
@@ -160,5 +164,46 @@ class MarketRepository {
         } catch {
             return false
         }
+    }
+    
+    /// Accounts with an Asset linked (with market sync enabled) will auto update their balances every 12h min
+    @MainActor func updateAccountsIfMarketSync(accounts: [Account], context: ModelContext) {
+        
+        // Check last execution date
+        let hoursSinceLastUpdate = Date().timeIntervalSince(AppIDs.lastMarketSyncUpdate) / 3600
+        guard hoursSinceLastUpdate >= 12 else {
+            print("⏸️ Market sync skipped (last update \(String(format: "%.1f", hoursSinceLastUpdate))h ago)")
+            return
+        }
+        
+        // Perform updates for accounts with market sync enabled
+        let syncedAccounts = accounts.filter { $0.asset != nil }
+        guard !syncedAccounts.isEmpty else { return }
+        
+        print("🔄 Updating market-synced accounts (\(syncedAccounts.count))...")
+        
+        for account in syncedAccounts {
+            print("↳ Syncing account: \(account.name)")
+            guard let asset = account.asset, let apiKey = AppIDs.twelveDataApiKey else { continue }
+            Task(name: "MarketSync", priority: .background) {
+                do {
+                    let repo = MarketRepository()
+                    let currentBalance = (account.currentBalance ?? 0).currencyAmount
+                    let euroDollarRate = try await repo.fetchEURUSD(apiKey: apiKey)
+                    let latestPrice = asset.latestPrice
+                    let close = try await repo.fetchQuote(for: asset.symbol, exchange: asset.exchange, apiKey: apiKey).close
+                    guard let close, let newPrice = Double(close) else { return }
+                    asset.update(latestPrice: newPrice, euroDollarRate: euroDollarRate, context: context)
+                    print("↳ Synced done for account: \(account.name) before: \(currentBalance), after: \(currentBalance) latestPrice: \(latestPrice) newPrice \(newPrice)")
+                }
+                catch {
+                    print(error)
+                }
+            }
+        }
+        
+        // Save last update date
+        AppIDs.lastMarketSyncUpdate = Date()
+        print("✅ Market sync completed and timestamp saved")
     }
 }

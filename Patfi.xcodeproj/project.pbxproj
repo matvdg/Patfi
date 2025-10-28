@@ -80,15 +80,6 @@
 			);
 			target = F60DBEBE2E69FD3300ED214A /* Patfi */;
 		};
-		F67662B92EAFD4DC003D0D04 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Market/MarketResultView.swift,
-				Market/MarketSearchView.swift,
-				Market/TwelveDataView.swift,
-			);
-			target = F6B833912E8EA57C00B2AB0C /* PatfiWatch Watch App */;
-		};
 		F69CAE972E7F053F00627394 /* Exceptions for "Shared" folder in "TotalBalanceWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -106,9 +97,6 @@
 				Charts/MonitoringView.swift,
 				Charts/PieChartView.swift,
 				Charts/TransactionChartView.swift,
-				Market/MarketResultView.swift,
-				Market/MarketSearchView.swift,
-				Market/TwelveDataView.swift,
 				Transaction/TransactionRepository.swift,
 				Transaction/UI/AddExpenseView.swift,
 				Transaction/UI/AddIncomeView.swift,
@@ -147,7 +135,6 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				F69CAE972E7F053F00627394 /* Exceptions for "Shared" folder in "TotalBalanceWidgetExtension" target */,
-				F67662B92EAFD4DC003D0D04 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -456,7 +443,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -515,7 +502,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -532,7 +519,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "Patfi/Patfi Debug.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 203;
+				CURRENT_PROJECT_VERSION = 210;
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -591,7 +578,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Patfi/Patfi.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 203;
+				CURRENT_PROJECT_VERSION = 210;
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -649,7 +636,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = TotalBalanceWidget/TotalBalanceWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 203;
+				CURRENT_PROJECT_VERSION = 210;
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -693,7 +680,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = TotalBalanceWidget/TotalBalanceWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 203;
+				CURRENT_PROJECT_VERSION = 210;
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -738,7 +725,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "PatfiWatch Watch App/App/PatfiWatch Watch Debug.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 203;
+				CURRENT_PROJECT_VERSION = 210;
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -775,7 +762,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "PatfiWatch Watch App/App/PatfiWatch Watch AppRelease.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 203;
+				CURRENT_PROJECT_VERSION = 210;
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

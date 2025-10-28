@@ -14,6 +14,13 @@ extension Date {
         return df.string(from: self)
     }
     
+    var toDateStyleMediumWithTimeString: String {
+        let df = DateFormatter()
+        df.dateStyle = .medium
+        df.timeStyle = .short
+        return df.string(from: self)
+    }
+    
     func normalizedDate(selectedPeriod: Period) -> Date {
         let cal = Calendar.current
         var date: Date

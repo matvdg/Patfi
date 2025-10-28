@@ -52,7 +52,7 @@ extension ModelContainer {
             let a5 = Account(name: "Bitcoins", category: .crypto, bank: crypto)
             let a6 = Account(name: "Gold", category: .commodities, bank: revolut)
             let a7 = Account(name: "PEA", category: .stocks, bank: bnp)
-            let a8 = Account(name: " APL", category: .stocks, bank: tradeRepublic)
+            let a8 = Account(name: " Apple", category: .stocks, bank: tradeRepublic)
             let a9 = Account(name: "Prêt conso", category: .loan, bank: boursoBank)
             
             let accounts: [Account] = [a1, a2, a3, a4, a5, a6, a7, a8, a9]

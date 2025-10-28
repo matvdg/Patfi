@@ -1,24 +1,29 @@
 import SwiftUI
 
 struct MarketSearchView: View {
+    
+    let account: Account?
+    
     @State private var query: String = ""
     @State private var results: [QuoteResponse] = []
     @State private var isLoading = false
     @State private var errorMessage: String? = nil
     @State private var showTwelveDataView: Bool = false
-
+    @State private var needsDismiss: Bool = false
+    @Environment(\.dismiss) private var dismiss
+    
     @State private var selectedFlag: String = String(localized: "All")
     @State private var selectedCurrency: String = String(localized: "All")
     @State private var selectedExchange: String = String(localized: "All")
     @State private var selectedInstrument: String = String(localized: "All")
-
+    
     @FocusState private var isSearchFieldFocused: Bool
-
+    
     var flags: [String] { [String(localized: "All")] + Set(results.compactMap { $0.flag }).sorted() }
     var currencies: [String] { [String(localized: "All")] + Set(results.compactMap { $0.currencySymbol }).sorted() }
     var exchanges: [String] { [String(localized: "All")] + Set(results.compactMap { $0.exchange }).sorted() }
     var instruments: [String] { [String(localized: "All")] + Set(results.compactMap { $0.instrumentType }).sorted() }
-
+    
     var filteredResults: [QuoteResponse] {
         results.filter {
             (selectedFlag == String(localized: "All") || $0.flag == selectedFlag) &&
@@ -27,16 +32,16 @@ struct MarketSearchView: View {
             (selectedInstrument == String(localized: "All") || $0.instrumentType == selectedInstrument)
         }
     }
-
+    
     var body: some View {
         VStack {
             HStack {
-                TextField("SYMBOL e.g. AAPL", text: $query)
+                TextField("AAPL", text: $query)
                     .textFieldStyle(.roundedBorder)
-                #if os(iOS)
+#if os(iOS)
                     .keyboardType(.asciiCapable)
                     .textInputAutocapitalization(.characters)
-                #endif
+#endif
                     .autocorrectionDisabled(true)
                     .focused($isSearchFieldFocused)
                     .onSubmit {
@@ -45,10 +50,11 @@ struct MarketSearchView: View {
                 Button(action: {
                     Task { await performSearch() }
                 }) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.green)
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(query.isEmpty ? .gray.opacity(0.5) : .black)
                         .font(.title2)
                 }
+                .disabled(query.isEmpty)
             }
             .padding()
             .onAppear {
@@ -56,7 +62,7 @@ struct MarketSearchView: View {
                     isSearchFieldFocused = true
                 }
             }
-
+            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     HStack {
@@ -95,58 +101,85 @@ struct MarketSearchView: View {
                 .pickerStyle(.menu)
                 .padding(.horizontal)
             }
-
+            
             if isLoading {
                 ProgressView()
                     .padding()
             }
-
+            
             if let errorMessage = errorMessage {
-                Text(errorMessage)
-                    .foregroundColor(.red)
-                    .padding()
+                VStack(spacing: 20) {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                        .padding()
+                    Button {
+                        Task {
+                            await performSearch()
+                        }
+                    } label: {
+                        Label("Retry", systemImage: "arrow.clockwise").padding()
+                    }
+#if os(visionOS)
+                    .buttonStyle(.borderedProminent)
+#else
+                    .buttonStyle(.glass)
+#endif
+                }
             }
-
+            
+            if results.isEmpty {
+                ContentUnavailableView("NoResult", systemImage: "exclamationmark.magnifyingglass")
+            }
+            
             List(filteredResults) { quote in
-                NavigationLink(destination: MarketResultView(symbol: quote.symbol, exchange: quote.exchange)) {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(quote.symbol)
-                                .fontWeight(.bold)
-                            Text(quote.instrumentName ?? quote.name ?? "")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                        Spacer()
-                        VStack(alignment: .leading) {
-                            Text(quote.exchange ?? "")
-                                .fontWeight(.bold)
-                            Text(quote.instrumentType ?? "")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                        Divider()
-                        VStack(alignment: .center) {
-                            Text(quote.flag)
-                                .font(.title2)
-                            Text(quote.currencySymbol)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+                if let exchange = quote.exchange {
+                    NavigationLink(destination: MarketResultView(symbol: quote.symbol, exchange: exchange, account: account, needsDismiss: $needsDismiss)) {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(quote.symbol)
+                                    .fontWeight(.bold)
+                                Text(quote.instrumentName ?? quote.name ?? "")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            VStack(alignment: .leading) {
+                                Text(exchange)
+                                    .fontWeight(.bold)
+                                Text(quote.instrumentType ?? "")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                            Divider()
+                            VStack(alignment: .center) {
+                                Text(quote.flag)
+                                    .font(.title2)
+                                Text(quote.currencySymbol)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
                         }
                     }
                 }
             }
         }
-        .navigationTitle("Market search")
+        .navigationTitle("SymbolSearch")
         .navigationDestination(isPresented: $showTwelveDataView) {
             TwelveDataView()
         }
+        .onChange(of: needsDismiss) {
+            guard needsDismiss else { return }
+            dismiss()
+        }
     }
-
+    
     func performSearch() async {
         guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return }
         guard let apiKey = AppIDs.twelveDataApiKey else {
             showTwelveDataView = true
+            isLoading = false
             return
         }
         isLoading = true
@@ -164,5 +197,5 @@ struct MarketSearchView: View {
 }
 
 #Preview {
-    MarketSearchView()
+    NavigationStack { MarketSearchView(account: nil) }
 }

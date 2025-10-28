@@ -9,23 +9,25 @@ struct TwelveDataView: View {
     
     var body: some View {
         VStack(spacing: 24) {
-            Text("""
-                 To use "Market Sync" ßeta feature, you need to provide a Twelve Data API key.
-                 Creating one is quick and free with Apple Sign In.
-                 This allows Patfi to stay completely free, with no ads or subscriptions.
-                 """)
+            BetaBadge()
+            Text("TwelveDataFeatureDescription")
             .multilineTextAlignment(.leading)
                 .font(.body)
             
             NavigationLink {
                 TwelveDataWebView(urlString: "https://twelvedata.com/login")
             } label: {
-                Label("Sign in to Twelve Data", systemImage: "safari")
+                Label("SignInToTwelveData", systemImage: "safari")
             }
 
             
             Button {
-                if let clipboard = UIPasteboard.general.string {
+#if canImport(UIKit)
+                let clipboard = UIPasteboard.general.string
+#elseif canImport(AppKit)
+                let clipboard = NSPasteboard.general.string(forType: .string)
+#endif
+                if let clipboard {
                     Task {
                         let repo = MarketRepository()
                         print("📋 Clipboard = \(clipboard)")
@@ -38,7 +40,6 @@ struct TwelveDataView: View {
                             AppIDs.twelveDataApiKey = apiKey
                         }
                     }
-                    
                 } else {
                     showEmptyError = true
                 }
@@ -48,12 +49,12 @@ struct TwelveDataView: View {
             .buttonStyle(.bordered)
             
             if showEmptyError {
-                Label("Clipboard is empty — please copy your API key first", systemImage: "exclamationmark.triangle.fill")
+                Label("ErrorInvalidClipboard", systemImage: "exclamationmark.triangle.fill")
                     .foregroundStyle(.red)
                     .font(.subheadline)
             }
             if showApiError {
-                Label("Invalid API key — please check and try again", systemImage: "xmark.octagon.fill")
+                Label("ErrorInvalidApiKey", systemImage: "xmark.octagon.fill")
                     .foregroundStyle(.red)
                     .font(.subheadline)
             }
@@ -75,7 +76,7 @@ struct TwelveDataView: View {
             
             Spacer()
         }
-        .navigationTitle("Twelve Data API Key")
+        .navigationTitle("TwelveDataApiKey")
         .padding()
     }
 }
@@ -84,26 +85,12 @@ struct TwelveDataWebView: View {
     let urlString: String
 
     var body: some View {
-        if let url = URL(string: urlString) {
-            WebView(url: url)
-                .navigationTitle("Twelve Data")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            UIApplication.shared.open(url)
-                        } label: {
-                            Image(systemName: "safari")
-                        }
-                    }
-                }
-        } else {
-            ContentUnavailableView(
-                "Invalid URL",
-                systemImage: "exclamationmark.triangle",
-                description: Text("The provided Twelve Data URL is not valid.")
-            )
-        }
+        let url = URL(string: urlString)!
+        WebView(url: url)
+            .navigationTitle("Twelve Data")
+#if !os(macOS)
+            .navigationBarTitleDisplayMode(.inline)
+#endif
     }
 }
 

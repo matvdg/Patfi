@@ -40,6 +40,7 @@ class SceneDelegate: NSObject, UIWindowSceneDelegate {
 
 @main
 struct PatfiApp: App {
+        
     #if os(iOS)
     // On iOS, handle Quick Actions via AppDelegate and SceneDelegate
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -64,11 +65,13 @@ struct PatfiApp: App {
             }
             .onAppear {
                 // Reset TwelveDataApiKey
-                AppIDs.twelveDataApiKey = nil
+//                AppIDs.twelveDataApiKey = nil
             }
 #else
             // On macOS, just show HomeView without quick action logic
-            NavigationStack { HomeView() }
+            NavigationStack {
+                HomeView()
+            }
 #endif
         }
         .modelContainer(ModelContainer.shared)

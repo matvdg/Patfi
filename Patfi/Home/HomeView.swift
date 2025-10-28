@@ -6,7 +6,8 @@ struct HomeView: View {
     
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.verticalSizeClass) private var verticalSizeClass
-    
+    @Environment(\.modelContext) private var context
+
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     @State private var showAddAccount = false
     @State private var selectedChart = 0
@@ -18,6 +19,7 @@ struct HomeView: View {
     
     private let accountRepository = AccountRepository()
     private let balanceRepository = BalanceRepository()
+    private let marketRepository = MarketRepository()
     
     private var isLandscape: Bool {
 #if os(iOS)
@@ -100,6 +102,10 @@ struct HomeView: View {
             if scenePhase == .background {
                 balanceRepository.updateWidgets(accounts: accounts)
             }
+            if scenePhase == .active {
+                print("ℹ️ lastMarketSyncUpdate = \(AppIDs.lastMarketSyncUpdate)")
+                marketRepository.updateAccountsIfMarketSync(accounts: accounts, context: context)
+            }
         }
 #if os(macOS)
         .padding()
@@ -136,17 +142,17 @@ struct HomeView: View {
                 ToolbarItem(placement: .automatic) {
                     Menu {
                         NavigationLink {
-                            MarketSearchView()
+                            MarketSearchView(account: nil)
                         } label: {
-                            Label("Market search", systemImage: "magnifyingglass")
+                            Label("SymbolSearch", systemImage: "magnifyingglass")
                         }
                         NavigationLink {
-                            MarketResultView(symbol: "AAPL", exchange: "NASDAQ")
+                            MarketResultView(symbol: "AAPL", exchange: "NASDAQ", account: nil, needsDismiss: .constant(false))
                         } label: {
                             Label("AAPL", systemImage: "apple.logo")
                         }
                     } label: {
-                        Image(systemName: "bitcoinsign")
+                        Image(systemName: "magnifyingglass")
                     }
                 }
             }

@@ -17,6 +17,21 @@ enum AppIDs {
         }
     }
     
+    static var lastMarketSyncUpdate: Date {
+        get {
+            if let date = AppIDs.defaults.object(forKey: Keys.lastMarketSyncUpdate) as? Date {
+                return date
+            } else {
+                // Create it, next update in 12h
+                AppIDs.defaults.set(Date.now, forKey: Keys.lastMarketSyncUpdate)
+                return Date.now
+            }
+        }
+        set {
+            AppIDs.defaults.set(newValue, forKey: Keys.lastMarketSyncUpdate)
+        }
+    }
+    
 }
 
 enum Keys {
@@ -25,6 +40,7 @@ enum Keys {
     static let balancesPerCategory = "balancesPerCategory"
     static let balancesPerBank = "balancesPerBank"
     static let twelveDataApiKey = "twelveDataApiKey"
+    static let lastMarketSyncUpdate = "lastMarketSyncUpdate"
 }
 
 struct BalanceReader {

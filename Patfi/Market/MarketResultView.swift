@@ -1,15 +1,23 @@
 import SwiftUI
+import SwiftData
 
 struct MarketResultView: View {
+    
     let symbol: String
-    let exchange: String?
+    let exchange: String
+    let account: Account?
     
     @State private var quote: QuoteResponse?
     @State private var isLoading = true
     @State private var errorMessage: String?
-    @State private var sharesOwned: Double = 0
+    @State private var quantity: Double = 0
     @State private var eurUsdRate: Double? = nil
     @State private var showTwelveDataView: Bool = false
+    
+    @Binding var needsDismiss: Bool
+    
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         ZStack {
@@ -21,7 +29,7 @@ struct MarketResultView: View {
             .ignoresSafeArea()
             
             if isLoading {
-                ProgressView("Loading...")
+                ProgressView("Loading")
                     .tint(.white)
                     .foregroundColor(.white)
                     .font(.headline)
@@ -41,9 +49,32 @@ struct MarketResultView: View {
                     .padding()
                 }
             } else if let errorMessage = errorMessage {
-                Text(errorMessage)
-                    .foregroundColor(.red)
-                    .font(.headline)
+                VStack(spacing: 20) {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .font(.headline)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                        .padding()
+                    Button {
+                        Task {
+                            await fetchQuote()
+                        }
+                    } label: {
+                        Label("Retry", systemImage: "arrow.clockwise").padding()
+                    }
+#if os(visionOS)
+                    .buttonStyle(.borderedProminent)
+#else
+                    .buttonStyle(.glass)
+#endif
+                    
+                    NavigationLink {
+                        TwelveDataView()
+                    } label: {
+                        Label("EditApiKey", systemImage: "square.and.pencil").padding().foregroundStyle(Color.white)
+                    }
+                }
             }
         }
         .task {
@@ -64,7 +95,7 @@ struct MarketResultView: View {
             
             HStack(spacing: 12) {
                 if quote.symbol == "AAPL" {
-                    Text("")
+                    Text("").foregroundStyle(.white)
                 }
                 Text("\(quote.symbol)")
                     .font(.headline)
@@ -87,15 +118,15 @@ struct MarketResultView: View {
     
     private func priceSection(for quote: QuoteResponse) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            if let close = quote.close, let number = Double(close) {
+            if let close = quote.close, let close = Double(close) {
                 Text("Current Price")
                     .font(.caption)
                     .foregroundColor(.white.opacity(0.6))
                 HStack(alignment: .bottom, spacing: 20) {
-                    Text("\(quote.currencySymbol)\(number.twoDecimalsString)")
+                    Text("\(quote.currencySymbol)\(close.twoDecimalsString)")
                         .font(.system(size: 40, weight: .bold, design: .rounded))
                     if let eurUsdRate {
-                        Text("\((number/eurUsdRate).twoDecimalsString) €")
+                        Text("\((close/eurUsdRate).twoDecimalsString) €")
                             .font(.headline)
                     }
                     
@@ -162,59 +193,103 @@ struct MarketResultView: View {
     }
     
     private func mySharesSection(for quote: QuoteResponse) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("My Shares")
-                .font(.title3)
-                .fontWeight(.semibold)
-                .foregroundColor(.white)
-                .padding(.bottom, 4)
-
-            HStack {
-                Text("Shares owned:")
-                TextField("0", value: $sharesOwned, format: .number)
-                #if os(iOS)
-                    .keyboardType(.decimalPad)
-                #endif
-                    .frame(width: 100)
-            }
-            .foregroundColor(.white.opacity(0.9))
-
-            if let closeStr = quote.close, let close = Double(closeStr) {
-                let totalUSD = close * sharesOwned
-                Text("Total value: \(quote.currencySymbol)\(totalUSD, format: .number.precision(.fractionLength(2)))")
+        VStack(alignment: .center, spacing: 8) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("MyAssets")
+                    .font(.title3)
+                    .fontWeight(.semibold)
                     .foregroundColor(.white)
-
-                if let eurUsdRate = eurUsdRate {
-                    let totalEUR = totalUSD / eurUsdRate
-                    Text("Total value: \(totalEUR.currencyAmount)")
+                    .padding(.bottom, 4)
+                
+                HStack {
+                    Text("QuantityOwned")
+                        .foregroundColor(.white.opacity(0.9))
+                    TextField("0", value: $quantity, format: .number)
+#if os(iOS)
+                        .keyboardType(.decimalPad)
+                        .textFieldStyle(.roundedBorder)
+#endif
+                        .frame(width: 100)
+                        .textFieldStyle(.roundedBorder)
+                }
+                .foregroundColor(.primary)
+                if let closeStr = quote.close, let close = Double(closeStr) {
+                    let totalUSD = close * quantity
+                    Text("Total value: \(quote.currencySymbol)\(totalUSD, format: .number.precision(.fractionLength(2)))")
                         .foregroundColor(.white)
-                    HStack {
-                        Text("EUR/USD rate: \(eurUsdRate, format: .number.precision(.fractionLength(5)))")
-                            .foregroundColor(.white.opacity(0.7))
-                        Text("USD/EUR rate: \(1/eurUsdRate, format: .number.precision(.fractionLength(5)))")
-                            .foregroundColor(.white.opacity(0.7))
-                    }
                     
-                } else {
-                    ProgressView("Fetching EUR/USD rate…")
-                        .tint(.white)
-                        .task {
-                            guard let apiKey = AppIDs.twelveDataApiKey else { return }
-                            do {
-                                eurUsdRate = try await MarketRepository().fetchEURUSD(apiKey: apiKey)
-                            } catch {
-                                print("⚠️ EUR/USD fetch failed:", error)
+                    if let eurUsdRate {
+                        let totalEUR = totalUSD / eurUsdRate
+                        Text("Total value: \(totalEUR.currencyAmount)")
+                            .foregroundColor(.white)
+                        if let account, let balance = account.currentBalance, let close = quote.close, let close = Double(close) {
+                            let closeEuro = close/eurUsdRate
+                            Text("Current account value: \(balance.currencyAmount)")
+                                .foregroundColor(.white)
+                            VStack(alignment: .center, spacing: 8) {
+                                Button {
+                                    quantity = balance / closeEuro
+                                } label: {
+                                    HStack(alignment: .center, spacing: 8) {
+                                        Image(systemName: "equal.circle")
+                                        Text("ComputeQuantity")
+                                    }
+                                }
+#if os(visionOS)
+                                .buttonStyle(.borderedProminent)
+#else
+                                .buttonStyle(.glass)
+#endif
                             }
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding()
                         }
+                        HStack {
+                            Text("EuroUsdRate: \(eurUsdRate, format: .number.precision(.fractionLength(5)))")
+                                .foregroundColor(.white.opacity(0.7))
+                            Text("USD/EUR rate: \(1/eurUsdRate, format: .number.precision(.fractionLength(5)))")
+                                .foregroundColor(.white.opacity(0.7))
+                        }
+                    } else {
+                        ProgressView("FetchingEuroUsdRate")
+                            .tint(.white)
+                            .task {
+                                guard let apiKey = AppIDs.twelveDataApiKey else { return }
+                                do {
+                                    eurUsdRate = try await MarketRepository().fetchEURUSD(apiKey: apiKey)
+                                } catch {
+                                    print("⚠️ EUR/USD fetch failed:", error)
+                                }
+                            }
+                    }
                 }
             }
+            .padding(.top)
+            if let account {
+                SyncButton(account: account) {
+                    guard let close = quote.close, let close = Double(close), let eurUsdRate, let exchange = quote.exchange else { return }
+                    let totalUSD = close * quantity
+                    let totalEUR = totalUSD / eurUsdRate
+                    let newAsset = Asset(name: quote.name ?? quote.currencySymbol, quantity: quantity, symbol: quote.symbol, exchange: exchange, latestPrice: close, totalInAssetCurrency: totalUSD, totalInEuros: totalEUR, currencySymbol: quote.currencySymbol, account: account)
+                    context.insert(newAsset)
+                    account.asset = newAsset
+                    BalanceRepository().add(amount: totalEUR, date: Date(), account: account, context: context)
+                    do { try context.save() } catch { print("Save error:", error) }
+                    needsDismiss = true
+                    dismiss()
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding()
+                .disabled(eurUsdRate == nil)
+            }
         }
-        .padding(.top)
+        
     }
     
     private func fetchQuote() async {
         guard let apiKey = AppIDs.twelveDataApiKey else {
             showTwelveDataView = true
+            isLoading = false
             return
         }
         do {
@@ -222,12 +297,19 @@ struct MarketResultView: View {
             quote = result
             print(quote?.name ?? "No name")
         } catch {
-            errorMessage = "Failed to load quote."
+            guard let error = error as? TwelveDataError else {
+                return errorMessage = error.localizedDescription
+            }
+            switch error {
+            case .requestFailed:
+                errorMessage = String(localized: "ErrorApiNetwork")
+            case .needUpgrade:
+                errorMessage = String(localized: "ErrorApiUpgrade")
+            default: errorMessage =
+                error.localizedDescription
+            }
         }
         isLoading = false
     }
-}
-
-#Preview {
-    MarketResultView(symbol: "AAPL", exchange: "NASDAQ")
+    
 }
