@@ -134,7 +134,10 @@ struct HomeView: View {
                         }
                     }
                 if showBetaBadge {
-                    BetaBadge().padding(.top, -20)
+                    BetaBadge()
+                    #if !os(macOS)
+                        .padding(.top, -20)
+                    #endif
                 }
             }
         }

@@ -84,6 +84,26 @@ struct MarketSearchView: View {
             }
             
             if !showFavs {
+                #if os(macOS)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(alignment: .center, spacing: 20) {
+                        Picker("Country", selection: $selectedFlag) {
+                            ForEach(flags, id: \.self) { Text($0) }
+                        }
+                        Picker("Currency", selection: $selectedCurrency) {
+                            ForEach(currencies, id: \.self) { Text($0) }
+                        }
+                        Picker("Exchange", selection: $selectedExchange) {
+                            ForEach(exchanges, id: \.self) { Text($0) }
+                        }
+                        Picker("Type", selection: $selectedInstrument) {
+                            ForEach(instruments, id: \.self) { Text($0) }
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .padding(.horizontal)
+                }
+                #else
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         HStack {
@@ -122,6 +142,7 @@ struct MarketSearchView: View {
                     .pickerStyle(.menu)
                     .padding(.horizontal)
                 }
+                #endif
             }
             
             if isLoading {
@@ -151,18 +172,20 @@ struct MarketSearchView: View {
                 }
             }
             
-            if results.isEmpty {
-                if showFavs {
-                    // Display favorites
-                    quoteList(for: favs)
+            Group {
+                if results.isEmpty {
+                    if showFavs {
+                        // Display favorites
+                        quoteList(for: favs)
+                    } else {
+                        // Display empty view
+                        ContentUnavailableView("NoResult", systemImage: "exclamationmark.magnifyingglass")
+                    }
                 } else {
-                    // Display empty view
-                    ContentUnavailableView("NoResult", systemImage: "exclamationmark.magnifyingglass")
+                    // Display results
+                    quoteList(for: filteredResults)
                 }
-            } else {
-                // Display results
-                quoteList(for: filteredResults)
-            }
+            }.frame(maxHeight: .infinity)
         }
         .navigationTitle("SymbolSearch")
         .navigationDestination(isPresented: $showTwelveDataView) {
