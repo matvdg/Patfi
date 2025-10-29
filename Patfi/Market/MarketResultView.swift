@@ -184,8 +184,8 @@ struct MarketResultView: View {
                 .foregroundColor(.white)
             VStack(alignment: .leading, spacing: 4) {
                 Text("Volume: \(quote.volume ?? "-")")
-                Text("Average Volume: \(quote.averageVolume ?? "-")")
-                Text("Market Open: \(quote.isMarketOpen == true ? "✅ Open" : "❌ Closed")")
+                Text("AverageVolume: \(quote.averageVolume ?? "-")")
+                Text("MarketOpen: \(quote.isMarketOpen == true ? "✅" : "❌")")
             }
             .foregroundColor(.white.opacity(0.8))
             .font(.subheadline)
@@ -202,7 +202,7 @@ struct MarketResultView: View {
                     .padding(.bottom, 4)
                 
                 HStack {
-                    Text("QuantityOwned")
+                    Text("Quantity")
                         .foregroundColor(.white.opacity(0.9))
                     TextField("0", value: $quantity, format: .number)
 #if os(iOS)
@@ -217,43 +217,56 @@ struct MarketResultView: View {
                     let totalUSD = close * quantity
                     Text("Total value: \(quote.currencySymbol)\(totalUSD, format: .number.precision(.fractionLength(2)))")
                         .foregroundColor(.white)
-                    
-                    if let eurUsdRate {
+                    if let eurUsdRate, let account, let balance = account.currentBalance, let exchange = quote.exchange {
                         let totalEUR = totalUSD / eurUsdRate
-                        Text("Total value: \(totalEUR.currencyAmount)")
-                            .foregroundColor(.white)
-                        if let account, let balance = account.currentBalance, let close = quote.close, let close = Double(close) {
-                            let closeEuro = close/eurUsdRate
-                            Text("Current account value: \(balance.currencyAmount)")
-                                .foregroundColor(.white)
-                            VStack(alignment: .center, spacing: 8) {
-                                Button {
-                                    quantity = balance / closeEuro
-                                } label: {
-                                    HStack(alignment: .center, spacing: 8) {
-                                        Image(systemName: "equal.circle")
-                                        Text("ComputeQuantity")
-                                    }
-                                }
-#if os(visionOS)
-                                .buttonStyle(.borderedProminent)
-#else
-                                .buttonStyle(.glass)
-#endif
-                            }
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding()
-                        }
+                        let closeEuro = close/eurUsdRate
+                        let t = totalEUR.currencyAmount
+                        let b = balance.currencyAmount
                         HStack {
-                            Text("EuroUsdRate: \(eurUsdRate, format: .number.precision(.fractionLength(5)))")
-                                .foregroundColor(.white.opacity(0.7))
-                            Text("USD/EUR rate: \(1/eurUsdRate, format: .number.precision(.fractionLength(5)))")
-                                .foregroundColor(.white.opacity(0.7))
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Total value: \(t)")
+                                Text("CurrentAccountValue: \(b)")
+                            }
+                            .foregroundColor(.white)
+                            Button {
+                                quantity = balance / closeEuro
+                            } label: {
+                                HStack {
+                                    Text("}")
+                                    Image(systemName: "equal.circle")
+                                }
+                                .font(.system(size: 40, design: .monospaced))
+                            }
+                            .disabled(t == b)
+                            .opacity(t == b ? 0 : 1)
                         }
+                        Text("EuroUsdRate: \(eurUsdRate, format: .number.precision(.fractionLength(5)))")
+                            .foregroundColor(.white.opacity(0.7))
+                        Button {
+                            let totalUSD = close * quantity
+                            let totalEUR = totalUSD / eurUsdRate
+                            let newAsset = Asset(name: quote.name ?? quote.currencySymbol, quantity: quantity, symbol: quote.symbol, exchange: exchange, latestPrice: close, totalInAssetCurrency: totalUSD, totalInEuros: totalEUR, currencySymbol: quote.currencySymbol, account: account)
+                            context.insert(newAsset)
+                            account.asset = newAsset
+                            BalanceRepository().add(amount: totalEUR, date: Date(), account: account, context: context)
+                            do { try context.save() } catch { print("Save error:", error) }
+                            needsDismiss = true
+                            dismiss()
+                        } label: {
+                            Label("SyncWith", systemImage: "arrow.trianglehead.2.clockwise.rotate.90").padding()
+                        }
+#if os(visionOS)
+                        .buttonStyle(.borderedProminent)
+#else
+                        .buttonStyle(.glassProminent)
+#endif
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding()
                     } else {
                         ProgressView("FetchingEuroUsdRate")
                             .tint(.white)
                             .task {
+                                guard quote.currencySymbol == "$" else { return }
                                 guard let apiKey = AppIDs.twelveDataApiKey else { return }
                                 do {
                                     eurUsdRate = try await MarketRepository().fetchEURUSD(apiKey: apiKey)
@@ -265,25 +278,7 @@ struct MarketResultView: View {
                 }
             }
             .padding(.top)
-            if let account {
-                SyncButton(account: account) {
-                    guard let close = quote.close, let close = Double(close), let eurUsdRate, let exchange = quote.exchange else { return }
-                    let totalUSD = close * quantity
-                    let totalEUR = totalUSD / eurUsdRate
-                    let newAsset = Asset(name: quote.name ?? quote.currencySymbol, quantity: quantity, symbol: quote.symbol, exchange: exchange, latestPrice: close, totalInAssetCurrency: totalUSD, totalInEuros: totalEUR, currencySymbol: quote.currencySymbol, account: account)
-                    context.insert(newAsset)
-                    account.asset = newAsset
-                    BalanceRepository().add(amount: totalEUR, date: Date(), account: account, context: context)
-                    do { try context.save() } catch { print("Save error:", error) }
-                    needsDismiss = true
-                    dismiss()
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding()
-                .disabled(eurUsdRate == nil)
-            }
         }
-        
     }
     
     private func fetchQuote() async {

@@ -135,7 +135,6 @@ class MarketRepository {
         }
     }
     
-    
     /// Validates if a Twelve Data API key is valid by performing a lightweight test request.
     /// - Parameter apiKey: The API key to validate.
     /// - Returns: `true` if the key is valid, otherwise `false`.

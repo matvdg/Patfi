@@ -74,6 +74,7 @@ final class Asset: Identifiable, Hashable {
     }
     
     @MainActor func update(quantity: Double, euroDollarRate: Double, context: ModelContext) {
+        guard self.currencySymbol == "$" else { return }
         self.quantity = quantity
         self.totalInAssetCurrency = quantity * latestPrice
         self.totalInEuros = totalInAssetCurrency / euroDollarRate
@@ -85,6 +86,7 @@ final class Asset: Identifiable, Hashable {
     }
     
     @MainActor func update(latestPrice: Double, euroDollarRate: Double, context: ModelContext) {
+        guard self.currencySymbol == "$" else { return }
         self.latestPrice = latestPrice
         self.totalInAssetCurrency = quantity * latestPrice
         self.totalInEuros = totalInAssetCurrency / euroDollarRate
