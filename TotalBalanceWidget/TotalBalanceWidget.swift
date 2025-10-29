@@ -2,9 +2,8 @@ import WidgetKit
 import SwiftUI
 import Charts
 
-
 struct Provider: TimelineProvider {
-    
+        
     static let mockTotal = 1234567.89.currencyAmount
     static let mockBalancesByBank: [(bankName: String, total: Double, colorPalette: String)] = [
         (bankName: "N26", total: 1000.0, colorPalette: "blue"),

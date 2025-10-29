@@ -10,6 +10,7 @@ struct HomeView: View {
 
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     @State private var showAddAccount = false
+    @State private var showMarketSearch = false
     @State private var selectedChart = 0
     @State var mode: Mode = .accounts
     @State private var selectedDate: Date = .now
@@ -133,24 +134,15 @@ struct HomeView: View {
                         }
                     }
                 if showBetaBadge {
-                    BetaBadge()
+                    BetaBadge().padding(.top, -20)
                 }
             }
         }
         .toolbar {
             if isBetaEnabled {
                 ToolbarItem(placement: .automatic) {
-                    Menu {
-                        NavigationLink {
-                            MarketSearchView(account: nil)
-                        } label: {
-                            Label("SymbolSearch", systemImage: "magnifyingglass")
-                        }
-                        NavigationLink {
-                            MarketResultView(symbol: "AAPL", exchange: "NASDAQ", account: nil, needsDismiss: .constant(false))
-                        } label: {
-                            Label("AAPL", systemImage: "apple.logo")
-                        }
+                    Button {
+                        showMarketSearch = true
                     } label: {
                         Image(systemName: "magnifyingglass")
                     }
@@ -178,6 +170,10 @@ struct HomeView: View {
         .navigationDestination(isPresented: $showAddAccount) {
             AddAccountView()
         }
+        .navigationDestination(isPresented: $showMarketSearch) {
+            MarketSearchView(account: nil)
+        }
+        
 #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
 #endif

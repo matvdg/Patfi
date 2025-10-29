@@ -80,9 +80,9 @@ class MarketRepository {
         guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
             throw TwelveDataError.requestFailed
         }
-        if let jsonString = String(data: data, encoding: .utf8) {
-            print("🧾 JSON Response:\n\(jsonString)")
-        }
+//        if let jsonString = String(data: data, encoding: .utf8) {
+//            print("🧾 JSON Response:\n\(jsonString)")
+//        }
         do {
             let decoder = JSONDecoder()
             let searchResponse = try decoder.decode(SymbolSearchResponse.self, from: data)

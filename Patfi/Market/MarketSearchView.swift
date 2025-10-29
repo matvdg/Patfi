@@ -1,16 +1,20 @@
 import SwiftUI
+import SwiftData
 
 struct MarketSearchView: View {
     
     let account: Account?
+    
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
     
     @State private var query: String = ""
     @State private var results: [QuoteResponse] = []
     @State private var isLoading = false
     @State private var errorMessage: String? = nil
     @State private var showTwelveDataView: Bool = false
+    @State private var showFavs: Bool = true
     @State private var needsDismiss: Bool = false
-    @Environment(\.dismiss) private var dismiss
     
     @State private var selectedFlag: String = String(localized: "All")
     @State private var selectedCurrency: String = String(localized: "All")
@@ -18,6 +22,7 @@ struct MarketSearchView: View {
     @State private var selectedInstrument: String = String(localized: "All")
     
     @FocusState private var isSearchFieldFocused: Bool
+    @Query(sort: [SortDescriptor(\QuoteResponse.symbol, order: .forward)]) private var favs: [QuoteResponse]
     
     var flags: [String] { [String(localized: "All")] + Set(results.compactMap { $0.flag }).sorted() }
     var currencies: [String] { [String(localized: "All")] + Set(results.compactMap { $0.currencySymbol }).sorted() }
@@ -44,16 +49,31 @@ struct MarketSearchView: View {
 #endif
                     .autocorrectionDisabled(true)
                     .focused($isSearchFieldFocused)
+                    .overlay(alignment: .trailing) {
+                        if !query.isEmpty {
+                            Button {
+                                query = ""
+                                results.removeAll()
+                                showFavs = true
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.secondary)
+                                    .padding(.trailing, 8)
+                            }
+                        }
+                    }
                     .onSubmit {
+                        showFavs = false
                         Task { await performSearch() }
                     }
                 Button(action: {
+                    showFavs = false
                     Task { await performSearch() }
                 }) {
                     Image(systemName: "magnifyingglass")
                         .foregroundColor(query.isEmpty ? .gray.opacity(0.5) : .black)
-                        .font(.title2)
                 }
+                .buttonStyle(.bordered)
                 .disabled(query.isEmpty)
             }
             .padding()
@@ -63,43 +83,45 @@ struct MarketSearchView: View {
                 }
             }
             
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
+            if !showFavs {
+                ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
-                        Text("Country")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                        Picker("Country", selection: $selectedFlag) {
-                            ForEach(flags, id: \.self) { Text($0) }
+                        HStack {
+                            Text("Country")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                            Picker("Country", selection: $selectedFlag) {
+                                ForEach(flags, id: \.self) { Text($0) }
+                            }
+                        }
+                        HStack {
+                            Text("Currency")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                            Picker("Currency", selection: $selectedCurrency) {
+                                ForEach(currencies, id: \.self) { Text($0) }
+                            }
+                        }
+                        HStack {
+                            Text("Exchange")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                            Picker("Exchange", selection: $selectedExchange) {
+                                ForEach(exchanges, id: \.self) { Text($0) }
+                            }
+                        }
+                        HStack {
+                            Text("Type")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                            Picker("Type", selection: $selectedInstrument) {
+                                ForEach(instruments, id: \.self) { Text($0) }
+                            }
                         }
                     }
-                    HStack {
-                        Text("Currency")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                        Picker("Currency", selection: $selectedCurrency) {
-                            ForEach(currencies, id: \.self) { Text($0) }
-                        }
-                    }
-                    HStack {
-                        Text("Exchange")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                        Picker("Exchange", selection: $selectedExchange) {
-                            ForEach(exchanges, id: \.self) { Text($0) }
-                        }
-                    }
-                    HStack {
-                        Text("Type")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                        Picker("Type", selection: $selectedInstrument) {
-                            ForEach(instruments, id: \.self) { Text($0) }
-                        }
-                    }
+                    .pickerStyle(.menu)
+                    .padding(.horizontal)
                 }
-                .pickerStyle(.menu)
-                .padding(.horizontal)
             }
             
             if isLoading {
@@ -130,39 +152,16 @@ struct MarketSearchView: View {
             }
             
             if results.isEmpty {
-                ContentUnavailableView("NoResult", systemImage: "exclamationmark.magnifyingglass")
-            }
-            
-            List(filteredResults) { quote in
-                if let exchange = quote.exchange {
-                    NavigationLink(destination: MarketResultView(symbol: quote.symbol, exchange: exchange, account: account, needsDismiss: $needsDismiss)) {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(quote.symbol)
-                                    .fontWeight(.bold)
-                                Text(quote.instrumentName ?? quote.name ?? "")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                            Spacer()
-                            VStack(alignment: .leading) {
-                                Text(exchange)
-                                    .fontWeight(.bold)
-                                Text(quote.instrumentType ?? "")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                            Divider()
-                            VStack(alignment: .center) {
-                                Text(quote.flag)
-                                    .font(.title2)
-                                Text(quote.currencySymbol)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
+                if showFavs {
+                    // Display favorites
+                    quoteList(for: favs)
+                } else {
+                    // Display empty view
+                    ContentUnavailableView("NoResult", systemImage: "exclamationmark.magnifyingglass")
                 }
+            } else {
+                // Display results
+                quoteList(for: filteredResults)
             }
         }
         .navigationTitle("SymbolSearch")
@@ -172,6 +171,12 @@ struct MarketSearchView: View {
         .onChange(of: needsDismiss) {
             guard needsDismiss else { return }
             dismiss()
+        }
+        .onChange(of: favs) {
+            print("MarketSearchView favs: \(favs.count)")
+            favs.forEach {
+                print($0.name ?? "name nil", $0.instrumentName ?? "instrumentName nil", $0.instrumentType ?? "instrumentType nil", $0.symbol ?? "symbol nil", $0.exchange ?? "exchange nil")
+            }
         }
     }
     
@@ -193,6 +198,78 @@ struct MarketSearchView: View {
             results = []
         }
         isLoading = false
+    }
+}
+
+extension MarketSearchView {
+    @ViewBuilder
+    func quoteList(for results: [QuoteResponse]) -> some View {
+        List(results) { quote in
+            if let exchange = quote.exchange, let symbol = quote.symbol, let name = quote.instrumentName {
+                HStack {
+                    FavButton(isFav: Binding(
+                        get: {
+                            let fav = favs.first { quote.symbol == $0.symbol && quote.exchange == $0.exchange }
+                            return fav != nil
+                        },
+                        set: { newValue in
+                            let fav = favs.first { quote.symbol == $0.symbol && quote.exchange == $0.exchange }
+                            if newValue {
+                                let newFav = QuoteResponse()
+                                newFav.symbol = quote.symbol
+                                newFav.exchange = quote.exchange
+                                newFav.instrumentName = quote.instrumentName
+                                newFav.name = quote.instrumentName
+                                newFav.instrumentType = quote.instrumentType
+                                newFav.country = quote.country
+                                newFav.currency = quote.currency
+                                context.insert(newFav)
+                            } else {
+                                if let fav {
+                                    context.delete(fav)
+                                }
+                            }
+                            do {
+                                try context.save()
+                            } catch {
+                                print("Save error:", error)
+                            }
+                        }
+                    ))
+                    NavigationLink(destination: MarketResultView(symbol: symbol, exchange: exchange, account: account, needsDismiss: $needsDismiss)) {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(symbol)
+                                    .fontWeight(.bold)
+                                Text(name)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            VStack(alignment: .leading) {
+                                Text(exchange)
+                                    .fontWeight(.bold)
+                                if let instrumentType = quote.instrumentType {
+                                    Text(instrumentType)
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            Divider()
+                            VStack(alignment: .center) {
+                                if let flag = quote.flag {
+                                    Text(flag)
+                                        .font(.title2)
+                                }
+                                Text(quote.currencySymbol)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

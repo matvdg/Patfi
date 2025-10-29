@@ -20,6 +20,24 @@ struct ArrowButton: View {
     }
 }
 
+struct FavButton: View {
+    
+    @Binding var isFav: Bool
+
+    var body: some View {
+        Button(action: {
+            withAnimation(.spring()) {
+                isFav.toggle()
+            }
+        }) {
+            Image(systemName: isFav ? "star.fill" : "star")
+                .foregroundColor(isFav ? .yellow : .primary)
+                .padding(4)
+        }
+        .buttonStyle(.bordered)
+    }
+}
+
 struct ArrowRightButton<Content: View>: View {
     @Binding var isRight: Bool
     let content: () -> Content
@@ -103,4 +121,5 @@ struct BankButton: View {
     CollapseButton(isCollapsed: $isOn)
     PaymentMethodButton(sortByPaymentMethod: $isOn)
     BankButton(sortByBank: $isOn)
+    FavButton(isFav: $isOn)
 }

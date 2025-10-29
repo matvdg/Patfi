@@ -19,6 +19,8 @@ struct MarketResultView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     
+    @Query(sort: [SortDescriptor(\QuoteResponse.symbol, order: .forward)]) private var favs: [QuoteResponse]
+    
     var body: some View {
         ZStack {
             LinearGradient(
@@ -44,7 +46,7 @@ struct MarketResultView: View {
                         Divider().background(Color.white.opacity(0.2))
                         statsSection(for: quote)
                         Divider().background(Color.white.opacity(0.2))
-                        mySharesSection(for: quote)
+                        myAssetsSection(for: quote)
                     }
                     .padding()
                 }
@@ -87,32 +89,64 @@ struct MarketResultView: View {
     }
     
     private func headerSection(for quote: QuoteResponse) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(quote.name ?? symbol)
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundStyle(.white)
-            
-            HStack(spacing: 12) {
-                if quote.symbol == "AAPL" {
-                    Text("").foregroundStyle(.white)
-                }
-                Text("\(quote.symbol)")
-                    .font(.headline)
-                    .foregroundColor(.white.opacity(0.8))
-                if let exchange = quote.exchange {
-                    Text(exchange)
+        HStack(alignment: .center, spacing: 8) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(quote.name ?? symbol)
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.white)
+                
+                HStack(spacing: 12) {
+                    if symbol == "AAPL" {
+                        Text("").foregroundStyle(.white)
+                    }
+                    Text(symbol)
+                        .font(.headline)
+                        .foregroundColor(.white.opacity(0.8))
+                    if let exchange = quote.exchange {
+                        Text(exchange)
+                            .font(.subheadline)
+                            .foregroundColor(.cyan)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.cyan.opacity(0.2))
+                            .clipShape(Capsule())
+                    }
+                    Text(quote.currencySymbol)
                         .font(.subheadline)
-                        .foregroundColor(.cyan)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.cyan.opacity(0.2))
-                        .clipShape(Capsule())
+                        .foregroundColor(.white.opacity(0.7))
                 }
-                Text(quote.currencySymbol)
-                    .font(.subheadline)
-                    .foregroundColor(.white.opacity(0.7))
             }
+            Spacer()
+            FavButton(isFav: Binding(
+                get: {
+                    let fav = favs.first { quote.symbol == $0.symbol && quote.exchange == $0.exchange }
+                    return fav != nil
+                },
+                set: { newValue in
+                    let fav = favs.first { quote.symbol == $0.symbol && quote.exchange == $0.exchange }
+                    if newValue {
+                        let newFav = QuoteResponse()
+                        newFav.symbol = quote.symbol
+                        newFav.exchange = quote.exchange
+                        newFav.instrumentName = quote.name
+                        newFav.name = quote.name
+                        newFav.instrumentType = quote.instrumentType
+                        newFav.country = quote.country
+                        newFav.currency = quote.currency
+                        context.insert(newFav)
+                    } else {
+                        if let fav {
+                            context.delete(fav)
+                        }
+                    }
+                    do {
+                        try context.save()
+                    } catch {
+                        print("Save error:", error)
+                    }
+                }
+            ))
         }
     }
     
@@ -192,32 +226,32 @@ struct MarketResultView: View {
         }
     }
     
-    private func mySharesSection(for quote: QuoteResponse) -> some View {
-        VStack(alignment: .center, spacing: 8) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("MyAssets")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                    .padding(.bottom, 4)
-                
-                HStack {
-                    Text("Quantity")
-                        .foregroundColor(.white.opacity(0.9))
-                    TextField("0", value: $quantity, format: .number)
+    private func myAssetsSection(for quote: QuoteResponse) -> some View {
+        Group {
+            if let closeStr = quote.close, let close = Double(closeStr), let eurUsdRate, let account, let balance = account.currentBalance, let exchange = quote.exchange {
+                VStack(alignment: .center, spacing: 8) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("MyAssets")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .padding(.bottom, 4)
+                        
+                        HStack {
+                            Text("Quantity")
+                                .foregroundColor(.white.opacity(0.9))
+                            TextField("0", value: $quantity, format: .number)
 #if os(iOS)
-                        .keyboardType(.decimalPad)
-                        .textFieldStyle(.roundedBorder)
+                                .keyboardType(.decimalPad)
+                                .textFieldStyle(.roundedBorder)
 #endif
-                        .frame(width: 100)
-                        .textFieldStyle(.roundedBorder)
-                }
-                .foregroundColor(.primary)
-                if let closeStr = quote.close, let close = Double(closeStr) {
-                    let totalUSD = close * quantity
-                    Text("Total value: \(quote.currencySymbol)\(totalUSD, format: .number.precision(.fractionLength(2)))")
-                        .foregroundColor(.white)
-                    if let eurUsdRate, let account, let balance = account.currentBalance, let exchange = quote.exchange {
+                                .frame(width: 100)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                        .foregroundColor(.primary)
+                        let totalUSD = close * quantity
+                        Text("Total value: \(quote.currencySymbol)\(totalUSD, format: .number.precision(.fractionLength(2)))")
+                            .foregroundColor(.white)
                         let totalEUR = totalUSD / eurUsdRate
                         let closeEuro = close/eurUsdRate
                         let t = totalEUR.currencyAmount
@@ -243,9 +277,10 @@ struct MarketResultView: View {
                         Text("EuroUsdRate: \(eurUsdRate, format: .number.precision(.fractionLength(5)))")
                             .foregroundColor(.white.opacity(0.7))
                         Button {
+                            guard let name = quote.name, let symbol = quote.symbol else { return }
                             let totalUSD = close * quantity
                             let totalEUR = totalUSD / eurUsdRate
-                            let newAsset = Asset(name: quote.name ?? quote.currencySymbol, quantity: quantity, symbol: quote.symbol, exchange: exchange, latestPrice: close, totalInAssetCurrency: totalUSD, totalInEuros: totalEUR, currencySymbol: quote.currencySymbol, account: account)
+                            let newAsset = Asset(name: name, quantity: quantity, symbol: symbol, exchange: exchange, latestPrice: close, totalInAssetCurrency: totalUSD, totalInEuros: totalEUR, currencySymbol: quote.currencySymbol, account: account)
                             context.insert(newAsset)
                             account.asset = newAsset
                             BalanceRepository().add(amount: totalEUR, date: Date(), account: account, context: context)
@@ -262,22 +297,12 @@ struct MarketResultView: View {
 #endif
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding()
-                    } else {
-                        ProgressView("FetchingEuroUsdRate")
-                            .tint(.white)
-                            .task {
-                                guard quote.currencySymbol == "$" else { return }
-                                guard let apiKey = AppIDs.twelveDataApiKey else { return }
-                                do {
-                                    eurUsdRate = try await MarketRepository().fetchEURUSD(apiKey: apiKey)
-                                } catch {
-                                    print("⚠️ EUR/USD fetch failed:", error)
-                                }
-                            }
                     }
+                    .padding(.top)
                 }
+            } else {
+                EmptyView()
             }
-            .padding(.top)
         }
     }
     
@@ -290,7 +315,13 @@ struct MarketResultView: View {
         do {
             let result = try await MarketRepository().fetchQuote(for: symbol, exchange: exchange, apiKey: apiKey)
             quote = result
-            print(quote?.name ?? "No name")
+            if quote?.currencySymbol == "$" {
+                eurUsdRate = try await MarketRepository().fetchEURUSD(apiKey: apiKey)
+                if let account, let balance = account.currentBalance, let eurUsdRate, let close = quote?.close, let close = Double(close) {
+                    let closeEuro = close/eurUsdRate
+                    quantity = balance / closeEuro
+                }
+            }
         } catch {
             guard let error = error as? TwelveDataError else {
                 return errorMessage = error.localizedDescription

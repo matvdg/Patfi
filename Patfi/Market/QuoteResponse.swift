@@ -1,47 +1,55 @@
 import Foundation
+import SwiftData
 
-struct QuoteResponse: Codable, Identifiable {
-    let id = UUID()
-    let symbol: String
-    let name: String?
-    let instrumentName: String?
-    let currency: String?
-    let country: String?
-    let instrumentType: String?
-    let exchange: String?
-    let open: String?
-    let high: String?
-    let low: String?
-    let close: String?
-    let volume: String?
-    let previousClose: String?
-    let change: String?
-    let percentChange: String?
-    let averageVolume: String?
-    let isMarketOpen: Bool?
-    let marketCap: String?
-    let fiftyTwoWeek: FiftyTwoWeek?
+@Model
+final class QuoteResponse: Identifiable, Decodable {
     
-    struct FiftyTwoWeek: Codable {
-        let low: String?
-        let high: String?
-        let lowChange: String?
-        let highChange: String?
-        let lowChangePercent: String?
-        let highChangePercent: String?
-        let range: String?
-        
-        enum CodingKeys: String, CodingKey {
-            case low
-            case high
-            case lowChange = "low_change"
-            case highChange = "high_change"
-            case lowChangePercent = "low_change_percent"
-            case highChangePercent = "high_change_percent"
-            case range
-        }
+    init() {}
+    
+    convenience init(from decoder: Decoder) throws {
+        self.init()
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.symbol = try container.decodeIfPresent(String.self, forKey: .symbol)
+        self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.instrumentName = try container.decodeIfPresent(String.self, forKey: .instrumentName)
+        self.currency = try container.decodeIfPresent(String.self, forKey: .currency)
+        self.country = try container.decodeIfPresent(String.self, forKey: .country)
+        self.instrumentType = try container.decodeIfPresent(String.self, forKey: .instrumentType)
+        self.exchange = try container.decodeIfPresent(String.self, forKey: .exchange)
+        self.open = try container.decodeIfPresent(String.self, forKey: .open)
+        self.high = try container.decodeIfPresent(String.self, forKey: .high)
+        self.low = try container.decodeIfPresent(String.self, forKey: .low)
+        self.close = try container.decodeIfPresent(String.self, forKey: .close)
+        self.volume = try container.decodeIfPresent(String.self, forKey: .volume)
+        self.previousClose = try container.decodeIfPresent(String.self, forKey: .previousClose)
+        self.change = try container.decodeIfPresent(String.self, forKey: .change)
+        self.percentChange = try container.decodeIfPresent(String.self, forKey: .percentChange)
+        self.averageVolume = try container.decodeIfPresent(String.self, forKey: .averageVolume)
+        self.isMarketOpen = try container.decodeIfPresent(Bool.self, forKey: .isMarketOpen)
+        self.marketCap = try container.decodeIfPresent(String.self, forKey: .marketCap)
+        self.fiftyTwoWeek = try container.decodeIfPresent(FiftyTwoWeek.self, forKey: .fiftyTwoWeek)
     }
     
+    var symbol: String?
+    var name: String?
+    var instrumentName: String?
+    var currency: String?
+    var country: String?
+    var instrumentType: String?
+    var exchange: String?
+    var open: String?
+    var high: String?
+    var low: String?
+    var close: String?
+    var volume: String?
+    var previousClose: String?
+    var change: String?
+    var percentChange: String?
+    var averageVolume: String?
+    var isMarketOpen: Bool?
+    var marketCap: String?
+    var fiftyTwoWeek: FiftyTwoWeek?
+
     enum CodingKeys: String, CodingKey {
         case symbol
         case exchange
@@ -63,18 +71,22 @@ struct QuoteResponse: Codable, Identifiable {
         case marketCap = "market_cap"
         case fiftyTwoWeek = "fifty_two_week"
     }
-    
-    var flag: String {
-        guard let country else { return "🏳️" }
+
+    var flag: String? {
+        guard let country else { return nil }
         let locale = Locale(identifier: "en_US")
-        if let code = locale.isoCode(for: country) {
+        let isoCode = Locale.Region.isoRegions.first {
+            locale.localizedString(forRegionCode: $0.identifier)?
+                .lowercased() == country.lowercased()
+        }?.identifier
+        if let code = isoCode {
             return code.unicodeScalars.reduce(into: "") {
                 $0.unicodeScalars.append(UnicodeScalar(127397 + $1.value)!)
             }
         }
-        return "🏳️"
+        return nil
     }
-    
+
     var currencySymbol: String {
         guard let currency else { return "" }
         let locale = Locale(identifier: "en_US")
@@ -87,15 +99,26 @@ struct QuoteResponse: Codable, Identifiable {
     }
 }
 
-struct SymbolSearchResponse: Codable {
+struct SymbolSearchResponse: Decodable {
     let data: [QuoteResponse]
 }
 
-extension Locale {
-    func isoCode(for countryName: String) -> String? {
-        return Locale.Region.isoRegions.first {
-            self.localizedString(forRegionCode: $0.identifier)?
-                .lowercased() == countryName.lowercased()
-        }?.identifier
+struct FiftyTwoWeek: Codable {
+    let low: String?
+    let high: String?
+    let lowChange: String?
+    let highChange: String?
+    let lowChangePercent: String?
+    let highChangePercent: String?
+    let range: String?
+
+    enum CodingKeys: String, CodingKey {
+        case low
+        case high
+        case lowChange = "low_change"
+        case highChange = "high_change"
+        case lowChangePercent = "low_change_percent"
+        case highChangePercent = "high_change_percent"
+        case range
     }
 }

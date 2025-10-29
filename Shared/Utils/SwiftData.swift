@@ -5,7 +5,11 @@ extension ModelContainer {
     
     @MainActor
     static let shared: ModelContainer = {
+#if os(watchOS)
         let schema = Schema([Account.self, BalanceSnapshot.self, Bank.self, Transaction.self])
+#else
+        let schema = Schema([Account.self, BalanceSnapshot.self, Bank.self, Transaction.self, QuoteResponse.self])
+#endif
 #if targetEnvironment(simulator) || DEBUG
         return ModelContainer.getSimulatorSharedContainer(schema: schema)
 #else
@@ -115,7 +119,7 @@ extension ModelContainer {
         }
         
         try! container.mainContext.save()
-
+        
         return container
     }
     

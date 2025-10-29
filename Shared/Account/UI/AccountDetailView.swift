@@ -60,20 +60,21 @@ struct AccountDetailView: View {
 #if !os(macOS)
                 .pickerStyle(.navigationLink)
 #endif
-                if account.isDefault {
-                    Button(role: .confirm) {
-                        accountRepository.unsetAsDefault(account: account, context: context)
-                    } label: {
-                        Label("UnsetAsDefault", systemImage: "star.slash")
-                    }
-                } else {
-                    Button(role: .confirm) {
-                        accountRepository.setAsDefault(account: account, context: context)
-                    } label: {
-                        Label("SetAsDefault", systemImage: "star")
+                if account.category == .current {
+                    if account.isDefault {
+                        Button(role: .confirm) {
+                            accountRepository.unsetAsDefault(account: account, context: context)
+                        } label: {
+                            Label("UnsetAsDefault", systemImage: "star.slash")
+                        }
+                    } else {
+                        Button(role: .confirm) {
+                            accountRepository.setAsDefault(account: account, context: context)
+                        } label: {
+                            Label("SetAsDefault", systemImage: "star")
+                        }
                     }
                 }
-                
                 Button(role: .destructive) {
                     showDeleteAccountConfirm = true
                 } label: {
