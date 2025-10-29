@@ -66,6 +66,18 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F60844B72EB2D215000DE469 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Market/AssetRow.swift,
+				Market/BetaBadge.swift,
+				Market/MarketRepository.swift,
+				Market/MarketResultView.swift,
+				Market/MarketSearchView.swift,
+				Market/TwelveDataView.swift,
+			);
+			target = F6B833912E8EA57C00B2AB0C /* PatfiWatch Watch App */;
+		};
 		F63DB5B82E799D1100688CC7 /* Exceptions for "TotalBalanceWidget" folder in "TotalBalanceWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -97,6 +109,12 @@
 				Charts/MonitoringView.swift,
 				Charts/PieChartView.swift,
 				Charts/TransactionChartView.swift,
+				Market/AssetRow.swift,
+				Market/BetaBadge.swift,
+				Market/MarketRepository.swift,
+				Market/MarketResultView.swift,
+				Market/MarketSearchView.swift,
+				Market/TwelveDataView.swift,
 				Transaction/TransactionRepository.swift,
 				Transaction/UI/AddExpenseView.swift,
 				Transaction/UI/AddIncomeView.swift,
@@ -112,13 +130,6 @@
 			);
 			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
 		};
-		F6FA4E772EB25EFD00A707BB /* Exceptions for "Patfi" folder in "TotalBalanceWidgetExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Market/QuoteResponse.swift,
-			);
-			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -126,7 +137,6 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				F670967F2E6B38ED0059EF66 /* Exceptions for "Patfi" folder in "Patfi" target */,
-				F6FA4E772EB25EFD00A707BB /* Exceptions for "Patfi" folder in "TotalBalanceWidgetExtension" target */,
 			);
 			path = Patfi;
 			sourceTree = "<group>";
@@ -143,6 +153,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				F69CAE972E7F053F00627394 /* Exceptions for "Shared" folder in "TotalBalanceWidgetExtension" target */,
+				F60844B72EB2D215000DE469 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
