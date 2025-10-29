@@ -20,7 +20,7 @@ struct AssetRow: View {
                 Text("Quantity: \(asset.quantity.twoDecimalsString)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                Text("Last: \(asset.currencySymbol)\(asset.latestPrice.twoDecimalsString)")
+                Text(" \(asset.currencySymbol)\(asset.latestPrice.twoDecimalsString)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
