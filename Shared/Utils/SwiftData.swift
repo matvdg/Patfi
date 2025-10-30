@@ -5,7 +5,7 @@ extension ModelContainer {
     
     @MainActor
     static let shared: ModelContainer = {
-        let schema = Schema([Account.self, BalanceSnapshot.self, Bank.self, Transaction.self, QuoteResponse.self])
+        let schema = Schema([Account.self, BalanceSnapshot.self, Bank.self, Transaction.self, Asset.self, QuoteResponse.self])
 //#if targetEnvironment(simulator) || DEBUG
 //        return ModelContainer.getSimulatorSharedContainer(schema: schema)
 //#else
