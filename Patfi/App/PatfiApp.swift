@@ -75,5 +75,6 @@ struct PatfiApp: App {
 #endif
         }
         .modelContainer(ModelContainer.shared)
+        
     }
 }

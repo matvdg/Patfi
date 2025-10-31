@@ -1,36 +1,47 @@
 import Foundation
 import SwiftData
+import CloudKit
 
 extension ModelContainer {
     
     @MainActor
     static let shared: ModelContainer = {
+        //        if let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
+        //            try? FileManager.default.removeItem(at: url)
+        //            print("🧹 Local SwiftData store purged to force CloudKit zone recreation")
+        //        }
+        
         let schema = Schema([Account.self, BalanceSnapshot.self, Bank.self, Transaction.self, Asset.self, QuoteResponse.self])
-//#if targetEnvironment(simulator) || DEBUG
-//        return ModelContainer.getSimulatorSharedContainer(schema: schema)
-//#else
+        
+        /// ⚠️ At least ONE launch on real device (real iPhone or Mac) in DEBUG before Prod to push Schemas changes -> then Deploy Schema Changes to Production on CloudKit console before Production!
+        /// TO DO THAT set false BELOW ⬇️
+#if (targetEnvironment(simulator) || DEBUG) && true
+        // DEBUG = isStoredInMemoryOnly: true, cloudKitDatabase: .none with MOCK DATA
+        return ModelContainer.getSimulatorSharedContainer(schema: schema)
+#else
         let config: ModelConfiguration
         if FileManager.default.ubiquityIdentityToken != nil {
-            config = ModelConfiguration(schema: schema, cloudKitDatabase: .private(AppIDs.iCloudID))
+            // PRODUCTION = isStoredInMemoryOnly: false, cloudKitDatabase: .automatic
+            config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
         } else {
+            // If iCloud disabled OR if simulator - no iCloud (only on REAL devices)
+            // DEBUG isStoredInMemoryOnly: false, cloudKitDatabase: .none without MOCK DATA
             config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
         }
         do {
             let container =  try ModelContainer(for: schema, configurations: [config])
-            print("CloudKit container:", container.configurations.first!.cloudKitContainerIdentifier ?? "❌ none")
-            print("Database scope:", container.configurations.first!.cloudKitDatabase)
-            
+            print("ℹ️ CloudKit container:", container.configurations.first!.cloudKitContainerIdentifier ?? "❌ none")
             return container
         } catch {
             fatalError("Failed to load SwiftData ModelContainer: \(error)")
         }
-//#endif
+#endif
     }()
     
     @MainActor
     static func getSimulatorSharedContainer(schema: Schema) -> ModelContainer {
         
-        /// Quick access to mock/empty data
+        /// Quick access to mock/empty data for DEBUG ONLY
         let mockDataEnabled = true
         
         let config = ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
@@ -63,6 +74,15 @@ extension ModelContainer {
             accounts.forEach { a in
                 container.mainContext.insert(a)
             }
+            
+            let asset = Asset(name: "Apple", quantity: 10, symbol: "AAPL", exchange: "NASDAQ", latestPrice: 300, totalInAssetCurrency: 1000, totalInEuros: 900, currencySymbol: "$", account: a8)
+            container.mainContext.insert(asset)
+            
+            let quoteResponse = QuoteResponse()
+            quoteResponse.instrumentName = "Apple"
+            quoteResponse.symbol = "AAPL"
+            quoteResponse.exchange = "NASDAQ"
+            container.mainContext.insert(quoteResponse)
             
             insertBalanceSnapshots(accounts: accounts, context: container.mainContext)
             insertTransactions(currentAccount: a3, savingAccount: a1, context: container.mainContext)
@@ -116,11 +136,14 @@ extension ModelContainer {
                     }
                 }
             }
+            
+            do {
+                try container.mainContext.save()
+            }
+            catch {
+                print(error)
+            }
         }
-        
-        try! container.mainContext.save()
-        
         return container
     }
-    
 }

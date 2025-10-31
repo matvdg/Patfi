@@ -12,7 +12,7 @@ class BankRepository {
         }
     }
     
-    func updateOrSave(name: String, bank: Bank?, palette: Bank.Palette, logoAvailability: Bank.LogoAvailability, context: ModelContext) {
+    func updateOrCreate(name: String, bank: Bank?, palette: Bank.Palette, logoAvailability: Bank.LogoAvailability, context: ModelContext) {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         if let bank { // Update
             if bank.name != trimmedName {

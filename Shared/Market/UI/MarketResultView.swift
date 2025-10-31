@@ -11,7 +11,7 @@ struct MarketResultView: View {
     @State private var isLoading = true
     @State private var errorMessage: String?
     @State private var quantity: Double = 0
-    @State private var eurUsdRate: Double? = nil
+    @State private var euroDollarRate: Double? = nil
     @State private var showTwelveDataView: Bool = false
     
     @Binding var needsDismiss: Bool
@@ -20,6 +20,9 @@ struct MarketResultView: View {
     @Environment(\.dismiss) private var dismiss
     
     @Query(sort: [SortDescriptor(\QuoteResponse.symbol, order: .forward)]) private var favs: [QuoteResponse]
+    
+    private let assetRepository = AssetRepository()
+    private let marketRepository = MarketRepository()
     
     var body: some View {
         ZStack {
@@ -45,7 +48,6 @@ struct MarketResultView: View {
                         performanceSection(for: quote)
                         Divider().background(Color.white.opacity(0.2))
                         statsSection(for: quote)
-                        Divider().background(Color.white.opacity(0.2))
                         myAssetsSection(for: quote)
                     }
                     .padding()
@@ -118,35 +120,9 @@ struct MarketResultView: View {
                 }
             }
             Spacer()
-            FavButton(isFav: Binding(
-                get: {
-                    let fav = favs.first { quote.symbol == $0.symbol && quote.exchange == $0.exchange }
-                    return fav != nil
-                },
-                set: { newValue in
-                    let fav = favs.first { quote.symbol == $0.symbol && quote.exchange == $0.exchange }
-                    if newValue {
-                        let newFav = QuoteResponse()
-                        newFav.symbol = quote.symbol
-                        newFav.exchange = quote.exchange
-                        newFav.instrumentName = quote.name
-                        newFav.name = quote.name
-                        newFav.instrumentType = quote.instrumentType
-                        newFav.country = quote.country
-                        newFav.currency = quote.currency
-                        context.insert(newFav)
-                    } else {
-                        if let fav {
-                            context.delete(fav)
-                        }
-                    }
-                    do {
-                        try context.save()
-                    } catch {
-                        print("Save error:", error)
-                    }
-                }
-            ))
+            if let symbol = quote.symbol, let exchange = quote.exchange, let name = quote.name, let currency = quote.currency {
+                QuoteFavButton(symbol: symbol, exchange: exchange, name: name, currency: currency)
+            }
         }
     }
     
@@ -159,8 +135,8 @@ struct MarketResultView: View {
                 HStack(alignment: .bottom, spacing: 20) {
                     Text("\(quote.currencySymbol)\(close.twoDecimalsString)")
                         .font(.system(size: 40, weight: .bold, design: .rounded))
-                    if let eurUsdRate {
-                        Text("\((close/eurUsdRate).twoDecimalsString) €")
+                    if let euroDollarRate {
+                        Text("\((close/euroDollarRate).twoDecimalsString) €")
                             .font(.headline)
                     }
                     
@@ -228,8 +204,9 @@ struct MarketResultView: View {
     
     private func myAssetsSection(for quote: QuoteResponse) -> some View {
         Group {
-            if let closeStr = quote.close, let close = Double(closeStr), let eurUsdRate, let account, let balance = account.currentBalance, let exchange = quote.exchange {
+            if let closeStr = quote.close, let close = Double(closeStr), let euroDollarRate, let account, let balance = account.currentBalance, let exchange = quote.exchange, let name = quote.name, let symbol = quote.symbol  {
                 VStack(alignment: .center, spacing: 8) {
+                    Divider().background(Color.white.opacity(0.2))
                     VStack(alignment: .leading, spacing: 8) {
                         Text("MyAssets")
                             .font(.title3)
@@ -252,8 +229,8 @@ struct MarketResultView: View {
                         let totalUSD = close * quantity
                         Text("Total value: \(quote.currencySymbol)\(totalUSD, format: .number.precision(.fractionLength(2)))")
                             .foregroundColor(.white)
-                        let totalEUR = totalUSD / eurUsdRate
-                        let closeEuro = close/eurUsdRate
+                        let totalEUR = totalUSD / euroDollarRate
+                        let closeEuro = close/euroDollarRate
                         let t = totalEUR.currencyAmount
                         let b = balance.currencyAmount
                         HStack {
@@ -274,17 +251,10 @@ struct MarketResultView: View {
                             .disabled(t == b)
                             .opacity(t == b ? 0 : 1)
                         }
-                        Text("EuroUsdRate: \(eurUsdRate, format: .number.precision(.fractionLength(5)))")
+                        Text("EuroUsdRate: \(euroDollarRate, format: .number.precision(.fractionLength(5)))")
                             .foregroundColor(.white.opacity(0.7))
                         Button {
-                            guard let name = quote.name, let symbol = quote.symbol else { return }
-                            let totalUSD = close * quantity
-                            let totalEUR = totalUSD / eurUsdRate
-                            let newAsset = Asset(name: name, quantity: quantity, symbol: symbol, exchange: exchange, latestPrice: close, totalInAssetCurrency: totalUSD, totalInEuros: totalEUR, currencySymbol: quote.currencySymbol, account: account)
-                            context.insert(newAsset)
-                            account.asset = newAsset
-                            BalanceRepository().add(amount: totalEUR, date: Date(), account: account, context: context)
-                            do { try context.save() } catch { print("Save error:", error) }
+                            assetRepository.create(close: close, quantity: quantity, euroDollarRate: euroDollarRate, name: name, symbol: symbol, exchange: exchange, currencySymbol: quote.currencySymbol, account: account, context: context)
                             needsDismiss = true
                             dismiss()
                         } label: {
@@ -313,12 +283,12 @@ struct MarketResultView: View {
             return
         }
         do {
-            let result = try await MarketRepository().fetchQuote(for: symbol, exchange: exchange, apiKey: apiKey)
+            let result = try await marketRepository.fetchQuote(for: symbol, exchange: exchange, apiKey: apiKey)
             quote = result
             if quote?.currencySymbol == "$" {
-                eurUsdRate = try await MarketRepository().fetchEURUSD(apiKey: apiKey)
-                if let account, let balance = account.currentBalance, let eurUsdRate, let close = quote?.close, let close = Double(close) {
-                    let closeEuro = close/eurUsdRate
+                euroDollarRate = try await marketRepository.fetchEURUSD(apiKey: apiKey)
+                if let account, let balance = account.currentBalance, let euroDollarRate, let close = quote?.close, let close = Double(close) {
+                    let closeEuro = close/euroDollarRate
                     quantity = balance / closeEuro
                 }
             }

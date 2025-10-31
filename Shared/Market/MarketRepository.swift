@@ -11,6 +11,7 @@ enum TwelveDataError: Error {
 class MarketRepository {
     
     private let baseURL = URL(string: "https://api.twelvedata.com")!
+    private let assetRepository = AssetRepository()
     
     /// Fetches the latest quote for a given symbol from Twelve Data API.
     /// - Parameter symbol: The ticker symbol to fetch.
@@ -186,13 +187,12 @@ class MarketRepository {
             guard let asset = account.asset, let apiKey = AppIDs.twelveDataApiKey else { continue }
             Task(name: "MarketSync", priority: .background) {
                 do {
-                    let repo = MarketRepository()
                     let currentBalance = (account.currentBalance ?? 0).currencyAmount
-                    let euroDollarRate = try await repo.fetchEURUSD(apiKey: apiKey)
+                    let euroDollarRate = try await fetchEURUSD(apiKey: apiKey)
                     let latestPrice = asset.latestPrice
-                    let close = try await repo.fetchQuote(for: asset.symbol, exchange: asset.exchange, apiKey: apiKey).close
+                    let close = try await fetchQuote(for: asset.symbol, exchange: asset.exchange, apiKey: apiKey).close
                     guard let close, let newPrice = Double(close) else { return }
-                    asset.update(latestPrice: newPrice, euroDollarRate: euroDollarRate, context: context)
+                    assetRepository.update(asset: asset, newPrice: newPrice, euroDollarRate: euroDollarRate, context: context)
                     print("↳ Synced done for account: \(account.name) before: \(currentBalance), after: \(currentBalance) latestPrice: \(latestPrice) newPrice \(newPrice)")
                 }
                 catch {

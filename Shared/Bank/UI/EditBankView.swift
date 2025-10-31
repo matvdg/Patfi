@@ -116,7 +116,7 @@ struct EditBankView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {
-                    bankRepository.updateOrSave(name: name, bank: bank, palette: palette, logoAvailability: logoAvailability, context: context)
+                    bankRepository.updateOrCreate(name: name, bank: bank, palette: palette, logoAvailability: logoAvailability, context: context)
                     dismiss()
                 })
                 .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)

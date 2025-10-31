@@ -6,7 +6,6 @@ struct MarketSearchView: View {
     let account: Account?
     
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var context
     
     @State private var query: String = ""
     @State private var results: [QuoteResponse] = []
@@ -37,6 +36,9 @@ struct MarketSearchView: View {
             (selectedInstrument == String(localized: "All") || $0.instrumentType == selectedInstrument)
         }
     }
+    
+    private let assetRepository = AssetRepository()
+    private let marketRepository = MarketRepository()
     
     var body: some View {
         VStack {
@@ -84,7 +86,7 @@ struct MarketSearchView: View {
             }
             
             if !showFavs {
-                #if os(macOS)
+#if os(macOS)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(alignment: .center, spacing: 20) {
                         Picker("Country", selection: $selectedFlag) {
@@ -103,7 +105,7 @@ struct MarketSearchView: View {
                     .pickerStyle(.menu)
                     .padding(.horizontal)
                 }
-                #else
+#else
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         HStack {
@@ -142,7 +144,7 @@ struct MarketSearchView: View {
                     .pickerStyle(.menu)
                     .padding(.horizontal)
                 }
-                #endif
+#endif
             }
             
             if isLoading {
@@ -195,12 +197,6 @@ struct MarketSearchView: View {
             guard needsDismiss else { return }
             dismiss()
         }
-        .onChange(of: favs) {
-            print("MarketSearchView favs: \(favs.count)")
-            favs.forEach {
-                print($0.name ?? "name nil", $0.instrumentName ?? "instrumentName nil", $0.instrumentType ?? "instrumentType nil", $0.symbol ?? "symbol nil", $0.exchange ?? "exchange nil")
-            }
-        }
     }
     
     func performSearch() async {
@@ -213,7 +209,7 @@ struct MarketSearchView: View {
         isLoading = true
         errorMessage = nil
         do {
-            var searchResults = try await MarketRepository().searchQuotes(query: query, apiKey: apiKey)
+            var searchResults = try await marketRepository.searchQuotes(query: query, apiKey: apiKey)
             searchResults = searchResults.filter { $0.symbol == query }
             results = searchResults
         } catch {
@@ -228,74 +224,13 @@ extension MarketSearchView {
     @ViewBuilder
     func quoteList(for results: [QuoteResponse]) -> some View {
         List(results) { quote in
-            if let exchange = quote.exchange, let symbol = quote.symbol, let name = quote.instrumentName {
-                HStack {
-                    FavButton(isFav: Binding(
-                        get: {
-                            let fav = favs.first { quote.symbol == $0.symbol && quote.exchange == $0.exchange }
-                            return fav != nil
-                        },
-                        set: { newValue in
-                            let fav = favs.first { quote.symbol == $0.symbol && quote.exchange == $0.exchange }
-                            if newValue {
-                                let newFav = QuoteResponse()
-                                newFav.symbol = quote.symbol
-                                newFav.exchange = quote.exchange
-                                newFav.instrumentName = quote.instrumentName
-                                newFav.name = quote.instrumentName
-                                newFav.instrumentType = quote.instrumentType
-                                newFav.country = quote.country
-                                newFav.currency = quote.currency
-                                context.insert(newFav)
-                            } else {
-                                if let fav {
-                                    context.delete(fav)
-                                }
-                            }
-                            do {
-                                try context.save()
-                            } catch {
-                                print("Save error:", error)
-                            }
-                        }
-                    ))
-                    NavigationLink(destination: MarketResultView(symbol: symbol, exchange: exchange, account: account, needsDismiss: $needsDismiss)) {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(symbol)
-                                    .fontWeight(.bold)
-                                Text(name)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                            Spacer()
-                            VStack(alignment: .leading) {
-                                Text(exchange)
-                                    .fontWeight(.bold)
-                                if let instrumentType = quote.instrumentType {
-                                    Text(instrumentType)
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
-                                }
-                            }
-                            Divider()
-                            VStack(alignment: .center) {
-                                if let flag = quote.flag {
-                                    Text(flag)
-                                        .font(.title2)
-                                }
-                                Text(quote.currencySymbol)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-                }
+            if let symbol = quote.symbol, let exchange = quote.exchange, let name = quote.instrumentName, let currency = quote.currency {
+                QuoteRow(account: account, symbol: symbol, exchange: exchange, name: name, currency: currency, currencySymbol: quote.currencySymbol, instrumentType: quote.instrumentType, flag: quote.flag, country: quote.country, needsDismiss: $needsDismiss)
             }
         }
     }
 }
 
 #Preview {
-    NavigationStack { MarketSearchView(account: nil) }
+    NavigationStack { MarketSearchView(account: nil) }.modelContainer(ModelContainer.shared)
 }

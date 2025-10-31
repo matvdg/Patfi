@@ -176,7 +176,6 @@ struct HomeView: View {
         .navigationDestination(isPresented: $showMarketSearch) {
             MarketSearchView(account: nil)
         }
-        
 #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
 #endif

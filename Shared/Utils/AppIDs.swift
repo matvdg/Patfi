@@ -6,7 +6,6 @@ enum AppIDs {
     static var defaults: UserDefaults {
         UserDefaults(suiteName: appGroupID)!
     }
-    static let iCloudID = "iCloud.fr.matvdg.patfiv3"
     
     static var twelveDataApiKey: String? {
         get {

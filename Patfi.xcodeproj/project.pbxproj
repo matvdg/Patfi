@@ -69,12 +69,13 @@
 		F60844B72EB2D215000DE469 /* Exceptions for "Shared" folder in "PatfiWatch Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Market/AssetRow.swift,
-				Market/BetaBadge.swift,
-				Market/MarketRepository.swift,
-				Market/MarketResultView.swift,
-				Market/MarketSearchView.swift,
-				Market/TwelveDataView.swift,
+				Market/UI/AssetRow.swift,
+				Market/UI/BetaBadge.swift,
+				Market/UI/MarketResultView.swift,
+				Market/UI/MarketSearchView.swift,
+				Market/UI/QuoteFavButton.swift,
+				Market/UI/QuoteRow.swift,
+				Market/UI/TwelveDataView.swift,
 			);
 			target = F6B833912E8EA57C00B2AB0C /* PatfiWatch Watch App */;
 		};
@@ -109,12 +110,13 @@
 				Charts/MonitoringView.swift,
 				Charts/PieChartView.swift,
 				Charts/TransactionChartView.swift,
-				Market/AssetRow.swift,
-				Market/BetaBadge.swift,
-				Market/MarketRepository.swift,
-				Market/MarketResultView.swift,
-				Market/MarketSearchView.swift,
-				Market/TwelveDataView.swift,
+				Market/UI/AssetRow.swift,
+				Market/UI/BetaBadge.swift,
+				Market/UI/MarketResultView.swift,
+				Market/UI/MarketSearchView.swift,
+				Market/UI/QuoteFavButton.swift,
+				Market/UI/QuoteRow.swift,
+				Market/UI/TwelveDataView.swift,
 				Transaction/TransactionRepository.swift,
 				Transaction/UI/AddExpenseView.swift,
 				Transaction/UI/AddIncomeView.swift,
@@ -597,7 +599,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Icon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = Patfi/App/PatfiRelease.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Patfi/App/PatfiDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 223;
@@ -757,11 +759,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Icon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "PatfiWatch/App/PatfiWatch Watch AppRelease.entitlements";
+				CODE_SIGN_ENTITLEMENTS = PatfiWatch/App/PatfiWatchDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 223;
-				DEVELOPMENT_TEAM = 3WAQF3AS82;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "PatfiWatch-Watch-App-Info.plist";
@@ -796,7 +798,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Icon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "PatfiWatch/App/PatfiWatch Watch AppRelease.entitlements";
+				CODE_SIGN_ENTITLEMENTS = PatfiWatch/App/PatfiWatchRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 223;

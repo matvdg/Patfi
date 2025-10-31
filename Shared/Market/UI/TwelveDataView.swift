@@ -7,6 +7,8 @@ struct TwelveDataView: View {
     @State private var showEmptyError: Bool = false
     @State private var showApiError: Bool = false
     
+    private let marketRepository = MarketRepository()
+    
     var body: some View {
         VStack(spacing: 24) {
             BetaBadge()
@@ -29,9 +31,8 @@ struct TwelveDataView: View {
 #endif
                 if let clipboard {
                     Task {
-                        let repo = MarketRepository()
                         print("📋 Clipboard = \(clipboard)")
-                        let isValid = await repo.validateAPIKey(clipboard)
+                        let isValid = await marketRepository.validateAPIKey(clipboard)
                         if !isValid {
                             showApiError = true
                         } else {

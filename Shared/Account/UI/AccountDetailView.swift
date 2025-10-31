@@ -19,6 +19,8 @@ struct AccountDetailView: View {
     
     private let balanceRepository = BalanceRepository()
     private let accountRepository = AccountRepository()
+    private let assetRepository = AssetRepository()
+    private let marketRepository = MarketRepository()
     
     var body: some View {
         Form {
@@ -112,17 +114,31 @@ struct AccountDetailView: View {
                 Section("🧪 ßeta market sync") {
                     if let asset = account.asset {
                         Label("SyncedWith", systemImage: "arrow.trianglehead.2.clockwise.rotate.90")
-                        AssetRow(asset: asset)
+                        NavigationLink {
+                            MarketResultView(symbol: asset.symbol, exchange: asset.exchange, account: nil, needsDismiss: .constant(false))
+                        } label: {
+                            AssetRow(asset: asset)
+                        }
                         Text("LastSync \(asset.lastSyncDate.toDateStyleMediumWithTimeString)").font(.footnote)
+                        if asset.lastSyncDate.timeIntervalSinceNow.isLess(than: -60) {
+                            Button {
+                                Task {
+                                    if let apiKey = AppIDs.twelveDataApiKey, let euroDollarRate = try? await marketRepository.fetchEURUSD(apiKey: apiKey), let close = try await marketRepository.fetchQuote(for: asset.symbol, exchange: asset.exchange, apiKey: apiKey).close, let newPrice = Double(close) {
+                                        assetRepository.update(asset: asset, newPrice: newPrice, euroDollarRate: euroDollarRate, context: context)
+                                    }
+                                }
+                            } label: {
+                                Label("SyncNow", systemImage: "arrow.trianglehead.2.clockwise.rotate.90")
+                            }
+                        }
                         Button {
                             newQuantity = account.asset?.quantity ?? 0
                             showEditQuantityPopup = true
                         } label: {
-                            Label("Edit quantity", systemImage: "square.and.pencil")
+                            Label("EditQuantity", systemImage: "square.and.pencil")
                         }
                         Button {
-                            account.asset = nil
-                            do { try context.save() } catch { print("Save error:", error) }
+                            assetRepository.delete(asset: asset, context: context)
                         } label: {
                             Label("StopSyncing", systemImage: "stop.circle")
                                 .foregroundStyle(Color.red)
@@ -180,13 +196,13 @@ struct AccountDetailView: View {
             }
         }
 #if !os(watchOS)
-        .alert("Edit quantity", isPresented: $showEditQuantityPopup, actions: {
+        .alert("EditQuantity", isPresented: $showEditQuantityPopup, actions: {
             TextField("Quantity", value: $newQuantity, format: .number)
             Button("Cancel", role: .cancel) { }
             Button("Save") {
                 Task {
-                    if let apiKey = AppIDs.twelveDataApiKey, let euroDollarRate = try? await MarketRepository().fetchEURUSD(apiKey: apiKey) {
-                        account.asset?.update(quantity: newQuantity, euroDollarRate: euroDollarRate, context: context)
+                    if let apiKey = AppIDs.twelveDataApiKey, let euroDollarRate = try? await marketRepository.fetchEURUSD(apiKey: apiKey), let asset = account.asset {
+                        assetRepository.update(asset: asset, quantity: newQuantity, euroDollarRate: euroDollarRate, context: context)
                     }
                 }
             }
