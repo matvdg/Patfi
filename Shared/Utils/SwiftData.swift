@@ -16,7 +16,11 @@ extension ModelContainer {
             config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
         }
         do {
-            return try ModelContainer(for: schema, configurations: [config])
+            let container =  try ModelContainer(for: schema, configurations: [config])
+            print("CloudKit container:", container.configurations.first!.cloudKitContainerIdentifier ?? "❌ none")
+            print("Database scope:", container.configurations.first!.cloudKitDatabase)
+            
+            return container
         } catch {
             fatalError("Failed to load SwiftData ModelContainer: \(error)")
         }
