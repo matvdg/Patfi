@@ -1,6 +1,5 @@
 import Foundation
 import SwiftData
-import CloudKit
 
 extension ModelContainer {
     
@@ -15,19 +14,15 @@ extension ModelContainer {
         
         /// ⚠️ At least ONE launch on real device (real iPhone or Mac) in DEBUG before Prod to push Schemas changes -> then Deploy Schema Changes to Production on CloudKit console before Production!
         /// TO DO THAT set false BELOW ⬇️
-#if (targetEnvironment(simulator) || DEBUG) && true
+#if (targetEnvironment(simulator) || DEBUG) && false
         // DEBUG = isStoredInMemoryOnly: true, cloudKitDatabase: .none with MOCK DATA
         return ModelContainer.getSimulatorSharedContainer(schema: schema)
 #else
         let config: ModelConfiguration
-        if FileManager.default.ubiquityIdentityToken != nil {
-            // PRODUCTION = isStoredInMemoryOnly: false, cloudKitDatabase: .automatic
-            config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
-        } else {
-            // If iCloud disabled OR if simulator - no iCloud (only on REAL devices)
-            // DEBUG isStoredInMemoryOnly: false, cloudKitDatabase: .none without MOCK DATA
-            config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
-        }
+        // PRODUCTION = isStoredInMemoryOnly: false, cloudKitDatabase: .automatic = .private("iCloud.fr.matvdg.patfiDB")
+        // If iCloud disabled OR if simulator - no iCloud (only on REAL devices)
+        // So in that case: isStoredInMemoryOnly: false, cloudKitDatabase: .automatic = .none
+        config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
         do {
             let container =  try ModelContainer(for: schema, configurations: [config])
             print("ℹ️ CloudKit container:", container.configurations.first!.cloudKitContainerIdentifier ?? "❌ none")
