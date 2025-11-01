@@ -83,13 +83,25 @@ struct AddInternalTransferView: View {
         .navigationTitle("InternalTransfer")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(role: .confirm, action: {
-                    guard let amount, let sourceAccount, let destinationAccount else { return }
-                    transactionRepository.addInternalTransfer(title: title, amount: amount, sourceAccount: sourceAccount, destinationAccount: destinationAccount, date: date, markAsDavingsInvestments: markAsDavingsInvestments, context: context)
-                    dismiss()
-                    
-                })
-                .disabled(sourceAccount == nil || destinationAccount == nil || amount == 0 || amount == nil)
+                if #available(iOS 26, watchOS 26, *) {
+                    Button(role: .confirm, action: {
+                        guard let amount, let sourceAccount, let destinationAccount else { return }
+                        transactionRepository.addInternalTransfer(title: title, amount: amount, sourceAccount: sourceAccount, destinationAccount: destinationAccount, date: date, markAsDavingsInvestments: markAsDavingsInvestments, context: context)
+                        dismiss()
+                    })
+                    .disabled(sourceAccount == nil || destinationAccount == nil || amount == 0 || amount == nil)
+                } else {
+                    // Fallback on earlier versions
+                    Button {
+                        guard let amount, let sourceAccount, let destinationAccount else { return }
+                        transactionRepository.addInternalTransfer(title: title, amount: amount, sourceAccount: sourceAccount, destinationAccount: destinationAccount, date: date, markAsDavingsInvestments: markAsDavingsInvestments, context: context)
+                        dismiss()
+                    } label: {
+                        Image(systemName: "checkmark")
+                    }
+                    .modifier(ButtonStyleModifier(isProminent: true))
+                    .disabled(sourceAccount == nil || destinationAccount == nil || amount == 0 || amount == nil)
+                }
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }

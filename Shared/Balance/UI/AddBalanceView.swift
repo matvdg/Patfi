@@ -57,12 +57,24 @@ struct AddBalanceView: View {
         .navigationTitle(String(localized: "AddBalance"))
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(role: .confirm) {
-                    guard let newBalance, let selectedAccount else { return }
-                    balanceRepository.add(amount: newBalance, date: date, account: selectedAccount, context: context)
-                    dismiss()
+                if #available(iOS 26, watchOS 26, *) {
+                    Button(role: .confirm) {
+                        guard let newBalance, let selectedAccount else { return }
+                        balanceRepository.add(amount: newBalance, date: date, account: selectedAccount, context: context)
+                        dismiss()
+                    }
+                    .disabled(newBalance == nil || selectedAccount == nil)
+                } else {
+                    // Fallback on earlier versions
+                    Button {
+                        guard let newBalance, let selectedAccount else { return }
+                        balanceRepository.add(amount: newBalance, date: date, account: selectedAccount, context: context)
+                        dismiss()
+                    } label: {
+                        Image(systemName: "checkmark")
+                    }
+                    .disabled(newBalance == nil || selectedAccount == nil)
                 }
-                .disabled(newBalance == nil || selectedAccount == nil)
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }

@@ -45,11 +45,7 @@ struct HomeView: View {
                         Label("CreateAccount", systemImage: "plus")
                             .padding()
                     }
-#if os(visionOS)
-                    .buttonStyle(.borderedProminent)
-#else
-                    .buttonStyle(.glassProminent)
-#endif
+                    .modifier(ButtonStyleModifier(isProminent: true))
                 }
             } else {
                 if !isLandscape {
@@ -118,18 +114,20 @@ struct HomeView: View {
                     .frame(width: 60, height: 60)
                     .contentShape(Rectangle())
                     .onTapGesture(count: 3) {
-                        isBetaEnabled.toggle()
-                        print("🧪 Beta mode toggled → \(isBetaEnabled)")
-                        #if os(iOS)
-                        let generator = UINotificationFeedbackGenerator()
-                        generator.notificationOccurred(.success)
-                        #endif
-                        withAnimation {
-                            showBetaBadge = true
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        if #available(iOS 26, *) {
+                            isBetaEnabled.toggle()
+                            print("🧪 Beta mode toggled → \(isBetaEnabled)")
+#if os(iOS)
+                            let generator = UINotificationFeedbackGenerator()
+                            generator.notificationOccurred(.success)
+#endif
                             withAnimation {
-                                showBetaBadge = false
+                                showBetaBadge = true
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                withAnimation {
+                                    showBetaBadge = false
+                                }
                             }
                         }
                     }
@@ -166,7 +164,12 @@ struct HomeView: View {
                         }
                     }
                 } label: {
-                    Image(systemName: "plus")
+                    if #available(iOS 26, *) {
+                        Image(systemName: "plus")
+                    } else {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 28))
+                    }
                 }
             }
         }

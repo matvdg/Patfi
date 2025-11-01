@@ -90,7 +90,7 @@ struct BalancesByPeriodView: View {
     var selectedPeriod: Period
     
     var body: some View {
-        ForEach(balancesByPeriod.enumerated(), id: \.element.id) { index, point in
+        ForEach(Array(balancesByPeriod.enumerated()), id: \.element.id) { index, point in
             HStack {
                 HStack {
                     let isNow = point.date.isNow(for: selectedPeriod)

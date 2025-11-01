@@ -115,11 +115,22 @@ struct EditBankView: View {
         .navigationTitle(bank == nil ? "AddBank" : "EditBank")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(role: .confirm, action: {
-                    bankRepository.updateOrCreate(name: name, bank: bank, palette: palette, logoAvailability: logoAvailability, context: context)
-                    dismiss()
-                })
-                .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                if #available(iOS 26, watchOS 26, *) {
+                    Button(role: .confirm, action: {
+                        bankRepository.updateOrCreate(name: name, bank: bank, palette: palette, logoAvailability: logoAvailability, context: context)
+                        dismiss()
+                    })
+                    .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                } else {
+                    // Fallback on earlier versions
+                    Button {
+                        bankRepository.updateOrCreate(name: name, bank: bank, palette: palette, logoAvailability: logoAvailability, context: context)
+                        dismiss()
+                    } label: {
+                        Image(systemName: "checkmark")
+                    }
+                    .modifier(ButtonStyleModifier(isProminent: true))
+                }
             }
         }
         .onAppear {

@@ -43,7 +43,7 @@ struct HomeView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
-                    .buttonStyle(.glassProminent)
+                    .modifier(ButtonStyleModifier(isProminent: true))
                     NavigationLink {
                         // View displaying monitoring bar charts
                         HomeMonitoringView()

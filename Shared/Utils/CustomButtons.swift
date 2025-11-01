@@ -123,3 +123,36 @@ struct BankButton: View {
     BankButton(sortByBank: $isOn)
     FavButton(isFav: $isOn)
 }
+
+struct ButtonStyleModifier: ViewModifier {
+    
+    let isProminent: Bool
+    
+    func body(content: Content) -> some View {
+#if os(visionOS)
+        content.buttonStyle(.borderedProminent)
+#elseif os(watchOS)
+        if #available(watchOS 26.0, *) {
+            if isProminent {
+                content.buttonStyle(.glassProminent)
+            } else {
+                content.buttonStyle(.plain)
+            }
+        } else {
+            if isProminent {
+                content.buttonStyle(.borderedProminent)
+            } else {
+                content.buttonStyle(.plain)
+            }
+        }
+#elseif os(macOS)
+        content.buttonStyle(.bordered)
+#else
+        if #available(iOS 26.0, *) {
+            content.buttonStyle(.glassProminent)
+        } else {
+            content.buttonStyle(.borderedProminent)
+        }
+#endif
+    }
+}

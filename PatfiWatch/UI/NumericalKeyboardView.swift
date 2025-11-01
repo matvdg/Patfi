@@ -57,7 +57,7 @@ struct NumericalKeyboardView: View {
                                     .font(.headline)
                             }
                         }
-                        .buttonStyle(.glass)
+                        .modifier(ButtonStyleModifier(isProminent: true))
                     }
                 }
             }
@@ -73,15 +73,30 @@ struct NumericalKeyboardView: View {
                 }.foregroundColor(.red)
             }
             ToolbarItem(placement: .topBarLeading) {
-                Button("", systemImage: isPositive ? "plus.forwardslash.minus" : "minus.forwardslash.plus", role: .confirm) {
-                    isPositive.toggle()
-                    if let amt = amount {
-                        amount = -amt
+                if #available(watchOS 26, *) {
+                    Button("", systemImage: isPositive ? "plus.forwardslash.minus" : "minus.forwardslash.plus", role: .confirm) {
+                        isPositive.toggle()
+                        if let amt = amount {
+                            amount = -amt
+                        }
                     }
+                    .foregroundColor(isPositive ? .green : .red)
+                    .disabled(signMode != .both)
+                    .opacity((signMode == .both) ? 1 : 0)
+                } else {
+                    // Fallback on earlier versions
+                    Button(action: {
+                        isPositive.toggle()
+                        if let amt = amount {
+                            amount = -amt
+                        }
+                    }) {
+                        Image(systemName: isPositive ? "plus.forwardslash.minus" : "minus.forwardslash.plus")
+                    }
+                    .foregroundColor(isPositive ? .green : .red)
+                    .disabled(signMode != .both)
+                    .opacity((signMode == .both) ? 1 : 0)
                 }
-                .foregroundColor(isPositive ? .green : .red)
-                .disabled(signMode != .both)
-                .opacity((signMode == .both) ? 1 : 0)
             }
             
         }

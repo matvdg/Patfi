@@ -28,12 +28,7 @@ struct EditBanksView: View {
                         Label("CreateBank", systemImage: "plus")
                             .padding()
                     }
-                    #if os(visionOS)
-                    .buttonStyle(.borderedProminent)
-                    #else
-                    .buttonStyle(.glassProminent)
-                    #endif
-                    
+                    .modifier(ButtonStyleModifier(isProminent: true))
                 }
             } else {
                 List {
@@ -59,10 +54,20 @@ struct EditBanksView: View {
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
-                            Button(role: .confirm) {
-                                bankToModify = bank
-                            } label: {
-                                Label("Edit", systemImage: "pencil")
+                            if #available(iOS 26, watchOS 26, *) {
+                                Button(role: .confirm) {
+                                    bankToModify = bank
+                                } label: {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+                            } else {
+                                // Fallback on earlier versions
+                                Button {
+                                    bankToModify = bank
+                                } label: {
+                                    Image(systemName: "checkmark")
+                                }
+                                .modifier(ButtonStyleModifier(isProminent: true))
                             }
                         }
                         #if !os(watchOS)
@@ -72,10 +77,20 @@ struct EditBanksView: View {
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
-                            Button(role: .confirm) {
-                                bankToModify = bank
-                            } label: {
-                                Label("Edit", systemImage: "pencil")
+                            if #available(iOS 26, watchOS 26, *) {
+                                Button(role: .confirm) {
+                                    bankToModify = bank
+                                } label: {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+                            } else {
+                                // Fallback on earlier versions
+                                Button {
+                                    bankToModify = bank
+                                } label: {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+                                .modifier(ButtonStyleModifier(isProminent: true))
                             }
                         }
                         #endif
@@ -98,7 +113,12 @@ struct EditBanksView: View {
                             bankToModify = nil
                             showingAddBank = true
                         } label: {
-                            Image(systemName: "plus")
+                            if #available(iOS 26, *) {
+                                Image(systemName: "plus")
+                            } else {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.system(size: 28))
+                            }
                         }
                     }
                 }

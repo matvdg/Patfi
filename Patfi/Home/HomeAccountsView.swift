@@ -87,17 +87,37 @@ struct HomeAccountsView: View {
                                 ForEach(items) { account in
                                     NavigationLink { AccountDetailView(account: account) } label: { AccountRow(account: account) }
                                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                            Button(role: .confirm) {
-                                                editBankColor = bank
-                                            } label: {
-                                                Label("EditBank", systemImage: "paintpalette")
+                                            if #available(iOS 26, *) {
+                                                Button(role: .confirm) {
+                                                    editBankColor = bank
+                                                } label: {
+                                                    Label("EditBank", systemImage: "paintpalette")
+                                                }
+                                            } else {
+                                                // Fallback on earlier versions
+                                                Button {
+                                                    editBankColor = bank
+                                                } label: {
+                                                    Label("EditBank", systemImage: "paintpalette")
+                                                }
+                                                .modifier(ButtonStyleModifier(isProminent: true))
                                             }
                                         }
                                         .contextMenu {
-                                            Button(role: .confirm) {
-                                                editBankColor = bank
-                                            } label: {
-                                                Label("EditBank", systemImage: "paintpalette")
+                                            if #available(iOS 26, *) {
+                                                Button(role: .confirm) {
+                                                    editBankColor = bank
+                                                } label: {
+                                                    Label("EditBank", systemImage: "paintpalette")
+                                                }
+                                            } else {
+                                                // Fallback on earlier versions
+                                                Button {
+                                                    editBankColor = bank
+                                                } label: {
+                                                    Label("EditBank", systemImage: "paintpalette")
+                                                }
+                                                .modifier(ButtonStyleModifier(isProminent: true))
                                             }
                                         }
                                 }

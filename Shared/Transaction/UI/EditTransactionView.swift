@@ -53,10 +53,23 @@ struct EditTransactionView: View {
                     }
                 }
                 DatePicker("Date", selection: $transaction.date, displayedComponents: [.date])
-                Button(role: .destructive) {
-                    transactionRepository.delete(transaction, context: context)
-                    dismiss()
-                }.foregroundStyle(.red)
+                if #available(iOS 26, watchOS 26, *) {
+                    Button(role: .destructive) {
+                        transactionRepository.delete(transaction, context: context)
+                        dismiss()
+                    }
+                    .foregroundStyle(.red)
+                } else {
+                    // Fallback on earlier versions
+                    Button(action: {
+                        transactionRepository.delete(transaction, context: context)
+                        dismiss()
+                    }) {
+                        Label("Delete", systemImage: "trash")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .foregroundStyle(.red)
+                }
             } header: {
                 Text("Edit")
             }
@@ -65,10 +78,21 @@ struct EditTransactionView: View {
         .navigationTitle(transaction.isInternalTransfer ? "InternalTransfer" : transaction.transactionType == .expense ? "Expense" : "Income")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(role: .confirm, action: {
-                    dismiss()
-                })
-                .disabled(transaction.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                if #available(iOS 26, watchOS 26, *) {
+                    Button(role: .confirm, action: {
+                        dismiss()
+                    })
+                    .disabled(transaction.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                } else {
+                    // Fallback on earlier versions
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "checkmark")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(transaction.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }

@@ -62,13 +62,25 @@ struct AddExpenseView: View {
         .navigationTitle("AddExpense")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(role: .confirm, action: {
-                    guard let amount, let selectedAccount, let expenseCategory else { return }
-                    transactionRepository.addExpense(title: title, amount: amount, account: selectedAccount, paymentMethod: paymentMethod, expenseCategory: expenseCategory, date: date, context: context)
-                    dismiss()
-                    
-                })
-                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedAccount == nil || amount == nil || amount == 0 || expenseCategory == nil)
+                if #available(iOS 26, watchOS 26, *) {
+                    Button(role: .confirm, action: {
+                        guard let amount, let selectedAccount, let expenseCategory else { return }
+                        transactionRepository.addExpense(title: title, amount: amount, account: selectedAccount, paymentMethod: paymentMethod, expenseCategory: expenseCategory, date: date, context: context)
+                        dismiss()
+                    })
+                    .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedAccount == nil || amount == nil || amount == 0 || expenseCategory == nil)
+                } else {
+                    // Fallback on earlier versions
+                    Button {
+                        guard let amount, let selectedAccount, let expenseCategory else { return }
+                        transactionRepository.addExpense(title: title, amount: amount, account: selectedAccount, paymentMethod: paymentMethod, expenseCategory: expenseCategory, date: date, context: context)
+                        dismiss()
+                    } label: {
+                        Image(systemName: "checkmark")
+                    }
+                    .modifier(ButtonStyleModifier(isProminent: true))
+                    .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedAccount == nil || amount == nil || amount == 0 || expenseCategory == nil)
+                }
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }

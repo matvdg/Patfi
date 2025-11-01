@@ -170,11 +170,7 @@ struct MarketSearchView: View {
                     } label: {
                         Label("Retry", systemImage: "arrow.clockwise").padding()
                     }
-#if os(visionOS)
-                    .buttonStyle(.borderedProminent)
-#else
-                    .buttonStyle(.glass)
-#endif
+                    .modifier(ButtonStyleModifier(isProminent: true))
                 }
             }
             
@@ -195,7 +191,9 @@ struct MarketSearchView: View {
         }
         .navigationTitle("SymbolSearch")
         .navigationDestination(isPresented: $showTwelveDataView) {
-            TwelveDataView()
+            if #available(iOS 26.0, *) {
+                TwelveDataView()
+            }
         }
         .onChange(of: needsDismiss) {
             guard needsDismiss else { return }

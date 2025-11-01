@@ -40,11 +40,7 @@ struct HomeAccountsView: View {
                         Label("CreateAccount", systemImage: "plus")
                             .padding()
                     }
-#if os(visionOS)
-                    .buttonStyle(.borderedProminent)
-#else
-                    .buttonStyle(.glassProminent)
-#endif
+                    .modifier(ButtonStyleModifier(isProminent: true))
                     .navigationDestination(isPresented: $showAddAccount) {
                         AddAccountView()
                     }
@@ -133,7 +129,12 @@ struct HomeAccountsView: View {
                         NavigationLink {
                             AddAccountView()
                         } label: {
-                            Image(systemName: "plus")
+                            if #available(iOS 26, *) {
+                                Image(systemName: "plus")
+                            } else {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.system(size: 28))
+                            }
                         }
                     }
                 }

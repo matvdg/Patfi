@@ -1,6 +1,7 @@
 import SwiftUI
 import WebKit
 
+@available(iOS 26.0, *)
 struct TwelveDataView: View {
     
     @State private var apiKey: String = ""
@@ -82,6 +83,7 @@ struct TwelveDataView: View {
     }
 }
 
+@available(iOS 26.0, *)
 struct TwelveDataWebView: View {
     let urlString: String
 
@@ -95,6 +97,7 @@ struct TwelveDataWebView: View {
     }
 }
 
+@available(iOS 26.0, *)
 #Preview {
     NavigationStack {
         TwelveDataView()

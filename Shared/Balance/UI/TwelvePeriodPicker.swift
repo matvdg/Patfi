@@ -61,13 +61,7 @@ struct TwelvePeriodPicker: View {
             .disabled(selectedDate.isNow(for: selectedPeriod))
             Spacer()
         }
-#if os(visionOS)
-        .buttonStyle(.borderedProminent)
-#elseif os(watchOS)
-        .buttonStyle(.plain)
-#else
-        .buttonStyle(.glassProminent)
-#endif
+        .modifier(ButtonStyleModifier(isProminent: false))
         .padding()
         .onChange(of: selectedPeriod) {
             selectedDate = Date().normalizedDate(selectedPeriod: selectedPeriod)

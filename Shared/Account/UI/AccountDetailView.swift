@@ -64,16 +64,36 @@ struct AccountDetailView: View {
 #endif
                 if account.category == .current {
                     if account.isDefault {
-                        Button(role: .confirm) {
-                            accountRepository.unsetAsDefault(account: account, context: context)
-                        } label: {
-                            Label("UnsetAsDefault", systemImage: "star.slash")
+                        if #available(iOS 26, watchOS 26, *) {
+                            Button(role: .confirm) {
+                                accountRepository.unsetAsDefault(account: account, context: context)
+                            } label: {
+                                Label("UnsetAsDefault", systemImage: "star.slash")
+                            }
+                        } else {
+                            // Fallback on earlier versions
+                            Button {
+                                accountRepository.unsetAsDefault(account: account, context: context)
+                            } label: {
+                                Label("UnsetAsDefault", systemImage: "star.slash")
+                            }
+                            .modifier(ButtonStyleModifier(isProminent: true))
                         }
                     } else {
-                        Button(role: .confirm) {
-                            accountRepository.setAsDefault(account: account, context: context)
-                        } label: {
-                            Label("SetAsDefault", systemImage: "star")
+                        if #available(iOS 26, watchOS 26, *) {
+                            Button(role: .confirm) {
+                                accountRepository.setAsDefault(account: account, context: context)
+                            } label: {
+                                Label("SetAsDefault", systemImage: "star")
+                            }
+                        } else {
+                            // Fallback on earlier versions
+                            Button {
+                                accountRepository.setAsDefault(account: account, context: context)
+                            } label: {
+                                Label("SetAsDefault", systemImage: "star")
+                            }
+                            .modifier(ButtonStyleModifier(isProminent: true))
                         }
                     }
                 }
@@ -88,7 +108,17 @@ struct AccountDetailView: View {
                         accountRepository.delete(account: account, context: context)
                         dismiss()
                     }
-                    Button(role: .cancel, action: { dismiss() })
+                    if #available(iOS 26, watchOS 26, *) {
+                        Button(role: .cancel, action: { dismiss() })
+                    } else {
+                        // Fallback on earlier versions
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text("Cancel")
+                        }
+                        .modifier(ButtonStyleModifier(isProminent: true))
+                    }
                 } message: {
                     Text("DescriptionDeleteAccount")
                 }
@@ -181,7 +211,12 @@ struct AccountDetailView: View {
                         }
                     }
                 } label: {
-                    Image(systemName: "plus")
+                    if #available(iOS 26, *) {
+                        Image(systemName: "plus")
+                    } else {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 28))
+                    }
                 }
 #endif
             }

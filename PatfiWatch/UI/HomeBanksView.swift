@@ -27,11 +27,7 @@ struct HomeBanksView: View {
                         Label("CreateBank", systemImage: "plus")
                             .padding()
                     }
-#if os(visionOS)
-                    .buttonStyle(.borderedProminent)
-#else
-                    .buttonStyle(.glassProminent)
-#endif
+                    .modifier(ButtonStyleModifier(isProminent: true))
                 }
             } else {
                 List {
@@ -57,10 +53,19 @@ struct HomeBanksView: View {
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
-                            Button(role: .confirm) {
-                                bankToModify = bank
-                            } label: {
-                                Label("Edit", systemImage: "pencil")
+                            if #available(watchOS 26, *) {
+                                Button(role: .confirm) {
+                                    bankToModify = bank
+                                } label: {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+                            } else {
+                                // Fallback on earlier versions
+                                Button {
+                                    bankToModify = bank
+                                } label: {
+                                    Label("Edit", systemImage: "pencil")
+                                }
                             }
                         }
                     }
@@ -73,7 +78,12 @@ struct HomeBanksView: View {
                             bankToModify = nil
                             showingAddBank = true
                         } label: {
-                            Image(systemName: "plus")
+                            if #available(iOS 26, *) {
+                                Image(systemName: "plus")
+                            } else {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.system(size: 28))
+                            }
                         }
                     }
                 }

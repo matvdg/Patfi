@@ -67,16 +67,13 @@ struct MarketResultView: View {
                     } label: {
                         Label("Retry", systemImage: "arrow.clockwise").padding()
                     }
-#if os(visionOS)
-                    .buttonStyle(.borderedProminent)
-#else
-                    .buttonStyle(.glass)
-#endif
-                    
-                    NavigationLink {
-                        TwelveDataView()
-                    } label: {
-                        Label("EditApiKey", systemImage: "square.and.pencil").padding().foregroundStyle(Color.white)
+                    .modifier(ButtonStyleModifier(isProminent: true))
+                    if #available(iOS 26, *) {
+                        NavigationLink {
+                            TwelveDataView()
+                        } label: {
+                            Label("EditApiKey", systemImage: "square.and.pencil").padding().foregroundStyle(Color.white)
+                        }
                     }
                 }
             }
@@ -86,7 +83,9 @@ struct MarketResultView: View {
         }
         .navigationTitle(symbol)
         .navigationDestination(isPresented: $showTwelveDataView) {
-            TwelveDataView()
+            if #available(iOS 26, *) {
+                TwelveDataView()
+            }
         }
     }
     
@@ -260,11 +259,7 @@ struct MarketResultView: View {
                         } label: {
                             Label("SyncWith", systemImage: "arrow.trianglehead.2.clockwise.rotate.90").padding()
                         }
-#if os(visionOS)
-                        .buttonStyle(.borderedProminent)
-#else
-                        .buttonStyle(.glassProminent)
-#endif
+                        .modifier(ButtonStyleModifier(isProminent: true))
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding()
                     }
