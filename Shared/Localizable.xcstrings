@@ -2773,7 +2773,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour utiliser la fonctionnalité « Market Sync » βeta, vous devez fournir une clé API Twelve Data.\nLa création est rapide, gratuite et peut se faire avec Hide My Email via Apple Sign In, afin de préserver entièrement votre confidentialité.\nCela permet à Patfi de collecter en toute sécurité les données de marché et de synchroniser le solde de votre compte, tout en restant entièrement gratuit, sans publicité et sans abonnement."
+            "value" : "Pour utiliser la fonctionnalité « Market Sync » βeta, vous devez fournir une clé API Twelve Data.\nLa création est rapide, gratuite et peut se faire avec Masquer mon e-mail via Se connecter avec Apple, afin de préserver entièrement votre confidentialité.\nCela permet à Patfi de collecter en toute sécurité les données de marché et de synchroniser le solde de votre compte, tout en restant entièrement gratuit, sans publicité et sans abonnement."
           }
         }
       }

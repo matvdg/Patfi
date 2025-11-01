@@ -44,11 +44,14 @@ struct MonitoringView: View {
     var body: some View {
         Group {
             if filteredSnapshots.isEmpty {
-                ContentUnavailableView(
-                    "NoData",
-                    systemImage: "chart.bar",
-                    description: Text("DescriptionEmptyBarChart")
-                )
+                VStack {
+                    ContentUnavailableView(
+                        "NoData",
+                        systemImage: "chart.bar",
+                        description: Text("DescriptionEmptyBarChart")
+                    )
+                    Spacer()
+                }
             } else {
 #if os(watchOS)
                 List {

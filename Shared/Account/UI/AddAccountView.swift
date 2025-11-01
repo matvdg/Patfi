@@ -23,6 +23,7 @@ struct AddAccountView: View {
                     .textInputAutocapitalization(.words)
 #endif
                     .autocorrectionDisabled()
+                    .focused($focused)
                 Picker("Category", selection: $category) {
                     ForEach(Category.allCases) { c in
                         HStack {
@@ -52,7 +53,6 @@ struct AddAccountView: View {
             
             Section("Balance") {
                 AmountTextField(amount: $balance, signMode: category == .loan ? .negativeOnly : .both)
-                    .focused($focused)
                     .onChange(of: category) { _, new in
                         if new == .loan {
                             balance = nil

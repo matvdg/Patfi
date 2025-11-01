@@ -45,7 +45,7 @@ struct MarketSearchView: View {
             HStack {
                 TextField("AAPL", text: $query)
                     .textFieldStyle(.roundedBorder)
-#if os(iOS)
+#if !os(macOS)
                     .keyboardType(.asciiCapable)
                     .textInputAutocapitalization(.characters)
 #endif
@@ -62,11 +62,15 @@ struct MarketSearchView: View {
                                     .foregroundColor(.secondary)
                                     .padding(.trailing, 8)
                             }
+                            .buttonStyle(.plain)
                         }
                     }
                     .onSubmit {
                         showFavs = false
                         Task { await performSearch() }
+                    }
+                    .onChange(of: query) {
+                        query = query.uppercased()
                     }
                 Button(action: {
                     showFavs = false

@@ -103,11 +103,14 @@ struct ExpensesView: View {
     var body: some View {
         Group {
             if transactions.isEmpty {
-                ContentUnavailableView(
-                    "NoData",
-                    systemImage: "receipt",
-                    description: Text("DescriptionEmptyTransactions")
-                )
+                VStack {
+                    ContentUnavailableView(
+                        "NoData",
+                        systemImage: "receipt",
+                        description: Text("DescriptionEmptyTransactions")
+                    )
+                    Spacer()
+                }
             } else {
                 
                 VStack {
