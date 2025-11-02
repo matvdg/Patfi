@@ -77,7 +77,15 @@ extension ModelContainer {
             quoteResponse.instrumentName = "Apple"
             quoteResponse.symbol = "AAPL"
             quoteResponse.exchange = "NASDAQ"
+            quoteResponse.currency = "USD"
             container.mainContext.insert(quoteResponse)
+            
+            let quoteResponse2 = QuoteResponse()
+            quoteResponse2.instrumentName = "Microsoft"
+            quoteResponse2.symbol = "MSFT"
+            quoteResponse2.exchange = "NASDAQ"
+            quoteResponse2.currency = "USD"
+            container.mainContext.insert(quoteResponse2)
             
             insertBalanceSnapshots(accounts: accounts, context: container.mainContext)
             insertTransactions(currentAccount: a3, savingAccount: a1, context: container.mainContext)

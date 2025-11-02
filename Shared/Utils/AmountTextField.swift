@@ -1,10 +1,19 @@
 import SwiftUI
 
 struct AmountTextField: View {
+    
     @Binding var amount: Double?
+    
     var signMode: SignMode = .both
+#if os(macOS)
+    var placeholder: String = ""
+#else
+    var placeholder: String = String(localized: "Amount")
+#endif
+    
     @State private var textValue: String = ""
     @State var isPositive = true
+    
     @FocusState private var isEditing: Bool
     
     private let decimalSeparator: String = Locale.current.decimalSeparator ?? "."
@@ -14,18 +23,19 @@ struct AmountTextField: View {
         NavigationLink {
             NumericalKeyboardView(amount: $amount, signMode: signMode)
         } label: {
-            AmountText(amount: amount)
+            AmountText(amount: amount, placeholder: placeholder)
         }
 #else
-        VStack(spacing: 20) {
+        VStack(alignment: .trailing, spacing: 20) {
             HStack {
                 HStack(spacing: 0) {
-#if !os(macOS)
                     if !isPositive, !textValue.isEmpty {
                         Text("-")
                     }
-#endif
-                    TextField("Amount", text: $textValue)
+                    TextField(placeholder, text: $textValue)
+                        .frame(maxWidth: placeholder == String(localized: "Result") ? .infinity : 150)
+                        .multilineTextAlignment(.trailing)
+                        .textFieldStyle(.plain)
                         .focused($isEditing)
 #if !os(macOS)
                         .keyboardType(.decimalPad)
@@ -46,6 +56,8 @@ struct AmountTextField: View {
                             }
                         }
                 }
+                .fixedSize()
+                .frame(maxWidth: .infinity, alignment: .trailing)
                 .foregroundColor(color(for: amount))
                 .bold()
                 if isEditing {

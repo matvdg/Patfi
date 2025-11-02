@@ -80,7 +80,7 @@ struct AddAccountView: View {
                     } label: {
                         Image(systemName: "checkmark")
                     }
-                    .modifier(ButtonStyleModifier(isProminent: true))
+                    .modifier(ButtonStyleModifier())
                 }
             }
         }

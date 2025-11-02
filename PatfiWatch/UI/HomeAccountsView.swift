@@ -40,7 +40,7 @@ struct HomeAccountsView: View {
                         Label("CreateAccount", systemImage: "plus")
                             .padding()
                     }
-                    .modifier(ButtonStyleModifier(isProminent: true))
+                    .modifier(ButtonStyleProminentModifier())
                     .navigationDestination(isPresented: $showAddAccount) {
                         AddAccountView()
                     }

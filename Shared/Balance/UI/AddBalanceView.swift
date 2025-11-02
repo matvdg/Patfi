@@ -25,13 +25,17 @@ struct AddBalanceView: View {
         
         Form {
             Section {
-                AmountTextField(amount: $newBalance, signMode: selectedAccount?.category == .loan ? .negativeOnly : .both)
-                    .focused($focused)
-                    .onChange(of: selectedAccount?.category) { _, new in
-                        if new == .loan {
-                            newBalance = nil
+                HStack(alignment: .center, spacing: 8) {
+                    Text("Balance")
+                    Spacer()
+                    AmountTextField(amount: $newBalance, signMode: selectedAccount?.category == .loan ? .negativeOnly : .both)
+                        .focused($focused)
+                        .onChange(of: selectedAccount?.category) { _, new in
+                            if new == .loan {
+                                newBalance = nil
+                            }
                         }
-                    }
+                }
                 AccountPicker(id: $selectedAccountID, title: String(localized: "Account"))
                 DatePicker("Date", selection: $date, displayedComponents: [.date])
             }
@@ -74,6 +78,7 @@ struct AddBalanceView: View {
                         Image(systemName: "checkmark")
                     }
                     .disabled(newBalance == nil || selectedAccount == nil)
+                    .modifier(ButtonStyleModifier())
                 }
             }
         }

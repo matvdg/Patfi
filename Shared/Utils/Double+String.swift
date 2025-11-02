@@ -6,13 +6,17 @@ extension NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.locale = Locale.current
-        formatter.maximumFractionDigits = 2
-        formatter.minimumFractionDigits = 0
         return formatter
     }
 }
 
 extension Double {
+    
+    func isAlmostEqual(to other: Double) -> Bool {
+        let roundedSelf = (self * 100).rounded() / 100
+        let roundedOther = (other * 100).rounded() / 100
+        return roundedSelf == roundedOther
+    }
     
     var currencyAmount: String {
         NumberFormatter.getCurrencyFormatter().string(from: NSNumber(value: self)) ?? String(localized: "Amount")

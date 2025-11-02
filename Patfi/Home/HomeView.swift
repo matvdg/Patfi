@@ -45,7 +45,7 @@ struct HomeView: View {
                         Label("CreateAccount", systemImage: "plus")
                             .padding()
                     }
-                    .modifier(ButtonStyleModifier(isProminent: true))
+                    .modifier(ButtonStyleProminentModifier())
                 }
             } else {
                 if !isLandscape {

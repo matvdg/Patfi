@@ -54,7 +54,7 @@ struct PeriodPicker: View {
             .disabled(Calendar.current.isDate(selectedDate, equalTo: Date(), toGranularity: selectedPeriod.component))
             Spacer()
         }
-        .modifier(ButtonStyleModifier(isProminent: false))
+        .modifier(ButtonStyleProminentModifier(isProminentForAppleWatchToo: false))
         .padding()
     }
     

@@ -27,7 +27,7 @@ struct HomeBanksView: View {
                         Label("CreateBank", systemImage: "plus")
                             .padding()
                     }
-                    .modifier(ButtonStyleModifier(isProminent: true))
+                    .modifier(ButtonStyleProminentModifier())
                 }
             } else {
                 List {

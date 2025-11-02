@@ -170,7 +170,7 @@ struct MarketSearchView: View {
                     } label: {
                         Label("Retry", systemImage: "arrow.clockwise").padding()
                     }
-                    .modifier(ButtonStyleModifier(isProminent: true))
+                    .modifier(ButtonStyleProminentModifier())
                 }
             }
             

@@ -9,7 +9,7 @@ struct AddInternalTransferView: View {
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
-    
+        
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     
     @State private var amount: Double?
@@ -33,8 +33,12 @@ struct AddInternalTransferView: View {
     var body: some View {
         Form {
             Section {
-                AmountTextField(amount: $amount, signMode: .positiveOnly)
-                    .focused($focused)
+                HStack {
+                    Text("InternalTransfer")
+                    Spacer()
+                    AmountTextField(amount: $amount, signMode: .positiveOnly)
+                        .focused($focused)
+                }
                 TextField("Description", text: $title)
                 AccountPicker(id: $sourceAccountID, title: String(localized: "SourceAccount"))
                 AccountPicker(id: $destinationAccountID, title: String(localized: "DestinationAccount"))
@@ -44,13 +48,14 @@ struct AddInternalTransferView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     if let sourceAccount {
                         let balance = sourceAccount.latestBalance
-                        HStack {
-                            if let bank = sourceAccount.bank {
-                                Text(bank.name)
-                                Text(" • ")
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                if let bank = sourceAccount.bank {
+                                    Text(bank.name)
+                                    Text(" • ")
+                                }
+                                Text(sourceAccount.name)
                             }
-                            Text(sourceAccount.name)
-                            Text(" • ")
                             if let amount {
                                 Text("PreviousBalance \(balance.currencyAmount) newBalance \((balance - abs(amount)).currencyAmount)")
                             } else {
@@ -60,13 +65,14 @@ struct AddInternalTransferView: View {
                     }
                     if let destinationAccount {
                         let balance = destinationAccount.latestBalance
-                        HStack {
-                            if let bank = destinationAccount.bank {
-                                Text(bank.name)
-                                Text(" • ")
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                if let bank = destinationAccount.bank {
+                                    Text(bank.name)
+                                    Text(" • ")
+                                }
+                                Text(destinationAccount.name)
                             }
-                            Text(destinationAccount.name)
-                            Text(" • ")
                             if let amount {
                                 Text("PreviousBalance \(balance.currencyAmount) newBalance \((balance + abs(amount)).currencyAmount)")
                             } else {
@@ -99,7 +105,7 @@ struct AddInternalTransferView: View {
                     } label: {
                         Image(systemName: "checkmark")
                     }
-                    .modifier(ButtonStyleModifier(isProminent: true))
+                    .modifier(ButtonStyleModifier())
                     .disabled(sourceAccount == nil || destinationAccount == nil || amount == 0 || amount == nil)
                 }
             }

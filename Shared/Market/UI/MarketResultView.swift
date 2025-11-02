@@ -67,7 +67,7 @@ struct MarketResultView: View {
                     } label: {
                         Label("Retry", systemImage: "arrow.clockwise").padding()
                     }
-                    .modifier(ButtonStyleModifier(isProminent: true))
+                    .modifier(ButtonStyleProminentModifier())
                     if #available(iOS 26, *) {
                         NavigationLink {
                             TwelveDataView()
@@ -259,7 +259,7 @@ struct MarketResultView: View {
                         } label: {
                             Label("SyncWith", systemImage: "arrow.trianglehead.2.clockwise.rotate.90").padding()
                         }
-                        .modifier(ButtonStyleModifier(isProminent: true))
+                        .modifier(ButtonStyleProminentModifier())
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding()
                     }

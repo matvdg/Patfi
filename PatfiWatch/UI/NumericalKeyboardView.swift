@@ -57,7 +57,7 @@ struct NumericalKeyboardView: View {
                                     .font(.headline)
                             }
                         }
-                        .modifier(ButtonStyleModifier(isProminent: true))
+                        .modifier(ButtonStyleModifier())
                     }
                 }
             }

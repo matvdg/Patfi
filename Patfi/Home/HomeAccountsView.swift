@@ -100,7 +100,7 @@ struct HomeAccountsView: View {
                                                 } label: {
                                                     Label("EditBank", systemImage: "paintpalette")
                                                 }
-                                                .modifier(ButtonStyleModifier(isProminent: true))
+                                                .modifier(ButtonStyleProminentModifier())
                                             }
                                         }
                                         .contextMenu {
@@ -117,7 +117,7 @@ struct HomeAccountsView: View {
                                                 } label: {
                                                     Label("EditBank", systemImage: "paintpalette")
                                                 }
-                                                .modifier(ButtonStyleModifier(isProminent: true))
+                                                .modifier(ButtonStyleProminentModifier())
                                             }
                                         }
                                 }

@@ -129,7 +129,7 @@ struct EditBankView: View {
                     } label: {
                         Image(systemName: "checkmark")
                     }
-                    .modifier(ButtonStyleModifier(isProminent: true))
+                    .modifier(ButtonStyleProminentModifier())
                 }
             }
         }

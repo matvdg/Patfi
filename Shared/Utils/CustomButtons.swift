@@ -1,5 +1,41 @@
 import SwiftUI
 
+struct CheckButton: View {
+    
+    var isMentalMathCorrect: Bool
+    @Binding var isPressed: Bool
+
+    var body: some View {
+        Button {
+            if isMentalMathCorrect {
+                AppSound.success.play()
+            } else {
+                AppSound.error.play()
+            }
+            withAnimation(.easeInOut(duration: 0.3)) {
+                isPressed = true
+            }
+        } label: {
+            Label("Check", systemImage: "checkmark.diamond.fill")
+                .padding()
+        }
+        .overlay(
+            Text(isMentalMathCorrect ? "True" : "False")
+                .textCase(.uppercase)
+                .bold()
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(
+                    (isMentalMathCorrect ? Color.green : Color.red)
+                        .cornerRadius(40)
+                )
+                .opacity(isPressed ? 1 : 0)
+        )
+        .modifier(ButtonStyleProminentModifier())
+    }
+}
+
+
 struct ArrowButton: View {
     
     @Binding var isUp: Bool
@@ -111,38 +147,25 @@ struct BankButton: View {
     }
 }
 
-#Preview {
-    @Previewable @State var isOn = false
-    ArrowButton(isUp: $isOn)
-    ArrowRightButton(isRight: $isOn) {
-        Text("Exemple")
-            .padding(.leading, 8)
-    }
-    CollapseButton(isCollapsed: $isOn)
-    PaymentMethodButton(sortByPaymentMethod: $isOn)
-    BankButton(sortByBank: $isOn)
-    FavButton(isFav: $isOn)
-}
-
-struct ButtonStyleModifier: ViewModifier {
+struct ButtonStyleProminentModifier: ViewModifier {
     
-    let isProminent: Bool
+    var isProminentForAppleWatchToo: Bool = true
     
     func body(content: Content) -> some View {
 #if os(visionOS)
         content.buttonStyle(.borderedProminent)
 #elseif os(watchOS)
         if #available(watchOS 26.0, *) {
-            if isProminent {
+            if isProminentForAppleWatchToo {
                 content.buttonStyle(.glassProminent)
             } else {
                 content.buttonStyle(.plain)
             }
         } else {
-            if isProminent {
+            if isProminentForAppleWatchToo {
                 content.buttonStyle(.borderedProminent)
             } else {
-                content.buttonStyle(.plain)
+                content.buttonStyle(.plain) // false for TwelveDataPicker must be plain on watchOS
             }
         }
 #elseif os(macOS)
@@ -154,5 +177,47 @@ struct ButtonStyleModifier: ViewModifier {
             content.buttonStyle(.borderedProminent)
         }
 #endif
+    }
+}
+
+struct ButtonStyleModifier: ViewModifier {
+    
+    func body(content: Content) -> some View {
+#if os(visionOS)
+        content.buttonStyle(.borderedProminent)
+#elseif os(watchOS)
+        if #available(watchOS 26.0, *) {
+            content.buttonStyle(.glass)
+        } else {
+            content.buttonStyle(.bordered)
+        }
+#elseif os(macOS)
+        content.buttonStyle(.bordered)
+#else
+        if #available(iOS 26.0, *) {
+            content.buttonStyle(.glass)
+        } else {
+            content.buttonStyle(.bordered)
+        }
+#endif
+    }
+}
+
+
+
+#Preview {
+    @Previewable @State var isOn = false
+    ScrollView {
+        ArrowButton(isUp: $isOn)
+        ArrowRightButton(isRight: $isOn) {
+            Text("Exemple")
+                .padding(.leading, 8)
+        }
+        CollapseButton(isCollapsed: $isOn)
+        PaymentMethodButton(sortByPaymentMethod: $isOn)
+        BankButton(sortByBank: $isOn)
+        FavButton(isFav: $isOn)
+        CheckButton(isMentalMathCorrect: false, isPressed: $isOn)
+        CheckButton(isMentalMathCorrect: true, isPressed: $isOn)
     }
 }

@@ -3,6 +3,7 @@ import SwiftUI
 struct AmountText: View {
     
     var amount: Double?
+    var placeholder: String = String(localized: "Amount")
     
     var body: some View {
         Group {
@@ -16,7 +17,7 @@ struct AmountText: View {
                     Text(amount.currencyAmount).foregroundStyle(.green)
                 }
             } else {
-                Text(amount.currencyAmount) // Placeholder "amount"
+                Text(placeholder)
             }
         }
         .lineLimit(1)

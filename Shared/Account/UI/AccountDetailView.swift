@@ -77,7 +77,7 @@ struct AccountDetailView: View {
                             } label: {
                                 Label("UnsetAsDefault", systemImage: "star.slash")
                             }
-                            .modifier(ButtonStyleModifier(isProminent: true))
+                            .modifier(ButtonStyleProminentModifier())
                         }
                     } else {
                         if #available(iOS 26, watchOS 26, *) {
@@ -93,7 +93,7 @@ struct AccountDetailView: View {
                             } label: {
                                 Label("SetAsDefault", systemImage: "star")
                             }
-                            .modifier(ButtonStyleModifier(isProminent: true))
+                            .modifier(ButtonStyleProminentModifier())
                         }
                     }
                 }
@@ -117,7 +117,7 @@ struct AccountDetailView: View {
                         } label: {
                             Text("Cancel")
                         }
-                        .modifier(ButtonStyleModifier(isProminent: true))
+                        .modifier(ButtonStyleProminentModifier())
                     }
                 } message: {
                     Text("DescriptionDeleteAccount")

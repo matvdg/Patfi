@@ -28,7 +28,7 @@ struct EditBanksView: View {
                         Label("CreateBank", systemImage: "plus")
                             .padding()
                     }
-                    .modifier(ButtonStyleModifier(isProminent: true))
+                    .modifier(ButtonStyleProminentModifier())
                 }
             } else {
                 List {
@@ -67,7 +67,7 @@ struct EditBanksView: View {
                                 } label: {
                                     Image(systemName: "checkmark")
                                 }
-                                .modifier(ButtonStyleModifier(isProminent: true))
+                                .modifier(ButtonStyleProminentModifier())
                             }
                         }
                         #if !os(watchOS)
@@ -90,7 +90,7 @@ struct EditBanksView: View {
                                 } label: {
                                     Label("Edit", systemImage: "pencil")
                                 }
-                                .modifier(ButtonStyleModifier(isProminent: true))
+                                .modifier(ButtonStyleProminentModifier())
                             }
                         }
                         #endif

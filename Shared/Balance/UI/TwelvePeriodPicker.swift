@@ -61,7 +61,7 @@ struct TwelvePeriodPicker: View {
             .disabled(selectedDate.isNow(for: selectedPeriod))
             Spacer()
         }
-        .modifier(ButtonStyleModifier(isProminent: false))
+        .modifier(ButtonStyleProminentModifier(isProminentForAppleWatchToo: false))
         .padding()
         .onChange(of: selectedPeriod) {
             selectedDate = Date().normalizedDate(selectedPeriod: selectedPeriod)
