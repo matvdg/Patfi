@@ -27,7 +27,7 @@ struct CheckButton: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(
                     (isMentalMathCorrect ? Color.green : Color.red)
-                        .cornerRadius(40)
+                        .cornerRadius(10)
                 )
                 .opacity(isPressed ? 1 : 0)
         )
@@ -202,8 +202,6 @@ struct ButtonStyleModifier: ViewModifier {
 #endif
     }
 }
-
-
 
 #Preview {
     @Previewable @State var isOn = false
