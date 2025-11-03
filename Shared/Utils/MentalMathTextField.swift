@@ -54,6 +54,7 @@ struct MentalMathTextField: View {
                             updateAmountFromInput()
                         }
                         .onChange(of: isEditing) { _, editing in
+                            isProgrammaticChange = true
                             if !editing {
                                 textValue = formattedAmount(amount, withSymbol: true)
                             } else {
