@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AmountTextField: View {
+struct MentalMathTextField: View {
     
     @Binding var amount: Double?
     
@@ -13,6 +13,7 @@ struct AmountTextField: View {
     
     @State private var textValue: String = ""
     @State var isPositive = true
+    @State private var isProgrammaticChange = false
     
     @FocusState private var isEditing: Bool
     
@@ -33,6 +34,7 @@ struct AmountTextField: View {
                         Text("-")
                     }
                     TextField(placeholder, text: $textValue)
+                        .tint(.clear)
                         .frame(maxWidth: placeholder == String(localized: "Result") ? .infinity : 150)
                         .multilineTextAlignment(.trailing)
                         .textFieldStyle(.plain)
@@ -43,9 +45,12 @@ struct AmountTextField: View {
                         .onAppear {
                             textValue = formattedAmount(amount, withSymbol: true)
                         }
-                        .onChange(of: textValue) {
-                            guard isEditing else { return }
-                            handleInput()
+                        .onChange(of: textValue) { old, new in
+                            guard isEditing, !isProgrammaticChange else {
+                                isProgrammaticChange = false
+                                return
+                            }
+                            handleInput(old: old, new: new)
                             updateAmountFromInput()
                         }
                         .onChange(of: isEditing) { _, editing in
@@ -92,39 +97,65 @@ struct AmountTextField: View {
 #endif
     }
     
-    private func handleInput() {
-        // Maximum 7 integer digits (X XXX XXX.XX)
-        let parts = textValue.split(separator: decimalSeparator, omittingEmptySubsequences: false)
-        let integerPartCount = parts.first?.count ?? 0
-        if integerPartCount > 7 && !textValue.cleanComa.contains(".") {
-            textValue.removeLast()
-        }
-        // Prevents 0X (00 -> 0, 06 -> 6, 0.6 -> 0.6)
-        if textValue.count > 1 && textValue.hasPrefix("0") && !textValue.cleanComa.hasPrefix("0.") {
-            textValue.removeFirst()
-        }
-        // Add 0 before .
-        if textValue.cleanComa.hasPrefix(".") {
-            textValue = "0\(decimalSeparator)"
+    
+    private func handleInput(old: String, new: String) {
+        
+        // ⌫ Remove first character if necessary
+        guard new.count != old.count - 1 else {
+            isProgrammaticChange = true
+            var updated = old
+            updated.removeFirst()
+            textValue = updated
+            return
         }
         
-        // Convert . into decimalSeparator
-        if textValue.cleanComa.hasSuffix(".") {
-            textValue.removeLast()
-            textValue.append(decimalSeparator)
+        var updatedInput = textValue
+        
+        // Invert for mental math mode (right to left)
+        if updatedInput.count > 1 {
+            isProgrammaticChange = true
+            let last = updatedInput.removeLast()
+            updatedInput.insert(last, at: textValue.startIndex)
         }
         
-        // Prevents more than two decimal digits (0.999 -> 0.99)
-        if let dotIndex = textValue.firstIndex(of: Character("\(decimalSeparator)")) ?? textValue.firstIndex(of: Character(".")) {
-            let decimals = textValue[dotIndex...].dropFirst()
-            if decimals.count > 2 {
-                textValue.removeLast()
+        // Prevents forbidden digits (everything excepts numerical digits)
+        if Double(updatedInput.cleanComa) == nil, !updatedInput.isEmpty {
+            isProgrammaticChange = true
+            updatedInput.removeFirst()
+        }
+        
+        // Remove manual decimal separator
+        if updatedInput.cleanComa.hasPrefix(".") {
+            isProgrammaticChange = true
+            if updatedInput.count == 3 {
+                updatedInput = updatedInput.withLocaleDecimalSeparator
+            } else {
+                updatedInput.removeFirst()
             }
         }
-        // Prevents forbidden digits (everything excepts numerical digits)
-        if Double(textValue.cleanComa) == nil, !textValue.isEmpty {
-            textValue.removeLast()
+        
+        // Auto decimalSepator
+        if updatedInput.count == 3 && !updatedInput.contains(decimalSeparator) {
+            isProgrammaticChange = true
+            let first = updatedInput.removeFirst()
+            updatedInput.insert(decimalSeparator.first!, at: updatedInput.startIndex)
+            updatedInput.insert(first, at: updatedInput.startIndex)
         }
+        
+        // Maximum 10 caracters
+        if updatedInput.count > 10 {
+            isProgrammaticChange = true
+            updatedInput.removeFirst()
+        }
+        
+        // If cast still fails (edge cases such as moving the cursor), remove everything
+        if Double(updatedInput.cleanComa) == nil, !updatedInput.isEmpty {
+            isProgrammaticChange = true
+            updatedInput.removeAll()
+        }
+        
+        textValue = updatedInput
+        if new == updatedInput { isProgrammaticChange = false }
     }
     
     private func updateAmountFromInput() {
@@ -162,23 +193,14 @@ struct AmountTextField: View {
 }
 
 #Preview {
-    @Previewable @State var amount0: Double? = nil
-    @Previewable @State var amount1: Double? = 0
-    @Previewable @State var amount2: Double? = 56.78
-    @Previewable @State var amount3: Double? = -22
+    @Previewable @State var amount: Double? = nil
     NavigationStack {
         Form {
-            Section("SignMode: both") {
-                AmountTextField(amount: $amount0)
-                AmountTextField(amount: $amount1)
-                AmountTextField(amount: $amount2)
-                AmountTextField(amount: $amount3)
-            }
             Section("SignMode: positiveOnly") {
-                AmountTextField(amount: $amount2, signMode: .positiveOnly)
+                MentalMathTextField(amount: $amount, signMode: .positiveOnly)
             }
             Section("SignMode: negativeOnly") {
-                AmountTextField(amount: $amount3, signMode: .negativeOnly)
+                MentalMathTextField(amount: $amount, signMode: .negativeOnly)
             }
         }
     }

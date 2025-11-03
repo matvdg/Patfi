@@ -63,6 +63,12 @@ extension String {
     var cleanComa: String {
         replacingOccurrences(of: ",", with: ".").cleanSpaces
     }
+    
+    var withLocaleDecimalSeparator: String {
+        let decimalSeparator: String = Locale.current.decimalSeparator ?? "."
+        return self.cleanComa.replacingOccurrences(of: ".", with: decimalSeparator)
+    }
+    
     var cleanSpaces: String {
         replacingOccurrences(of: "\\s", with: "", options: .regularExpression)
     }

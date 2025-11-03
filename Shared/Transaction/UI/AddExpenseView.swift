@@ -79,7 +79,7 @@ struct AddExpenseView: View {
                                 .frame(height: 2)
                                 .background(Color.primary)
                             let result = balance - abs(amount)
-                            AmountTextField(amount: $manualResult, signMode: result >= 0 ? .positiveOnly : .negativeOnly, placeholder: String(localized: "Result"))
+                            MentalMathTextField(amount: $manualResult, signMode: result >= 0 ? .positiveOnly : .negativeOnly, placeholder: String(localized: "Result"))
                                 .multilineTextAlignment(.trailing)
                                 .onChange(of: manualResult) {
                                     isCheckButtonPressed = false

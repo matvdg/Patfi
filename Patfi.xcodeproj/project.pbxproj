@@ -127,6 +127,7 @@
 				Transaction/UI/TransactionRow.swift,
 				Transaction/UI/TransactionsView.swift,
 				Utils/AmountTextField.swift,
+				Utils/MentalMathTextField.swift,
 				Utils/QuickActions.swift,
 			);
 			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;

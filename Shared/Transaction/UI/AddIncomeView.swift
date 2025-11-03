@@ -8,6 +8,8 @@ struct AddIncomeView: View {
         _selectedAccountID = State(initialValue: account?.persistentModelID)
     }
     
+    @FocusState private var focused: Bool
+    
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     
@@ -17,7 +19,6 @@ struct AddIncomeView: View {
     
     @State private var title: String = ""
     @State private var amount: Double?
-    @FocusState private var focused: Bool
     @State private var selectedAccountID: PersistentIdentifier?
     @State private var paymentMethod: Transaction.PaymentMethod = .bankTransfer
     @State private var date: Date = .now
@@ -80,7 +81,7 @@ struct AddIncomeView: View {
                                 .frame(height: 2)
                                 .background(Color.primary)
                             let result = abs(amount) + balance
-                            AmountTextField(amount: $manualResult, signMode: result >= 0 ? .positiveOnly : .negativeOnly, placeholder: String(localized: "Result"))
+                            MentalMathTextField(amount: $manualResult, signMode: result >= 0 ? .positiveOnly : .negativeOnly, placeholder: String(localized: "Result"))
                                 .multilineTextAlignment(.trailing)
                                 .onChange(of: manualResult) {
                                     isCheckButtonPressed = false
