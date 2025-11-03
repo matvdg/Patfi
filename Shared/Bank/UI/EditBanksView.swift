@@ -67,7 +67,6 @@ struct EditBanksView: View {
                                 } label: {
                                     Image(systemName: "checkmark")
                                 }
-                                .modifier(ButtonStyleProminentModifier())
                             }
                         }
                         #if !os(watchOS)
@@ -90,7 +89,6 @@ struct EditBanksView: View {
                                 } label: {
                                     Label("Edit", systemImage: "pencil")
                                 }
-                                .modifier(ButtonStyleProminentModifier())
                             }
                         }
                         #endif

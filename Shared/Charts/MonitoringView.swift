@@ -120,17 +120,19 @@ struct BalancesByPeriodView: View {
 }
 
 #Preview {
-    TabView {
-        MonitoringView(for: .day, containing: Date().normalizedDate(selectedPeriod: .day))
-            .modelContainer(ModelContainer.shared)
-        MonitoringView(for: .week, containing: Date().normalizedDate(selectedPeriod: .week))
-            .modelContainer(ModelContainer.shared)
-        MonitoringView(for: .month, containing: Date().normalizedDate(selectedPeriod: .month))
-            .modelContainer(ModelContainer.shared)
-        MonitoringView(for: .year, containing: Date().normalizedDate(selectedPeriod: .year))
-            .modelContainer(ModelContainer.shared)
-    }
+    NavigationStack {
+        TabView {
+            MonitoringView(for: .day, containing: Date().normalizedDate(selectedPeriod: .day))
+                .modelContainer(ModelContainer.shared)
+            MonitoringView(for: .week, containing: Date().normalizedDate(selectedPeriod: .week))
+                .modelContainer(ModelContainer.shared)
+            MonitoringView(for: .month, containing: Date().normalizedDate(selectedPeriod: .month))
+                .modelContainer(ModelContainer.shared)
+            MonitoringView(for: .year, containing: Date().normalizedDate(selectedPeriod: .year))
+                .modelContainer(ModelContainer.shared)
+        }
 #if !os(macOS)
-    .tabViewStyle(.page)
+        .tabViewStyle(.page)
 #endif
+    }
 }

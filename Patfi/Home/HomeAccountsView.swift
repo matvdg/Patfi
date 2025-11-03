@@ -100,7 +100,6 @@ struct HomeAccountsView: View {
                                                 } label: {
                                                     Label("EditBank", systemImage: "paintpalette")
                                                 }
-                                                .modifier(ButtonStyleProminentModifier())
                                             }
                                         }
                                         .contextMenu {
@@ -117,7 +116,6 @@ struct HomeAccountsView: View {
                                                 } label: {
                                                     Label("EditBank", systemImage: "paintpalette")
                                                 }
-                                                .modifier(ButtonStyleProminentModifier())
                                             }
                                         }
                                 }
@@ -207,6 +205,8 @@ struct HomeAccountsView: View {
 }
 
 #Preview {
-    HomeAccountsView()
-        .modelContainer(ModelContainer.shared)
+    NavigationStack {
+        HomeAccountsView()
+            .modelContainer(ModelContainer.shared)
+    }
 }

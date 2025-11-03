@@ -76,8 +76,8 @@ struct AccountDetailView: View {
                                 accountRepository.unsetAsDefault(account: account, context: context)
                             } label: {
                                 Label("UnsetAsDefault", systemImage: "star.slash")
+                                    .labelStyle(.titleAndIcon)
                             }
-                            .modifier(ButtonStyleProminentModifier())
                         }
                     } else {
                         if #available(iOS 26, watchOS 26, *) {
@@ -92,8 +92,8 @@ struct AccountDetailView: View {
                                 accountRepository.setAsDefault(account: account, context: context)
                             } label: {
                                 Label("SetAsDefault", systemImage: "star")
+                                    .labelStyle(.titleAndIcon)
                             }
-                            .modifier(ButtonStyleProminentModifier())
                         }
                     }
                 }
@@ -117,7 +117,6 @@ struct AccountDetailView: View {
                         } label: {
                             Text("Cancel")
                         }
-                        .modifier(ButtonStyleProminentModifier())
                     }
                 } message: {
                     Text("DescriptionDeleteAccount")
@@ -250,7 +249,7 @@ struct AccountDetailView: View {
 
 #Preview {
     UserDefaults.standard.set(true, forKey: "isBetaEnabled")
-    let account = Account(name: "AAPL", category: .stocks, currentBalance: 13400)
+    let account = Account(name: "AAPL", category: .current, currentBalance: 13400)
     account.asset = 🍏
     return NavigationStack { AccountDetailView(account: account) }.modelContainer(ModelContainer.shared)
 }
