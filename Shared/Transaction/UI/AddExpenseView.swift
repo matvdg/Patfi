@@ -7,6 +7,8 @@ struct AddExpenseView: View {
         _selectedAccountID = State(initialValue: account?.persistentModelID)
     }
     
+    @FocusState private var focused: Bool
+    
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     
@@ -18,7 +20,6 @@ struct AddExpenseView: View {
     @State private var paymentMethod: Transaction.PaymentMethod = .applePay
     @State private var expenseCategory: Transaction.ExpenseCategory?
     @State private var amount: Double?
-    @FocusState private var focused: Bool
     @State private var selectedAccountID: PersistentIdentifier?
     @State private var date: Date = .now
     @State private var manualResult: Double?
