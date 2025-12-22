@@ -72,8 +72,8 @@ struct NumericalKeyboardView: View {
                     }
                 }.foregroundColor(.red)
             }
-            ToolbarItem(placement: .topBarLeading) {
-                if #available(watchOS 26, *) {
+            if signMode == .both {
+                ToolbarItem(placement: .topBarLeading) {
                     Button("", systemImage: isPositive ? "plus.forwardslash.minus" : "minus.forwardslash.plus", role: .confirm) {
                         isPositive.toggle()
                         if let amt = amount {
@@ -81,24 +81,8 @@ struct NumericalKeyboardView: View {
                         }
                     }
                     .foregroundColor(isPositive ? .green : .red)
-                    .disabled(signMode != .both)
-                    .opacity((signMode == .both) ? 1 : 0)
-                } else {
-                    // Fallback on earlier versions
-                    Button(action: {
-                        isPositive.toggle()
-                        if let amt = amount {
-                            amount = -amt
-                        }
-                    }) {
-                        Image(systemName: isPositive ? "plus.forwardslash.minus" : "minus.forwardslash.plus")
-                    }
-                    .foregroundColor(isPositive ? .green : .red)
-                    .disabled(signMode != .both)
-                    .opacity((signMode == .both) ? 1 : 0)
                 }
             }
-            
         }
         .onAppear {
             if let amount {

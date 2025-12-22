@@ -191,9 +191,7 @@ struct MarketSearchView: View {
         }
         .navigationTitle("SymbolSearch")
         .navigationDestination(isPresented: $showTwelveDataView) {
-            if #available(iOS 26.0, *) {
-                TwelveDataView()
-            }
+            TwelveDataView()
         }
         .onChange(of: needsDismiss) {
             guard needsDismiss else { return }

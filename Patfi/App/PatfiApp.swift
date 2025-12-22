@@ -44,6 +44,7 @@ struct PatfiApp: App {
     #if os(iOS)
     // On iOS, handle Quick Actions via AppDelegate and SceneDelegate
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     /// QuickActionCoordinator is @Observable, so SwiftUI automatically refreshes
     /// when SceneDelegate updates the launchedQuickAction.
     @State private var quickActionCoordinator = SceneDelegate.quickActionCoordinator

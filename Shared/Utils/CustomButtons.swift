@@ -4,7 +4,7 @@ struct CheckButton: View {
     
     var isMentalMathCorrect: Bool
     @Binding var isPressed: Bool
-
+    
     var body: some View {
         Button {
             if isMentalMathCorrect {
@@ -39,7 +39,7 @@ struct CheckButton: View {
 struct ArrowButton: View {
     
     @Binding var isUp: Bool
-
+    
     var body: some View {
         Button(action: {
             withAnimation(.spring()) {
@@ -59,7 +59,7 @@ struct ArrowButton: View {
 struct FavButton: View {
     
     @Binding var isFav: Bool
-
+    
     var body: some View {
         Button(action: {
             withAnimation(.spring()) {
@@ -77,12 +77,12 @@ struct FavButton: View {
 struct ArrowRightButton<Content: View>: View {
     @Binding var isRight: Bool
     let content: () -> Content
-
+    
     init(isRight: Binding<Bool>, @ViewBuilder content: @escaping () -> Content) {
         self._isRight = isRight
         self.content = content
     }
-
+    
     var body: some View {
         Button(action: {
             withAnimation(.spring()) {
@@ -105,7 +105,7 @@ struct ArrowRightButton<Content: View>: View {
 struct CollapseButton: View {
     
     @Binding var isCollapsed: Bool
-
+    
     var body: some View {
         Button(action: {
             isCollapsed.toggle()
@@ -120,7 +120,7 @@ struct CollapseButton: View {
 struct PaymentMethodButton: View {
     
     @Binding var sortByPaymentMethod: Bool
-
+    
     var body: some View {
         Button(action: {
             sortByPaymentMethod.toggle()
@@ -135,7 +135,7 @@ struct PaymentMethodButton: View {
 struct BankButton: View {
     
     @Binding var sortByBank: Bool
-
+    
     var body: some View {
         Button(action: {
             sortByBank.toggle()
@@ -155,27 +155,15 @@ struct ButtonStyleProminentModifier: ViewModifier {
 #if os(visionOS)
         content.buttonStyle(.borderedProminent)
 #elseif os(watchOS)
-        if #available(watchOS 26.0, *) {
-            if isProminentForAppleWatchToo {
-                content.buttonStyle(.glassProminent)
-            } else {
-                content.buttonStyle(.plain)
-            }
+        if isProminentForAppleWatchToo {
+            content.buttonStyle(.glassProminent)
         } else {
-            if isProminentForAppleWatchToo {
-                content.buttonStyle(.borderedProminent)
-            } else {
-                content.buttonStyle(.plain) // false for TwelveDataPicker must be plain on watchOS
-            }
+            content.buttonStyle(.plain)
         }
 #elseif os(macOS)
         content.buttonStyle(.bordered)
 #else
-        if #available(iOS 26.0, *) {
-            content.buttonStyle(.glassProminent)
-        } else {
-            content.buttonStyle(.borderedProminent)
-        }
+        content.buttonStyle(.glassProminent)
 #endif
     }
 }
@@ -186,19 +174,11 @@ struct ButtonStyleModifier: ViewModifier {
 #if os(visionOS)
         content.buttonStyle(.borderedProminent)
 #elseif os(watchOS)
-        if #available(watchOS 26.0, *) {
-            content.buttonStyle(.glass)
-        } else {
-            content.buttonStyle(.bordered)
-        }
+        content.buttonStyle(.glass)
 #elseif os(macOS)
         content.buttonStyle(.bordered)
 #else
-        if #available(iOS 26.0, *) {
-            content.buttonStyle(.glass)
-        } else {
-            content.buttonStyle(.bordered)
-        }
+        content.buttonStyle(.glass)
 #endif
     }
 }

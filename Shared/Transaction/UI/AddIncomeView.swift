@@ -131,25 +131,12 @@ struct AddIncomeView: View {
         .navigationTitle("AddIncome")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                if #available(iOS 26, watchOS 26, *) {
-                    Button(role: .confirm, action: {
-                        guard let amount, let selectedAccount else { return }
-                        transactionRepository.addIncome(title: title, amount: amount, account: selectedAccount, paymentMethod: paymentMethod, date: date, context: context)
-                        dismiss()
-                    })
-                    .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedAccount == nil || amount == 0 || amount == nil || isSaveDisabled)
-                } else {
-                    // Fallback on earlier versions
-                    Button {
-                        guard let amount, let selectedAccount else { return }
-                        transactionRepository.addIncome(title: title, amount: amount, account: selectedAccount, paymentMethod: paymentMethod, date: date, context: context)
-                        dismiss()
-                    } label: {
-                        Image(systemName: "checkmark")
-                    }
-                    .modifier(ButtonStyleModifier())
-                    .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedAccount == nil || amount == 0 || amount == nil || isSaveDisabled)
-                }
+                Button(role: .confirm, action: {
+                    guard let amount, let selectedAccount else { return }
+                    transactionRepository.addIncome(title: title, amount: amount, account: selectedAccount, paymentMethod: paymentMethod, date: date, context: context)
+                    dismiss()
+                })
+                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedAccount == nil || amount == 0 || amount == nil || isSaveDisabled)
             }
         }
         .onAppear {

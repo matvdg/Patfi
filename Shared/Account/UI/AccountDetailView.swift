@@ -64,36 +64,16 @@ struct AccountDetailView: View {
 #endif
                 if account.category == .current {
                     if account.isDefault {
-                        if #available(iOS 26, watchOS 26, *) {
-                            Button(role: .confirm) {
-                                accountRepository.unsetAsDefault(account: account, context: context)
-                            } label: {
-                                Label("UnsetAsDefault", systemImage: "star.slash")
-                            }
-                        } else {
-                            // Fallback on earlier versions
-                            Button {
-                                accountRepository.unsetAsDefault(account: account, context: context)
-                            } label: {
-                                Label("UnsetAsDefault", systemImage: "star.slash")
-                                    .labelStyle(.titleAndIcon)
-                            }
+                        Button(role: .confirm) {
+                            accountRepository.unsetAsDefault(account: account, context: context)
+                        } label: {
+                            Label("UnsetAsDefault", systemImage: "star.slash")
                         }
                     } else {
-                        if #available(iOS 26, watchOS 26, *) {
-                            Button(role: .confirm) {
-                                accountRepository.setAsDefault(account: account, context: context)
-                            } label: {
-                                Label("SetAsDefault", systemImage: "star")
-                            }
-                        } else {
-                            // Fallback on earlier versions
-                            Button {
-                                accountRepository.setAsDefault(account: account, context: context)
-                            } label: {
-                                Label("SetAsDefault", systemImage: "star")
-                                    .labelStyle(.titleAndIcon)
-                            }
+                        Button(role: .confirm) {
+                            accountRepository.setAsDefault(account: account, context: context)
+                        } label: {
+                            Label("SetAsDefault", systemImage: "star")
                         }
                     }
                 }
@@ -108,16 +88,7 @@ struct AccountDetailView: View {
                         accountRepository.delete(account: account, context: context)
                         dismiss()
                     }
-                    if #available(iOS 26, watchOS 26, *) {
-                        Button(role: .cancel, action: { dismiss() })
-                    } else {
-                        // Fallback on earlier versions
-                        Button {
-                            dismiss()
-                        } label: {
-                            Text("Cancel")
-                        }
-                    }
+                    Button(role: .cancel, action: { dismiss() })
                 } message: {
                     Text("DescriptionDeleteAccount")
                 }

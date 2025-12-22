@@ -9,7 +9,7 @@ struct AddInternalTransferView: View {
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
-        
+    
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     
     @State private var amount: Double?
@@ -89,25 +89,12 @@ struct AddInternalTransferView: View {
         .navigationTitle("InternalTransfer")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                if #available(iOS 26, watchOS 26, *) {
-                    Button(role: .confirm, action: {
-                        guard let amount, let sourceAccount, let destinationAccount else { return }
-                        transactionRepository.addInternalTransfer(title: title, amount: amount, sourceAccount: sourceAccount, destinationAccount: destinationAccount, date: date, markAsDavingsInvestments: markAsDavingsInvestments, context: context)
-                        dismiss()
-                    })
-                    .disabled(sourceAccount == nil || destinationAccount == nil || amount == 0 || amount == nil)
-                } else {
-                    // Fallback on earlier versions
-                    Button {
-                        guard let amount, let sourceAccount, let destinationAccount else { return }
-                        transactionRepository.addInternalTransfer(title: title, amount: amount, sourceAccount: sourceAccount, destinationAccount: destinationAccount, date: date, markAsDavingsInvestments: markAsDavingsInvestments, context: context)
-                        dismiss()
-                    } label: {
-                        Image(systemName: "checkmark")
-                    }
-                    .modifier(ButtonStyleModifier())
-                    .disabled(sourceAccount == nil || destinationAccount == nil || amount == 0 || amount == nil)
-                }
+                Button(role: .confirm, action: {
+                    guard let amount, let sourceAccount, let destinationAccount else { return }
+                    transactionRepository.addInternalTransfer(title: title, amount: amount, sourceAccount: sourceAccount, destinationAccount: destinationAccount, date: date, markAsDavingsInvestments: markAsDavingsInvestments, context: context)
+                    dismiss()
+                })
+                .disabled(sourceAccount == nil || destinationAccount == nil || amount == 0 || amount == nil)
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }
@@ -118,7 +105,7 @@ struct AddInternalTransferView: View {
                 sourceAccountID = defaultAccount.persistentModelID
             }
         }
-}
+    }
 }
 
 #Preview {

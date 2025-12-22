@@ -65,7 +65,7 @@ extension Transaction {
             case .pets: return "pawprint"
             case .entertainment: return "film"
             case .gaming: return "gamecontroller"
-            case .sportsFitness: return "basketball"
+            case .sportsFitness: return "dumbbell"
             case .shopping: return "bag"
             case .education: return "book"
             case .travel: return "globe.europe.africa"

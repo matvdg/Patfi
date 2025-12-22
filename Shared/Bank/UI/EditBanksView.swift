@@ -12,7 +12,7 @@ struct EditBanksView: View {
     @State private var refreshID = UUID()
     
     private let bankRepository = BankRepository()
-
+    
     var body: some View {
         NavigationStack {
             if banks.isEmpty {
@@ -54,54 +54,36 @@ struct EditBanksView: View {
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
-                            if #available(iOS 26, watchOS 26, *) {
-                                Button(role: .confirm) {
-                                    bankToModify = bank
-                                } label: {
-                                    Label("Edit", systemImage: "pencil")
-                                }
-                            } else {
-                                // Fallback on earlier versions
-                                Button {
-                                    bankToModify = bank
-                                } label: {
-                                    Image(systemName: "checkmark")
-                                }
+                            Button(role: .confirm) {
+                                bankToModify = bank
+                            } label: {
+                                Label("Edit", systemImage: "pencil")
                             }
                         }
-                        #if !os(watchOS)
+#if !os(watchOS)
                         .contextMenu {
                             Button(role: .destructive) {
                                 bankRepository.delete(bank, context: context)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
-                            if #available(iOS 26, watchOS 26, *) {
-                                Button(role: .confirm) {
-                                    bankToModify = bank
-                                } label: {
-                                    Label("Edit", systemImage: "pencil")
-                                }
-                            } else {
-                                // Fallback on earlier versions
-                                Button {
-                                    bankToModify = bank
-                                } label: {
-                                    Label("Edit", systemImage: "pencil")
-                                }
+                            Button(role: .confirm) {
+                                bankToModify = bank
+                            } label: {
+                                Label("Edit", systemImage: "pencil")
                             }
                         }
-                        #endif
+#endif
                     }
-                    #if !os(watchOS)
+#if !os(watchOS)
                     .listRowSeparator(.hidden)
-                    #endif
+#endif
                     Text("TipBank").foregroundStyle(.tertiary).italic()
                 }
                 .id(refreshID)
-                #if os(iOS) || os(tvOS) || os(visionOS)
+#if os(iOS) || os(tvOS) || os(visionOS)
                 .listStyle(.insetGrouped)
-                #endif
+#endif
                 .safeAreaInset(edge: .bottom) {
                     Color.clear.frame(height: 0)
                 }

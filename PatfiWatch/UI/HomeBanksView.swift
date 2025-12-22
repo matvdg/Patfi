@@ -53,19 +53,10 @@ struct HomeBanksView: View {
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
-                            if #available(watchOS 26, *) {
-                                Button(role: .confirm) {
-                                    bankToModify = bank
-                                } label: {
-                                    Label("Edit", systemImage: "pencil")
-                                }
-                            } else {
-                                // Fallback on earlier versions
-                                Button {
-                                    bankToModify = bank
-                                } label: {
-                                    Label("Edit", systemImage: "pencil")
-                                }
+                            Button(role: .confirm) {
+                                bankToModify = bank
+                            } label: {
+                                Label("Edit", systemImage: "pencil")
                             }
                         }
                     }

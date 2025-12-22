@@ -63,25 +63,13 @@ struct AddAccountView: View {
         .navigationTitle("AddAccount")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                if #available(iOS 26, watchOS 26, *) {
-                    Button(role: .confirm, action: {
-                        guard let bank, let balance else { return }
-                        accountRepository.create(name: name, balance: balance, category: category, bank: bank, context: context)
-                        dismiss()
-                        
-                    })
-                    .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || bank == nil || balance == nil)
-                } else {
-                    // Fallback on earlier versions
-                    Button {
-                        guard let bank, let balance else { return }
-                        accountRepository.create(name: name, balance: balance, category: category, bank: bank, context: context)
-                        dismiss()
-                    } label: {
-                        Image(systemName: "checkmark")
-                    }
-                    .modifier(ButtonStyleModifier())
-                }
+                Button(role: .confirm, action: {
+                    guard let bank, let balance else { return }
+                    accountRepository.create(name: name, balance: balance, category: category, bank: bank, context: context)
+                    dismiss()
+                    
+                })
+                .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || bank == nil || balance == nil)
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }

@@ -1360,13 +1360,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Restaurants"
+            "value" : "Restaurants & bars"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Restaurants"
+            "value" : "Restaurants & bars"
           }
         }
       }
