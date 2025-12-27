@@ -18,6 +18,8 @@ final class Transaction {
     var expenseCategory: ExpenseCategory? = nil
     /// True if this transaction is an internal transfer between accounts
     var isInternalTransfer: Bool = false
+    var lat: Double? = nil
+    var lng: Double? = nil
 
     init(
         title: String,
@@ -27,7 +29,9 @@ final class Transaction {
         date: Date,
         amount: Double,
         account: Account? = nil,
-        isInternalTransfer: Bool = false
+        isInternalTransfer: Bool = false,
+        lat: Double? = nil,
+        lng: Double? = nil
     ) {
         self.title = title
         self.date = date
@@ -37,6 +41,8 @@ final class Transaction {
         self.paymentMethod = paymentMethod
         self.isInternalTransfer = isInternalTransfer
         self.expenseCategory = expenseCategory
+        self.lat = lat
+        self.lng = lng
     }
     
     enum TransactionType: String, Codable, CaseIterable, Identifiable {

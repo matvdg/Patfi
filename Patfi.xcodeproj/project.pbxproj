@@ -86,10 +86,10 @@
 			);
 			target = F63DB5A62E799D1100688CC7 /* TotalBalanceWidgetExtension */;
 		};
-		F670967F2E6B38ED0059EF66 /* Exceptions for "Patfi" folder in "Patfi" target */ = {
+		F6458EFB2F0039CD00B6BA81 /* Exceptions for "Patfi" folder in "Patfi" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				App/Info.plist,
+				Info.plist,
 			);
 			target = F60DBEBE2E69FD3300ED214A /* Patfi */;
 		};
@@ -123,6 +123,7 @@
 				Transaction/UI/AddInternalTransferView.swift,
 				Transaction/UI/EditTransactionView.swift,
 				Transaction/UI/ExpenseCategoryLogo.swift,
+				Transaction/UI/MapView.swift,
 				Transaction/UI/PaymentMethodLogo.swift,
 				Transaction/UI/TransactionRow.swift,
 				Transaction/UI/TransactionsView.swift,
@@ -138,7 +139,7 @@
 		F60DBEC12E69FD3300ED214A /* Patfi */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				F670967F2E6B38ED0059EF66 /* Exceptions for "Patfi" folder in "Patfi" target */,
+				F6458EFB2F0039CD00B6BA81 /* Exceptions for "Patfi" folder in "Patfi" target */,
 			);
 			path = Patfi;
 			sourceTree = "<group>";
@@ -325,7 +326,7 @@
 				};
 			};
 			buildConfigurationList = F60DBEBA2E69FD3300ED214A /* Build configuration list for PBXProject "Patfi" */;
-			developmentRegion = en;
+			developmentRegion = fr;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -567,9 +568,10 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Patfi/App/Info.plist;
+				INFOPLIST_FILE = Patfi/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Patfi;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to save the location of an expense.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -629,9 +631,10 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Patfi/App/Info.plist;
+				INFOPLIST_FILE = Patfi/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Patfi;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to save the location of an expense.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -771,6 +774,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "PatfiWatch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = PatfiWatch;
+				INFOPLIST_KEY_NSLocationUsageDescription = "Your location is used to save the location of an expense.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to save the location of an expense.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = fr.matvdg.patfi;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -810,6 +815,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "PatfiWatch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = PatfiWatch;
+				INFOPLIST_KEY_NSLocationUsageDescription = "Your location is used to save the location of an expense.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to save the location of an expense.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = fr.matvdg.patfi;
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -15,7 +15,10 @@ class TransactionRepository {
                     paymentMethod: Transaction.PaymentMethod,
                     expenseCategory: Transaction.ExpenseCategory,
                     date: Date,
-                    context: ModelContext) {
+                    context: ModelContext,
+                    lat: Double? = nil,
+                    lng: Double? = nil
+    ) {
         addTransaction(type: .expense,
                        title: title,
                        amount: amount,
@@ -24,7 +27,10 @@ class TransactionRepository {
                        isInternalTransfer: false,
                        expenseCategory: expenseCategory,
                        date: date,
-                       context: context)
+                       context: context,
+                       lat: lat,
+                       lng: lng
+        )
     }
     
     func addIncome(title: String,
@@ -94,7 +100,9 @@ class TransactionRepository {
                                 isInternalTransfer: Bool,
                                 expenseCategory: Transaction.ExpenseCategory? = nil,
                                 date: Date,
-                                context: ModelContext) {
+                                context: ModelContext,
+                                lat: Double? = nil,
+                                lng: Double? = nil) {
         let transaction = Transaction(
             title: title,
             transactionType: type,
@@ -103,7 +111,9 @@ class TransactionRepository {
             date: date,
             amount: abs(amount),
             account: account,
-            isInternalTransfer: isInternalTransfer
+            isInternalTransfer: isInternalTransfer,
+            lat: lat,
+            lng: lng
         )
         context.insert(transaction)
         do {

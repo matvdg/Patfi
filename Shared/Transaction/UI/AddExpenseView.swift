@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import CoreLocation
 
 struct AddExpenseView: View {
     
@@ -22,10 +23,12 @@ struct AddExpenseView: View {
     @State private var amount: Double?
     @State private var selectedAccountID: PersistentIdentifier?
     @State private var date: Date = .now
+    @State private var isSaveLocationEnabled: Bool = false
+    @State private var locationManager = LocationManager()
     @State private var manualResult: Double?
     @State private var isSaveDisabled: Bool = false
     @State private var isCheckButtonPressed: Bool = false
-    
+        
     private var selectedAccount: Account? {
         accounts.first(where: { $0.persistentModelID == selectedAccountID })
     }
@@ -67,6 +70,14 @@ struct AddExpenseView: View {
                     }
                 DatePicker("Date", selection: $date, displayedComponents: [.date])
 #if !os(macOS)
+#if !os(visionOS)
+                Toggle("SaveLocation", isOn: $isSaveLocationEnabled)
+                    .onChange(of: isSaveLocationEnabled) { _, isOn in
+                        guard isOn else { return }
+                        locationManager.requestPermissionIfNeeded()
+                        locationManager.requestOneShotLocation()
+                    }
+#endif
                 Toggle("MentalMathMode", isOn: $isMentalMathModeEnabled)
 #endif
             } footer: {
@@ -132,7 +143,32 @@ struct AddExpenseView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm, action: {
                     guard let amount, let selectedAccount, let expenseCategory else { return }
-                    transactionRepository.addExpense(title: title, amount: amount, account: selectedAccount, paymentMethod: paymentMethod, expenseCategory: expenseCategory, date: date, context: context)
+
+                    if isSaveLocationEnabled,
+                       let coordinate = locationManager.lastCoordinate {
+                        transactionRepository.addExpense(
+                            title: title,
+                            amount: amount,
+                            account: selectedAccount,
+                            paymentMethod: paymentMethod,
+                            expenseCategory: expenseCategory,
+                            date: date,
+                            context: context,
+                            lat: coordinate.latitude,
+                            lng: coordinate.longitude
+                        )
+                    } else {
+                        transactionRepository.addExpense(
+                            title: title,
+                            amount: amount,
+                            account: selectedAccount,
+                            paymentMethod: paymentMethod,
+                            expenseCategory: expenseCategory,
+                            date: date,
+                            context: context
+                        )
+                    }
+
                     dismiss()
                 })
                 .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedAccount == nil || amount == nil || amount == 0 || expenseCategory == nil || isSaveDisabled)

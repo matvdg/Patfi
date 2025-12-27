@@ -9,7 +9,7 @@ struct ExpenseCategoryPicker: View {
         Picker("ExpenseCategory", selection: $expenseCategory) {
             ForEach(Transaction.ExpenseCategory.allCases) { cat in
                 Label(cat.localized, systemImage: cat.iconName)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(cat.color)
                     .tag(cat)
             }
         }
