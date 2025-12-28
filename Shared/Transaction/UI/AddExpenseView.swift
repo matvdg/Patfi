@@ -138,6 +138,7 @@ struct AddExpenseView: View {
                 }
             }
         }
+        .id(expenseCategory)
         .navigationTitle("AddExpense")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {

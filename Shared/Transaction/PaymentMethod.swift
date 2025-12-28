@@ -35,18 +35,18 @@ extension Transaction {
             case .creditCard: return "creditcard"
             case .cheque: return "doc.text"
             case .cashWithdrawal: return "banknote"
-            case .bankTransfer: return "arrow.left.arrow.right.circle"
-            case .directDebit: return "arrow.down.circle"
+            case .bankTransfer: return "arrow.left.arrow.right"
+            case .directDebit: return "arrow.down"
             }
         }
         
         var color: Color {
             switch self {
-            case .applePay: return .green
+            case .applePay: return .red
             case .creditCard: return .blue
             case .cheque: return .orange
             case .cashWithdrawal: return .yellow
-            case .bankTransfer: return .red
+            case .bankTransfer: return .green
             case .directDebit: return .purple
             }
         }

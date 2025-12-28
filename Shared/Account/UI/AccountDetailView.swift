@@ -203,6 +203,9 @@ struct AccountDetailView: View {
 #if !os(watchOS)
         .alert("EditQuantity", isPresented: $showEditQuantityPopup, actions: {
             TextField("Quantity", value: $newQuantity, format: .number)
+#if os(iOS)
+                                .keyboardType(.decimalPad)
+#endif
             Button("Cancel", role: .cancel) { }
             Button("Save") {
                 Task {

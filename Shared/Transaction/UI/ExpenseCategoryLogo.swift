@@ -6,13 +6,9 @@ struct ExpenseCategoryLogo: View {
     let isInternalTransfer: Bool
 
     var body: some View {
-        ZStack {
-            Circle()
-                .fill(cat?.color ?? .green)
-                .frame(width: 40, height: 40)
-            Image(systemName: cat?.iconName ?? (isInternalTransfer ? "arrow.left.arrow.right" : "plus"))
-                .foregroundColor(.white)
-        }
+        Image(systemName: cat?.iconName ?? (isInternalTransfer ? "arrow.left.arrow.right.circle.fill" : "plus.circle.fill"))
+            .foregroundColor(cat?.color ?? .green)
+            .imageScale(.large)
     }
 }
 
