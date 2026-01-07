@@ -121,6 +121,7 @@
 				Transaction/UI/AddExpenseView.swift,
 				Transaction/UI/AddIncomeView.swift,
 				Transaction/UI/AddInternalTransferView.swift,
+				Transaction/UI/AddMapView.swift,
 				Transaction/UI/EditTransactionView.swift,
 				Transaction/UI/ExpenseCategoryLogo.swift,
 				Transaction/UI/MapView.swift,
@@ -469,7 +470,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.4;
+				MARKETING_VERSION = 2.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -531,7 +532,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.4;
+				MARKETING_VERSION = 2.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -550,7 +551,7 @@
 				CODE_SIGN_ENTITLEMENTS = Patfi/App/PatfiRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 240;
+				CURRENT_PROJECT_VERSION = 250;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
 				ENABLE_APP_SANDBOX = YES;
@@ -571,6 +572,7 @@
 				INFOPLIST_FILE = Patfi/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Patfi;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Your location is used to save the location of an expense.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to save the location of an expense.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -613,7 +615,7 @@
 				CODE_SIGN_ENTITLEMENTS = Patfi/App/PatfiDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 240;
+				CURRENT_PROJECT_VERSION = 250;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
 				ENABLE_APP_SANDBOX = YES;
@@ -634,6 +636,7 @@
 				INFOPLIST_FILE = Patfi/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Patfi;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Your location is used to save the location of an expense.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to save the location of an expense.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -768,7 +771,7 @@
 				CODE_SIGN_ENTITLEMENTS = PatfiWatch/App/PatfiWatchDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 240;
+				CURRENT_PROJECT_VERSION = 250;
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -809,7 +812,7 @@
 				CODE_SIGN_ENTITLEMENTS = PatfiWatch/App/PatfiWatchRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 240;
+				CURRENT_PROJECT_VERSION = 250;
 				DEVELOPMENT_TEAM = 3WAQF3AS82;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

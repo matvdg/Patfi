@@ -8,6 +8,7 @@ struct EditTransactionView: View {
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
+    @State private var locationManager = LocationManager()
     @FocusState private var focused: Bool
     
     let transactionRepository =  TransactionRepository()
@@ -62,11 +63,29 @@ struct EditTransactionView: View {
                     }
                 }
                 DatePicker("Date", selection: $transaction.date, displayedComponents: [.date])
+                if transaction.lat != nil {
+                    
+                    
                     Button(role: .destructive) {
-                        transactionRepository.delete(transaction, context: context)
-                        dismiss()
+                        transaction.lat = nil
+                        transaction.lng = nil
+                    } label: {
+                        Label("DeleteLocation", systemImage: "mappin.slash")
                     }
-                    .foregroundStyle(.red)
+                    .foregroundStyle(.primary)
+                } else {
+                    NavigationLink {
+                        AddMapView(transaction: transaction).environment(locationManager) 
+                    } label: {
+                        Label("AddLocation", systemImage: "mappin")
+                    }
+                    .foregroundStyle(.primary)
+                }
+                Button(role: .destructive) {
+                    transactionRepository.delete(transaction, context: context)
+                    dismiss()
+                }
+                .foregroundStyle(.red)
             } header: {
                 Text("Edit")
             }
@@ -75,10 +94,10 @@ struct EditTransactionView: View {
         .navigationTitle(transaction.isInternalTransfer ? "InternalTransfer" : transaction.transactionType == .expense ? "Expense" : "Income")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                    Button(role: .confirm, action: {
-                        dismiss()
-                    })
-                    .disabled(transaction.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                Button(role: .confirm, action: {
+                    dismiss()
+                })
+                .disabled(transaction.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true } }

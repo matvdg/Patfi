@@ -4,11 +4,13 @@ import CoreLocation
 
 struct MapView: View {
     
+    @State private var isSatellite = false
+    
     let location: CLLocationCoordinate2D?
     let price: String
     let expenseCategory: Transaction.ExpenseCategory
     let position: MapCameraPosition
-
+    
     init(location: CLLocationCoordinate2D?, price: String, expenseCategory: Transaction.ExpenseCategory) {
         self.location = location
         self.price = price
@@ -21,7 +23,7 @@ struct MapView: View {
             self.position = .automatic
         }
     }
-
+    
     var body: some View {
         Map(position: .constant(position)) {
             if let location {
@@ -32,6 +34,18 @@ struct MapView: View {
                 }
             }
         }
+        .mapStyle(isSatellite ? .hybrid : .standard)
+#if !os(watchOS)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
+                    isSatellite.toggle()
+                } label: {
+                    Image(systemName: isSatellite ? "map" : "globe.europe.africa")
+                }
+            }
+        }
+#endif
     }
 }
 

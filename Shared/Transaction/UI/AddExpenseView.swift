@@ -24,11 +24,12 @@ struct AddExpenseView: View {
     @State private var selectedAccountID: PersistentIdentifier?
     @State private var date: Date = .now
     @State private var isSaveLocationEnabled: Bool = false
-    @State private var locationManager = LocationManager()
     @State private var manualResult: Double?
     @State private var isSaveDisabled: Bool = false
     @State private var isCheckButtonPressed: Bool = false
-        
+    
+    private var locationManager = LocationManager()
+    
     private var selectedAccount: Account? {
         accounts.first(where: { $0.persistentModelID == selectedAccountID })
     }
