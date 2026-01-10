@@ -14,7 +14,7 @@ extension ModelContainer {
         
         /// ⚠️ At least ONE launch on real device (real iPhone or Mac) in DEBUG before Prod to push Schemas changes -> then Deploy Schema Changes to Production on CloudKit console before Production!
         /// TO DO THAT set false BELOW ⬇️
-#if (targetEnvironment(simulator) || DEBUG) && true
+#if (targetEnvironment(simulator) || DEBUG) && false
         // DEBUG = isStoredInMemoryOnly: true, cloudKitDatabase: .none with MOCK DATA
         return ModelContainer.getSimulatorSharedContainer(schema: schema)
 #else

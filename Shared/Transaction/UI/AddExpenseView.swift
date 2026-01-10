@@ -179,6 +179,9 @@ struct AddExpenseView: View {
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { focused = true }
             isSaveDisabled = isMentalMathModeEnabled
+#if os(macOS)
+            isMentalMathModeEnabled = false
+#endif
         }
         .formStyle(.grouped)
         .onChange(of: accounts, initial: true) { _, newAccounts in
