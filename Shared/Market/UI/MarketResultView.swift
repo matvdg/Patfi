@@ -68,12 +68,10 @@ struct MarketResultView: View {
                         Label("Retry", systemImage: "arrow.clockwise").padding()
                     }
                     .modifier(ButtonStyleProminentModifier())
-                    if #available(iOS 26, *) {
-                        NavigationLink {
-                            TwelveDataView()
-                        } label: {
-                            Label("EditApiKey", systemImage: "square.and.pencil").padding().foregroundStyle(Color.white)
-                        }
+                    NavigationLink {
+                        TwelveDataView()
+                    } label: {
+                        Label("EditApiKey", systemImage: "square.and.pencil").padding().foregroundStyle(Color.white)
                     }
                 }
             }
@@ -83,9 +81,7 @@ struct MarketResultView: View {
         }
         .navigationTitle(symbol)
         .navigationDestination(isPresented: $showTwelveDataView) {
-            if #available(iOS 26, *) {
-                TwelveDataView()
-            }
+            TwelveDataView()
         }
     }
     

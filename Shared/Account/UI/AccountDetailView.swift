@@ -181,12 +181,7 @@ struct AccountDetailView: View {
                         }
                     }
                 } label: {
-                    if #available(iOS 26, *) {
-                        Image(systemName: "plus")
-                    } else {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 28))
-                    }
+                    Image(systemName: "plus")
                 }
 #endif
             }

@@ -47,7 +47,7 @@ struct TransactionsView: View {
     
     @Query private var transactions: [Transaction]
     @Environment(\.modelContext) private var context
-    @State private var hideInternalTransfers = false
+    @State var activeFilter: TransactionsFilter = .all
     
     private let transactionRepository = TransactionRepository()
     
@@ -68,7 +68,14 @@ struct TransactionsView: View {
     
     private var filteredTransactions: [Transaction] {
         var filteredTransactions: [Transaction] = accountTransactions
-        if hideInternalTransfers {
+        switch activeFilter {
+        case .all:
+            return filteredTransactions
+        case .hideIncomes:
+            filteredTransactions = accountTransactions.filter { $0.transactionType == .expense }
+        case .hideExpenses:
+            filteredTransactions = accountTransactions.filter { $0.transactionType == .income }
+        case .hideInternalTransfers:
             filteredTransactions = accountTransactions.filter { !$0.isInternalTransfer }
         }
         return filteredTransactions
@@ -88,8 +95,6 @@ struct TransactionsView: View {
             } else {
                 VStack {
 #if !os(watchOS)
-                    Toggle("HideInternalTransfers", isOn: $hideInternalTransfers)
-                        .padding(.horizontal)
                     TransactionChartView(transactions: filteredTransactions)
 #endif
                     List(filteredTransactions) { transaction in
@@ -117,6 +122,22 @@ struct TransactionsView: View {
             }
         }
         .navigationTitle("Transactions")
+#if !os(watchOS)
+        .toolbar {
+            ToolbarItem(placement: .automatic) {
+                Menu {
+                    Picker("FilterTransactions", selection: $activeFilter) {
+                        ForEach(TransactionsFilter.allCases, id: \.self) { filter in
+                            Label(filter.localized, systemImage: filter.iconName)
+                                .tag(filter)
+                        }
+                    }
+                } label: {
+                    Image(systemName: activeFilter == .all ? "line.3.horizontal.decrease.circle" : "line.3.horizontal.decrease.circle.fill")
+                }
+            }
+        }
+#endif
     }
 }
 

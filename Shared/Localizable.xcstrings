@@ -1799,6 +1799,22 @@
         }
       }
     },
+    "FilterTransactions" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter transactions"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtrer les transactions"
+          }
+        }
+      }
+    },
     "GroupBy" : {
       "localizations" : {
         "en" : {
@@ -1811,6 +1827,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Grouper par : "
+          }
+        }
+      }
+    },
+    "HideExpenses" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide expenses"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer les dépenses"
+          }
+        }
+      }
+    },
+    "HideIncomes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide incomes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer les revenus"
           }
         }
       }

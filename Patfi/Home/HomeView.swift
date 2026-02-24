@@ -114,26 +114,24 @@ struct HomeView: View {
                     .frame(width: 60, height: 60)
                     .contentShape(Rectangle())
                     .onTapGesture(count: 3) {
-                        if #available(iOS 26, *) {
-                            isBetaEnabled.toggle()
-                            print("🧪 Beta mode toggled → \(isBetaEnabled)")
+                        isBetaEnabled.toggle()
+                        print("🧪 Beta mode toggled → \(isBetaEnabled)")
 #if os(iOS)
-                            let generator = UINotificationFeedbackGenerator()
-                            generator.notificationOccurred(.success)
+                        let generator = UINotificationFeedbackGenerator()
+                        generator.notificationOccurred(.success)
 #endif
+                        withAnimation {
+                            showBetaBadge = true
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             withAnimation {
-                                showBetaBadge = true
-                            }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                withAnimation {
-                                    showBetaBadge = false
-                                }
+                                showBetaBadge = false
                             }
                         }
                     }
                 if showBetaBadge {
                     BetaBadge()
-                    #if !os(macOS)
+#if !os(macOS)
                         .padding(.top, -20)
                     #endif
                 }
@@ -164,12 +162,7 @@ struct HomeView: View {
                         }
                     }
                 } label: {
-                    if #available(iOS 26, *) {
-                        Image(systemName: "plus")
-                    } else {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 28))
-                    }
+                    Image(systemName: "plus")
                 }
             }
         }
