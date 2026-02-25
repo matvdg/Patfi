@@ -27,8 +27,10 @@ struct AddExpenseView: View {
     @State private var manualResult: Double?
     @State private var isSaveDisabled: Bool = false
     @State private var isCheckButtonPressed: Bool = false
-    
-    private var locationManager = LocationManager()
+    @State private var mockTransaction = Transaction(title: "mock", transactionType: .expense, paymentMethod: .applePay, date: Date(), amount: 0)
+    @State private var lat: CLLocationDegrees?
+    @State private var lng: CLLocationDegrees?
+    @State private var locationManager = LocationManager()
     
     private var selectedAccount: Account? {
         accounts.first(where: { $0.persistentModelID == selectedAccountID })
@@ -76,8 +78,23 @@ struct AddExpenseView: View {
                     .onChange(of: isSaveLocationEnabled) { _, isOn in
                         guard isOn else { return }
                         locationManager.requestPermissionIfNeeded()
-                        locationManager.requestOneShotLocation()
                     }
+                if lat != nil {
+                    Button(role: .destructive) {
+                        lat = nil
+                        lng = nil
+                    } label: {
+                        Label("DeleteLocation", systemImage: "mappin.slash")
+                    }
+                    .foregroundStyle(.primary)
+                } else {
+                    NavigationLink {
+                        AddMapView(transaction: mockTransaction).environment(locationManager)
+                    } label: {
+                        Label("OrAddLocation", systemImage: "mappin")
+                    }
+                    .foregroundStyle(.primary)
+                }
 #endif
                 Toggle("MentalMathMode", isOn: $isMentalMathModeEnabled)
 #endif
@@ -167,7 +184,9 @@ struct AddExpenseView: View {
                             paymentMethod: paymentMethod,
                             expenseCategory: expenseCategory,
                             date: date,
-                            context: context
+                            context: context,
+                            lat: lat,
+                            lng: lng
                         )
                     }
 
@@ -193,6 +212,17 @@ struct AddExpenseView: View {
         .onChange(of: isMentalMathModeEnabled) { oldValue, newValue in
             isSaveDisabled = newValue
             isCheckButtonPressed = false
+        }
+        .onChange(of: mockTransaction.lat) { oldValue, newValue in
+            lat = mockTransaction.lat
+            lng = mockTransaction.lng
+            isSaveLocationEnabled = false
+        }
+        .task {
+            locationManager.requestOneShotLocation()
+        }
+        .onChange(of: locationManager.authorizationStatus) { _, newValue in
+            locationManager.requestOneShotLocation()
         }
     }
 }

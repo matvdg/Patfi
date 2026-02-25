@@ -10,7 +10,7 @@ struct EditTransactionView: View {
     @Environment(\.modelContext) private var context
     @State private var locationManager = LocationManager()
     @FocusState private var focused: Bool
-    
+        
     let transactionRepository =  TransactionRepository()
     
     var body: some View {
@@ -64,8 +64,6 @@ struct EditTransactionView: View {
                 }
                 DatePicker("Date", selection: $transaction.date, displayedComponents: [.date])
                 if transaction.lat != nil {
-                    
-                    
                     Button(role: .destructive) {
                         transaction.lat = nil
                         transaction.lng = nil

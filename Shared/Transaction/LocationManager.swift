@@ -6,7 +6,7 @@ import SwiftUI
 final class LocationManager: NSObject, CLLocationManagerDelegate {
 
     private let manager = CLLocationManager()
-
+    
     private(set) var lastCoordinate: CLLocationCoordinate2D?
     private(set) var authorizationStatus: CLAuthorizationStatus
 
