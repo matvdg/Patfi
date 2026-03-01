@@ -72,14 +72,42 @@ struct AddExpenseView: View {
                         isCheckButtonPressed = false
                     }
                 DatePicker("Date", selection: $date, displayedComponents: [.date])
-#if !os(macOS)
-#if !os(visionOS)
+#if os(macOS) || os(visionOS)
+                if lat != nil {
+                    NavigationLink {
+                        MapView(location: CLLocationCoordinate2D(latitude: lat!, longitude: lng!), price: amount.currencyAmount, expenseCategory: expenseCategory ?? .other)
+                    } label: {
+                        MapView(location: CLLocationCoordinate2D(latitude: lat!, longitude: lng!), price: amount.currencyAmount, expenseCategory: expenseCategory ?? .other)
+                            .frame(height: 150)
+                    }
+                    Button(role: .destructive) {
+                        lat = nil
+                        lng = nil
+                    } label: {
+                        Label("DeleteLocation", systemImage: "mappin.slash")
+                    }
+                    .foregroundStyle(.primary)
+                } else {
+                    NavigationLink {
+                        AddMapView(transaction: mockTransaction).environment(locationManager)
+                    } label: {
+                        Label("AddLocation", systemImage: "mappin")
+                    }
+                    .foregroundStyle(.primary)
+                }
+#else
                 Toggle("SaveLocation", isOn: $isSaveLocationEnabled)
                     .onChange(of: isSaveLocationEnabled) { _, isOn in
                         guard isOn else { return }
                         locationManager.requestPermissionIfNeeded()
                     }
                 if lat != nil {
+                    NavigationLink {
+                        MapView(location: CLLocationCoordinate2D(latitude: lat!, longitude: lng!), price: amount.currencyAmount, expenseCategory: expenseCategory ?? .other)
+                    } label: {
+                        MapView(location: CLLocationCoordinate2D(latitude: lat!, longitude: lng!), price: amount.currencyAmount, expenseCategory: expenseCategory ?? .other)
+                            .frame(height: 150)
+                    }
                     Button(role: .destructive) {
                         lat = nil
                         lng = nil
@@ -96,6 +124,7 @@ struct AddExpenseView: View {
                     .foregroundStyle(.primary)
                 }
 #endif
+#if !os(macOS)
                 Toggle("MentalMathMode", isOn: $isMentalMathModeEnabled)
 #endif
             } footer: {

@@ -1810,7 +1810,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Filtrer les transactions"
+            "value" : "Filtrer les opérations"
           }
         }
       }
@@ -2247,7 +2247,7 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "or add location"
           }
         },
@@ -2632,6 +2632,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Définir comme compte par défaut"
+          }
+        }
+      }
+    },
+    "ShowAll" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show all"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout afficher"
           }
         }
       }

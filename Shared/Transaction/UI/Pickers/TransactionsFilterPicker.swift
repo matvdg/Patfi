@@ -34,7 +34,7 @@ enum TransactionsFilter: String, Codable, CaseIterable, Identifiable {
     
     var localized: String {
         switch self {
-        case .all: String(localized: "All")
+        case .all: String(localized: "ShowAll")
         case .hideIncomes: String(localized: "HideIncomes")
         case .hideExpenses: String(localized: "HideExpenses")
         case .hideInternalTransfers: String(localized: "HideInternalTransfers")
