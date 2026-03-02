@@ -48,6 +48,7 @@ struct TransactionsView: View {
     @Query private var transactions: [Transaction]
     @Environment(\.modelContext) private var context
     @State var activeFilter: TransactionsFilter = .all
+    @State private var searchText: String = ""
     
     private let transactionRepository = TransactionRepository()
     
@@ -81,6 +82,27 @@ struct TransactionsView: View {
         return filteredTransactions
     }
     
+    private var searchedTransactions: [Transaction] {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return filteredTransactions }
+        
+        let normalizedAmountQuery = query
+            .replacingOccurrences(of: "[^0-9,\\.\\-\\+]", with: "", options: .regularExpression)
+            .cleanComa
+            .replacingOccurrences(of: "+", with: "")
+            .replacingOccurrences(of: "-", with: "")
+        
+        let searchedAmount = Double(normalizedAmountQuery)
+        
+        return filteredTransactions.filter { transaction in
+            transaction.title.localizedStandardContains(query)
+                || transaction.transactionType.localized.localizedStandardContains(query)
+                || transaction.paymentMethod.localized.localizedStandardContains(query)
+                || (transaction.expenseCategory?.localized.localizedStandardContains(query) ?? false)
+                || (searchedAmount.map { transaction.amount.isAlmostEqual(to: $0) } ?? false)
+        }
+    }
+    
     var body: some View {
         Group {
             if accountTransactions.isEmpty {
@@ -95,9 +117,9 @@ struct TransactionsView: View {
             } else {
                 VStack {
 #if !os(watchOS)
-                    TransactionChartView(transactions: filteredTransactions)
+                    TransactionChartView(transactions: searchedTransactions)
 #endif
-                    List(filteredTransactions) { transaction in
+                    List(searchedTransactions) { transaction in
                         NavigationLink {
                             EditTransactionView(transaction: transaction)
                         } label: {
@@ -137,6 +159,7 @@ struct TransactionsView: View {
                 }
             }
         }
+        .searchable(text: $searchText, prompt: Text("Search"))
 #endif
     }
 }
