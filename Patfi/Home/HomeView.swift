@@ -15,7 +15,7 @@ struct HomeView: View {
     @State var mode: Mode = .accounts
     @State private var selectedDate: Date = .now
     @State private var selectedPeriod: Period = .month
-    @AppStorage("isBetaEnabled") private var isBetaEnabled = false
+    @AppStorage(Keys.isBetaEnabled) private var isBetaEnabled = false
     @State private var showBetaBadge = false
     
     private let accountRepository = AccountRepository()

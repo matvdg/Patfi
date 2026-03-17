@@ -41,8 +41,8 @@ struct ExpensesView: View {
     @Query private var transactions: [Transaction]
     @Environment(\.modelContext) private var context
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @AppStorage(Keys.isGraphHidden) private var isGraphHidden = false
     @State private var collapsedSections: Set<String> = []
-    @State private var isGraphHidden = false
     @State private var sortByPaymentMethod = false
     
     private let transactionRepository = TransactionRepository()
@@ -240,9 +240,6 @@ struct ExpensesView: View {
                             }
                         }
                     }
-                }
-                .onChange(of: isLandscape) {
-                    isGraphHidden = false
                 }
                 .onChange(of: sortByPaymentMethod) {
                     collapsedSections.removeAll()

@@ -5,7 +5,7 @@ struct AccountDetailView: View {
     
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @AppStorage("isBetaEnabled") private var isBetaEnabled = false
+    @AppStorage(Keys.isBetaEnabled) private var isBetaEnabled = false
     
     @Bindable var account: Account
     
@@ -217,7 +217,7 @@ struct AccountDetailView: View {
 }
 
 #Preview {
-    UserDefaults.standard.set(true, forKey: "isBetaEnabled")
+    UserDefaults.standard.set(true, forKey: "")
     let account = Account(name: "AAPL", category: .current, currentBalance: 13400)
     account.asset = 🍏
     return NavigationStack { AccountDetailView(account: account) }.modelContainer(ModelContainer.shared)

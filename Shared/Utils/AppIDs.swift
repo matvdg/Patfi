@@ -40,6 +40,8 @@ enum Keys {
     static let balancesPerBank = "balancesPerBank"
     static let twelveDataApiKey = "twelveDataApiKey"
     static let lastMarketSyncUpdate = "lastMarketSyncUpdate"
+    static let isBetaEnabled = "isBetaEnabled"
+    static let isGraphHidden = "isGraphHidden"
 }
 
 struct BalanceReader {

@@ -13,7 +13,7 @@ struct MonitoringView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Query private var snapshots: [BalanceSnapshot]
-    @State private var isGraphHidden = false
+    @AppStorage(Keys.isGraphHidden) private var isGraphHidden = false
     
     private var selectedDate: Date
     private var selectedPeriod: Period
@@ -62,21 +62,15 @@ struct MonitoringView: View {
 #else
                 VStack(alignment: .center) {
                     BalanceChartView(snapshots: filteredSnapshots, selectedPeriod: selectedPeriod, selectedDate: selectedDate)
-                            .frame(height: 300)
-                    .frame(height: isGraphHidden ? 0 : nil)
+                    .frame(height: isGraphHidden ? 0 : 300)
                     .opacity(isGraphHidden ? 0 : 1)
-                    if !isLandscape {
-                        ZStack {
-                            ArrowButton(isUp: $isGraphHidden)
-                        }
-                        List {
-                            BalancesByPeriodView(balancesByPeriod: balancesByPeriod, selectedPeriod: selectedPeriod)
-                        }
+                    ZStack {
+                        ArrowButton(isUp: $isGraphHidden)
+                    }
+                    List {
+                        BalancesByPeriodView(balancesByPeriod: balancesByPeriod, selectedPeriod: selectedPeriod)
                     }
                 }
-                .onChange(of: isLandscape, {
-                    isGraphHidden = false
-                })
 #endif
             }
         }

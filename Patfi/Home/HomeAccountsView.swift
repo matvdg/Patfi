@@ -8,7 +8,7 @@ struct HomeAccountsView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
-    @State private var isGraphHidden = false
+    @AppStorage(Keys.isGraphHidden) private var isGraphHidden = false
     @State private var collapsedSections: Set<String> = []
     @State private var sortByBank: Bool = false
     @State private var editBankColor: Bank? = nil
@@ -101,8 +101,6 @@ struct HomeAccountsView: View {
                                             }
                                         }
                                 }
-                            } else {
-                                EmptyView().frame(height: 100)
                             }
                         } header: {
                             ArrowRightButton(isRight: Binding(
@@ -168,9 +166,6 @@ struct HomeAccountsView: View {
                     }
                 }
             }
-        }
-        .onChange(of: isLandscape) {
-            isGraphHidden = false
         }
         .onChange(of: sortByBank) {
             collapsedSections.removeAll()

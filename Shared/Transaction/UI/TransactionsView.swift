@@ -49,6 +49,7 @@ struct TransactionsView: View {
     @Environment(\.modelContext) private var context
     @State var activeFilter: TransactionsFilter = .all
     @State private var searchText: String = ""
+    @AppStorage(Keys.isGraphHidden) private var isGraphHidden = false
     
     private let transactionRepository = TransactionRepository()
     
@@ -118,6 +119,9 @@ struct TransactionsView: View {
                 VStack {
 #if !os(watchOS)
                     TransactionChartView(transactions: searchedTransactions)
+                        .frame(height: isGraphHidden ? 0 : nil)
+                        .opacity(isGraphHidden ? 0 : 1)
+                    ArrowButton(isUp: $isGraphHidden)
 #endif
                     List(searchedTransactions) { transaction in
                         NavigationLink {
