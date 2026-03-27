@@ -44,8 +44,43 @@ struct ExpensesView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @AppStorage(Keys.isGraphHidden) private var isGraphHidden = false
     @AppStorage(Keys.sortByPaymentMethod) private var sortByPaymentMethod = false
-    @State private var collapsedSections: Set<String> = []
     
+    @State private var collapsedSectionsByPaymentMethod: Set<String> = []
+    @State private var collapsedSectionsByCategory: Set<String> = []
+    @State private var editBankColor: Bank? = nil
+    
+    private var allPaymentMethodSectionKeys: [String] { transactionRepository.groupByPaymentMethod(transactions).map { $0.key.id } }
+    private var allCategorySectionKeys: [String] { transactionRepository.groupByCategory(transactions).map { $0.key.id } }
+    private var allPaymentMethodSectionsCollapsed: Bool { collapsedSectionsByPaymentMethod.count == allPaymentMethodSectionKeys.count }
+    private var allCategorySectionsCollapsed: Bool { collapsedSectionsByCategory.count == allCategorySectionKeys.count }
+    
+    private var allCollapsedPaymentMethodSectionsBinding: Binding<Bool> {
+        Binding(
+            get: {
+                allPaymentMethodSectionsCollapsed },
+            set: { newValue in
+                if newValue {
+                    collapsedSectionsByPaymentMethod = Set(allPaymentMethodSectionKeys)
+                } else {
+                    collapsedSectionsByPaymentMethod.removeAll()
+                }
+            }
+        )
+    }
+    private var allCollapsedCategorySectionsBinding: Binding<Bool> {
+        Binding(
+            get: {
+                allCategorySectionsCollapsed },
+            set: { newValue in
+                if newValue {
+                    collapsedSectionsByCategory = Set(allCategorySectionKeys)
+                } else {
+                    collapsedSectionsByCategory.removeAll()
+                }
+            }
+        )
+    }
+        
     private let transactionRepository = TransactionRepository()
     
     private var isLandscape: Bool {
@@ -74,33 +109,6 @@ struct ExpensesView: View {
             }
     }
     
-    private var allKeys: [String] {
-        if sortByPaymentMethod {
-            transactionRepository.groupByPaymentMethod(transactions).map { $0.key.id }
-        } else {
-            transactionRepository.groupByCategory(transactions).map { $0.key.id }
-        }
-    }
-    
-    private var allCollapsed: Bool {
-        collapsedSections.count == allKeys.count
-    }
-    
-    private var allCollapsedBinding: Binding<Bool> {
-        Binding(
-            get: {
-                allCollapsed
-            },
-            set: { newValue in
-                if newValue {
-                    collapsedSections = Set(allKeys)
-                } else {
-                    collapsedSections.removeAll()
-                }
-            }
-        )
-    }
-    
     var body: some View {
         Group {
             if transactions.isEmpty {
@@ -123,13 +131,13 @@ struct ExpensesView: View {
                         HStack {
                             PaymentMethodButton(sortByPaymentMethod: $sortByPaymentMethod).padding(.leading, 12)
                             Spacer()
-                            CollapseButton(isCollapsed: allCollapsedBinding).padding(.trailing, 12)
+                            CollapseButton(isCollapsed: sortByPaymentMethod ? allCollapsedPaymentMethodSectionsBinding : allCollapsedCategorySectionsBinding).padding(.trailing, 12)
                         }
                     }
                     if sortByPaymentMethod {
                         List {
                             ForEach(expensesByPaymentMethod, id: \.key) { (paymentMethod, expenses) in
-                                let isCollapsed = collapsedSections.contains(paymentMethod.id)
+                                let isCollapsed = collapsedSectionsByPaymentMethod.contains(paymentMethod.id)
                                 Section {
                                     if !isCollapsed {
                                         ForEach(expenses) { expense in
@@ -161,9 +169,9 @@ struct ExpensesView: View {
                                         get: { isCollapsed },
                                         set: { isCollapsed in
                                             if isCollapsed {
-                                                collapsedSections.insert(paymentMethod.id)
+                                                collapsedSectionsByPaymentMethod.insert(paymentMethod.id)
                                             } else {
-                                                collapsedSections.remove(paymentMethod.id)
+                                                collapsedSectionsByPaymentMethod.remove(paymentMethod.id)
                                             }
                                         }
                                     )) {
@@ -186,7 +194,7 @@ struct ExpensesView: View {
                     } else {
                         List {
                             ForEach(expensesByCategory, id: \.key) { (cat, expenses) in
-                                let isCollapsed = collapsedSections.contains(cat.id)
+                                let isCollapsed = collapsedSectionsByCategory.contains(cat.id)
                                 Section {
                                     if !isCollapsed {
                                         ForEach(expenses) { expense in
@@ -218,9 +226,9 @@ struct ExpensesView: View {
                                         get: { isCollapsed },
                                         set: { isCollapsed in
                                             if isCollapsed {
-                                                collapsedSections.insert(cat.id)
+                                                collapsedSectionsByCategory.insert(cat.id)
                                             } else {
-                                                collapsedSections.remove(cat.id)
+                                                collapsedSectionsByCategory.remove(cat.id)
                                             }
                                         }
                                     )) {
@@ -242,17 +250,15 @@ struct ExpensesView: View {
                         }
                     }
                 }
-                .onChange(of: sortByPaymentMethod) {
-                    collapsedSections.removeAll()
-                    allCollapsedBinding.wrappedValue = true
+                .onChange(of: collapsedSectionsByPaymentMethod) {
+                    Keys.saveSet(collapsedSectionsByPaymentMethod, forKey: Keys.collapsedSectionsByPaymentMethod)
                 }
-                .onChange(of: selectedDate, initial: true) { oldValue, newValue in
-                    collapsedSections.removeAll()
-                    allCollapsedBinding.wrappedValue = true
+                .onChange(of: collapsedSectionsByCategory) {
+                    Keys.saveSet(collapsedSectionsByCategory, forKey: Keys.collapsedSectionsByExpenseCategory)
                 }
-                .onChange(of: selectedPeriod) { oldValue, newValue in
-                    collapsedSections.removeAll()
-                    allCollapsedBinding.wrappedValue = true
+                .onAppear {
+                    collapsedSectionsByPaymentMethod = Keys.loadSet(forKey: Keys.collapsedSectionsByPaymentMethod)
+                    collapsedSectionsByCategory = Keys.loadSet(forKey: Keys.collapsedSectionsByExpenseCategory)
                 }
             }
         }

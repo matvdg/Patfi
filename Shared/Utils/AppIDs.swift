@@ -46,6 +46,25 @@ enum Keys {
     static let selectedPeriod = "selectedPeriod"
     static let sortByBank = "sortByBank"
     static let sortByPaymentMethod = "sortByPaymentMethod"
+    static let collapsedSectionsByBank = "collapsedSectionsByBank"
+    static let collapsedSectionsByCategory = "collapsedSectionsByCategory"
+    static let collapsedSectionsByExpenseCategory = "collapsedSectionsByExpenseCategory"
+    static let collapsedSectionsByPaymentMethod = "collapsedSectionsByPaymentMethod"
+    
+    static func loadSet(forKey key: String) -> Set<String> {
+        if let data = UserDefaults.standard.data(forKey: key),
+           let array = try? JSONDecoder().decode([String].self, from: data) {
+            return Set(array)
+        }
+        return []
+    }
+
+    static func saveSet(_ set: Set<String>, forKey key: String) {
+        let array = Array(set)
+        if let data = try? JSONEncoder().encode(array) {
+            UserDefaults.standard.set(data, forKey: key)
+        }
+    }
 }
 
 struct BalanceReader {

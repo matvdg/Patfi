@@ -10,29 +10,37 @@ struct HomeAccountsView: View {
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     @AppStorage(Keys.isGraphHidden) private var isGraphHidden = false
     @AppStorage(Keys.sortByBank) private var sortByBank = false
-    
-    @State private var collapsedSections: Set<String> = []
+
+    @State private var collapsedSectionsByBank: Set<String> = []
+    @State private var collapsedSectionsByCategory: Set<String> = []
     @State private var editBankColor: Bank? = nil
     
-    private var allKeys: [String] {
-        if sortByBank {
-            accountsByBank.map { $0.key.normalizedName }
-        } else {
-            accountsByCategory.map { $0.key.rawValue }
-        }
-    }
-    private var allCollapsed: Bool {
-        collapsedSections.count == allKeys.count
-    }
-    private var allCollapsedBinding: Binding<Bool> {
+    private var allBankSectionKeys: [String] { accountsByBank.map { $0.key.normalizedName } }
+    private var allCategorySectionKeys: [String] { accountsByCategory.map { $0.key.rawValue } }
+    private var allBankSectionsCollapsed: Bool { collapsedSectionsByBank.count == allBankSectionKeys.count }
+    private var allCategorySectionsCollapsed: Bool { collapsedSectionsByCategory.count == allCategorySectionKeys.count }
+    private var allCollapsedBankSectionsBinding: Binding<Bool> {
         Binding(
             get: {
-                allCollapsed },
+                allBankSectionsCollapsed },
             set: { newValue in
                 if newValue {
-                    collapsedSections = Set(allKeys)
+                    collapsedSectionsByBank = Set(allBankSectionKeys)
                 } else {
-                    collapsedSections.removeAll()
+                    collapsedSectionsByBank.removeAll()
+                }
+            }
+        )
+    }
+    private var allCollapsedCategorySectionsBinding: Binding<Bool> {
+        Binding(
+            get: {
+                allCategorySectionsCollapsed },
+            set: { newValue in
+                if newValue {
+                    collapsedSectionsByCategory = Set(allCategorySectionKeys)
+                } else {
+                    collapsedSectionsByCategory.removeAll()
                 }
             }
         )
@@ -76,13 +84,13 @@ struct HomeAccountsView: View {
                 HStack {
                     BankButton(sortByBank: $sortByBank).padding(.leading, 12)
                     Spacer()
-                    CollapseButton(isCollapsed: allCollapsedBinding).padding(.trailing, 12)
+                    CollapseButton(isCollapsed: sortByBank ? allCollapsedBankSectionsBinding : allCollapsedCategorySectionsBinding).padding(.trailing, 12)
                 }
             }
             if sortByBank {
                 List {
                     ForEach(accountsByBank, id: \.key) { (bank, items) in
-                        let isCollapsed = collapsedSections.contains(bank.normalizedName)
+                        let isCollapsed = collapsedSectionsByBank.contains(bank.normalizedName)
                         Section {
                             if !isCollapsed {
                                 ForEach(items) { account in
@@ -108,9 +116,9 @@ struct HomeAccountsView: View {
                                 get: { isCollapsed },
                                 set: { isCollapsed in
                                     if isCollapsed {
-                                        collapsedSections.insert(bank.normalizedName)
+                                        collapsedSectionsByBank.insert(bank.normalizedName)
                                     } else {
-                                        collapsedSections.remove(bank.normalizedName)
+                                        collapsedSectionsByBank.remove(bank.normalizedName)
                                     }
                                 }
                             )) {
@@ -132,7 +140,7 @@ struct HomeAccountsView: View {
             } else {
                 List {
                     ForEach(accountsByCategory, id: \.key) { (category, items) in
-                        let isCollapsed = collapsedSections.contains(category.rawValue)
+                        let isCollapsed = collapsedSectionsByCategory.contains(category.rawValue)
                         Section {
                             if !isCollapsed {
                                 ForEach(items) { account in
@@ -144,9 +152,9 @@ struct HomeAccountsView: View {
                                 get: { isCollapsed },
                                 set: { isCollapsed in
                                     if isCollapsed {
-                                        collapsedSections.insert(category.rawValue)
+                                        collapsedSectionsByCategory.insert(category.rawValue)
                                     } else {
-                                        collapsedSections.remove(category.rawValue)
+                                        collapsedSectionsByCategory.remove(category.rawValue)
                                     }
                                 }
                             )) {
@@ -168,12 +176,15 @@ struct HomeAccountsView: View {
                 }
             }
         }
-        .onChange(of: sortByBank) {
-            collapsedSections.removeAll()
-            allCollapsedBinding.wrappedValue = true
+        .onChange(of: collapsedSectionsByBank) {
+            Keys.saveSet(collapsedSectionsByBank, forKey: Keys.collapsedSectionsByBank)
+        }
+        .onChange(of: collapsedSectionsByCategory) {
+            Keys.saveSet(collapsedSectionsByCategory, forKey: Keys.collapsedSectionsByCategory)
         }
         .onAppear {
-            allCollapsedBinding.wrappedValue = true
+            collapsedSectionsByBank = Keys.loadSet(forKey: Keys.collapsedSectionsByBank)
+            collapsedSectionsByCategory = Keys.loadSet(forKey: Keys.collapsedSectionsByCategory)
         }
         .navigationDestination(item: $editBankColor, destination: { bank in
             EditBankView(bank: bank)
