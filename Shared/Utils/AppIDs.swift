@@ -44,6 +44,8 @@ enum Keys {
     static let isGraphHidden = "isGraphHidden"
     static let selectedDate = "selectedDate"
     static let selectedPeriod = "selectedPeriod"
+    static let sortByBank = "sortByBank"
+    static let sortByPaymentMethod = "sortByPaymentMethod"
 }
 
 struct BalanceReader {

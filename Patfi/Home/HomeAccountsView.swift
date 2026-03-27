@@ -9,8 +9,9 @@ struct HomeAccountsView: View {
     
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     @AppStorage(Keys.isGraphHidden) private var isGraphHidden = false
+    @AppStorage(Keys.sortByBank) private var sortByBank = false
+    
     @State private var collapsedSections: Set<String> = []
-    @State private var sortByBank: Bool = false
     @State private var editBankColor: Bank? = nil
     
     private var allKeys: [String] {

@@ -43,8 +43,8 @@ struct ExpensesView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @AppStorage(Keys.isGraphHidden) private var isGraphHidden = false
+    @AppStorage(Keys.sortByPaymentMethod) private var sortByPaymentMethod = false
     @State private var collapsedSections: Set<String> = []
-    @State private var sortByPaymentMethod = false
     
     private let transactionRepository = TransactionRepository()
     
