@@ -8,14 +8,16 @@ struct HomeView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.modelContext) private var context
 
+    @AppStorage(Keys.isBetaEnabled) private var isBetaEnabled = false
+    @AppStorage(Keys.selectedDate) private var selectedDate: Date = Date()
+    @AppStorage(Keys.selectedPeriod) private var selectedPeriod: Period = .month
+    
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
+    
     @State private var showAddAccount = false
     @State private var showMarketSearch = false
     @State private var selectedChart = 0
     @State var mode: Mode = .accounts
-    @State private var selectedDate: Date = .now
-    @State private var selectedPeriod: Period = .month
-    @AppStorage(Keys.isBetaEnabled) private var isBetaEnabled = false
     @State private var showBetaBadge = false
     
     private let accountRepository = AccountRepository()

@@ -42,6 +42,8 @@ enum Keys {
     static let lastMarketSyncUpdate = "lastMarketSyncUpdate"
     static let isBetaEnabled = "isBetaEnabled"
     static let isGraphHidden = "isGraphHidden"
+    static let selectedDate = "selectedDate"
+    static let selectedPeriod = "selectedPeriod"
 }
 
 struct BalanceReader {

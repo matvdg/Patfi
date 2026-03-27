@@ -3,8 +3,8 @@ import SwiftUI
 
 struct HomeTransactionsView: View {
     
-    @State private var selectedDate: Date = .now
-    @State private var selectedPeriod: Period = .month
+    @AppStorage(Keys.selectedDate) private var selectedDate: Date = Date()
+    @AppStorage(Keys.selectedPeriod) private var selectedPeriod: Period = .month
     @State private var showActions: Bool = false
     
     private var account: Account?

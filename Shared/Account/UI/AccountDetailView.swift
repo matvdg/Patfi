@@ -6,13 +6,13 @@ struct AccountDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @AppStorage(Keys.isBetaEnabled) private var isBetaEnabled = false
+    @AppStorage(Keys.selectedDate) private var selectedDate: Date = Date()
+    @AppStorage(Keys.selectedPeriod) private var selectedPeriod: Period = .month
     
     @Bindable var account: Account
     
     @State private var showAddSnapshot = false
     @State private var showDeleteAccountConfirm = false
-    @State private var selectedPeriod: Period = .month
-    @State private var selectedDate: Date = Date()
     @State private var showActions = false
     @State private var showEditQuantityPopup = false
     @State private var newQuantity: Double = 0

@@ -6,8 +6,8 @@ struct HomePieView: View {
     @Query(sort: \Account.name, order: .forward) private var accounts: [Account]
     @State private var mode: WatchMode = .categories
     @State private var showModeSheet = false
-    @State private var selectedDate: Date = .now
-    @State private var selectedPeriod: Period = .month
+    @AppStorage(Keys.selectedDate) private var selectedDate: Date = Date()
+    @AppStorage(Keys.selectedPeriod) private var selectedPeriod: Period = .month
     private let balanceRepository = BalanceRepository()
     private let accountRepository = AccountRepository()
     private let transactionRepository = TransactionRepository()

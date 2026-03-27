@@ -4,9 +4,10 @@ import Playgrounds
 
 struct HomeExpensesView: View {
     
-    @State private var selectedDate: Date = .now
     @Environment(\.verticalSizeClass) private var verticalSizeClass
-    @State var selectedPeriod: Period = .month
+    
+    @AppStorage(Keys.selectedDate) private var selectedDate: Date = Date()
+    @AppStorage(Keys.selectedPeriod) private var selectedPeriod: Period = .month
     
     private var isLandscape: Bool {
 #if os(iOS)
