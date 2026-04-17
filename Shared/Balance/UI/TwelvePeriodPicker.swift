@@ -59,6 +59,13 @@ struct TwelvePeriodPicker: View {
                 Image(systemName: "chevron.right")
             }
             .disabled(selectedDate.isNow(for: selectedPeriod))
+            if !Calendar.current.isDate(selectedDate, equalTo: Date(), toGranularity: selectedPeriod.component) {
+                Button {
+                    selectedDate = Date()
+                } label: {
+                    Image(systemName: "calendar.badge.clock")
+                }
+            }
             Spacer()
         }
         .modifier(ButtonStyleProminentModifier(isProminentForAppleWatchToo: false))
