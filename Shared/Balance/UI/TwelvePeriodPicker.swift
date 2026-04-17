@@ -10,12 +10,13 @@ struct TwelvePeriodPicker: View {
         self._selectedPeriod = selectedPeriod
     }
     
+    private let calendar = Calendar.current
+    
     var body: some View {
         HStack {
             Spacer()
             Button {
-                let cal = Calendar.current
-                if let newDate = cal.date(byAdding: selectedPeriod.component, value: -1, to: selectedDate) {
+                if let newDate = calendar.date(byAdding: selectedPeriod.component, value: -1, to: selectedDate) {
                     selectedDate = newDate
                 }
             } label: {
@@ -51,19 +52,18 @@ struct TwelvePeriodPicker: View {
 #endif
             Spacer()
             Button {
-                let cal = Calendar.current
-                if let newDate = cal.date(byAdding: selectedPeriod.component, value: 1, to: selectedDate) {
-                    selectedDate = newDate
+                if let newDate = calendar.date(byAdding: selectedPeriod.component, value: 1, to: selectedDate) {
+                    selectedDate = clampedToToday(newDate, for: selectedPeriod)
                 }
             } label: {
                 Image(systemName: "chevron.right")
             }
-            .disabled(selectedDate.isNow(for: selectedPeriod))
-            if !Calendar.current.isDate(selectedDate, equalTo: Date(), toGranularity: selectedPeriod.component) {
+            .disabled(calendar.isDate(selectedDate, equalTo: Date(), toGranularity: selectedPeriod.component))
+            if !calendar.isDate(selectedDate, equalTo: Date(), toGranularity: selectedPeriod.component) {
                 Button {
                     selectedDate = Date()
                 } label: {
-                    Image(systemName: "calendar.badge.clock")
+                    Image(systemName: "chevron.forward.to.line")
                 }
             }
             Spacer()
@@ -71,8 +71,16 @@ struct TwelvePeriodPicker: View {
         .modifier(ButtonStyleProminentModifier(isProminentForAppleWatchToo: false))
         .padding()
         .onChange(of: selectedPeriod) {
-            selectedDate = Date().normalizedDate(selectedPeriod: selectedPeriod)
+            selectedDate = clampedToToday(selectedDate, for: selectedPeriod)
         }
+    }
+    
+    private func clampedToToday(_ date: Date, for period: Period) -> Date {
+        let today = Date()
+        if calendar.compare(date, to: today, toGranularity: period.component) == .orderedDescending {
+            return today
+        }
+        return date
     }
     
     private func displayText(for date: Date, selectedPeriod: Period) -> String {

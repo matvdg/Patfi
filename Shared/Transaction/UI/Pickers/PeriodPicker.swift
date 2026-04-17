@@ -4,12 +4,14 @@ struct PeriodPicker: View {
     
     @Binding var selectedDate: Date
     @Binding var selectedPeriod: Period
+
+    private let calendar = Calendar.current
     
     var body: some View {
         HStack {
             Spacer()
             Button {
-                if let newDate = Calendar.current.date(byAdding: selectedPeriod.component, value: -1, to: selectedDate) {
+                if let newDate = calendar.date(byAdding: selectedPeriod.component, value: -1, to: selectedDate) {
                     selectedDate = newDate
                 }
             } label: {
@@ -45,24 +47,35 @@ struct PeriodPicker: View {
 #endif
             Spacer()
             Button {
-                if let newDate = Calendar.current.date(byAdding: selectedPeriod.component, value: 1, to: selectedDate) {
-                    selectedDate = newDate
+                if let newDate = calendar.date(byAdding: selectedPeriod.component, value: 1, to: selectedDate) {
+                    selectedDate = clampedToToday(newDate, for: selectedPeriod)
                 }
             } label: {
                 Image(systemName: "chevron.right")
             }
-            .disabled(Calendar.current.isDate(selectedDate, equalTo: Date(), toGranularity: selectedPeriod.component))
-            if !Calendar.current.isDate(selectedDate, equalTo: Date(), toGranularity: selectedPeriod.component) {
+            .disabled(calendar.isDate(selectedDate, equalTo: Date(), toGranularity: selectedPeriod.component))
+            if !calendar.isDate(selectedDate, equalTo: Date(), toGranularity: selectedPeriod.component) {
                 Button {
                     selectedDate = Date()
                 } label: {
-                    Image(systemName: "calendar.badge.clock")
+                    Image(systemName: "chevron.forward.to.line")
                 }
             }
             Spacer()
         }
+        .onChange(of: selectedPeriod) { oldValue, newValue in
+            selectedDate = clampedToToday(selectedDate, for: newValue)
+        }
         .modifier(ButtonStyleProminentModifier(isProminentForAppleWatchToo: false))
         .padding()
+    }
+    
+    private func clampedToToday(_ date: Date, for period: Period) -> Date {
+        let today = Date()
+        if calendar.compare(date, to: today, toGranularity: period.component) == .orderedDescending {
+            return today
+        }
+        return date
     }
     
     private func displayText(for date: Date, selectedPeriod: Period) -> String {
